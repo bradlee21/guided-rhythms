@@ -1,19 +1,20 @@
+import Image from "next/image";
+
 export function Hero() {
   return (
     <section className="relative overflow-hidden">
-      <div className="mx-auto grid max-w-6xl gap-12 px-6 py-20 sm:px-8 sm:py-24 md:grid-cols-[1.05fr_0.95fr] md:items-center">
+      <div className="mx-auto grid max-w-6xl gap-14 px-6 py-16 sm:px-8 sm:py-20 md:grid-cols-[0.95fr_1.05fr] md:items-center md:gap-16">
         <div className="max-w-2xl">
-          <p className="mb-5 text-sm font-medium uppercase tracking-[0.22em] text-[color:var(--muted-teal)]">
+          <p className="mb-5 text-sm font-medium uppercase tracking-[0.22em] text-[color:var(--muted-sage)]">
             Guided Rhythms Massage
           </p>
 
           <h1 className="text-4xl font-semibold leading-tight tracking-[-0.03em] text-[color:var(--foreground)] sm:text-5xl md:text-6xl">
-            Return to your bodys natural rhythm.
+            Intentional care that helps the body return to rhythm.
           </h1>
 
-          <p className="mt-6 max-w-xl text-base leading-8 text-[color:var(--text-soft)] sm:text-lg">
-            Intentional, professional therapeutic massage focused on pain relief, stress recovery,
-            and helping clients feel more balanced, supported, and at ease in their bodies.
+          <p className="mt-6 text-base leading-8 text-[color:var(--text-soft)] sm:text-lg">
+            Professional therapeutic massage focused on calm, recovery, balance, and a grounded client experience from the very first interaction.
           </p>
 
           <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
@@ -21,35 +22,30 @@ export function Hero() {
               href="#contact"
               className="inline-flex items-center justify-center rounded-full bg-[color:var(--forest-green)] px-6 py-3 text-sm font-medium text-white transition hover:opacity-90"
             >
-              Book a Session
+              Book Session
             </a>
 
             <a
-              href="#about"
-              className="inline-flex items-center justify-center rounded-full border border-[color:var(--border-soft)] bg-white px-6 py-3 text-sm font-medium text-[color:var(--foreground)] transition hover:bg-[color:var(--soft-beige)]"
+              href="#trust"
+              className="inline-flex items-center justify-center rounded-full border border-[color:var(--border-soft)] bg-white px-6 py-3 text-sm font-medium text-[color:var(--foreground)] transition hover:bg-[color:var(--soft-sand)]"
             >
               Learn More
             </a>
           </div>
         </div>
 
-        <div className="relative">
-          <div className="absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_top,rgba(63,111,106,0.18),transparent_58%)]" />
-          <div className="relative rounded-[2rem] border border-[color:var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.72))] p-6 shadow-[0_30px_80px_rgba(31,61,54,0.08)] sm:p-8">
-            <div className="rounded-[1.5rem] border border-[color:var(--border-soft)] bg-[linear-gradient(180deg,rgba(233,227,216,0.58),rgba(255,255,255,0.82))] p-8">
-              <div className="flex min-h-[320px] flex-col justify-between rounded-[1.25rem] bg-[linear-gradient(180deg,rgba(31,61,54,0.06),rgba(63,111,106,0.02))] p-8">
-                <div className="h-16 w-16 rounded-full border border-[color:rgba(176,138,87,0.32)] bg-[linear-gradient(135deg,rgba(176,138,87,0.22),rgba(63,111,106,0.08))]" />
-
-                <div className="space-y-4">
-                  <div className="h-px w-24 bg-[color:rgba(31,61,54,0.18)]" />
-                  <p className="max-w-sm text-lg leading-8 text-[color:var(--foreground)]">
-                    Calm, focused therapeutic care in a grounded and professional environment.
-                  </p>
-                  <p className="text-sm uppercase tracking-[0.18em] text-[color:var(--muted-teal)]">
-                    Professional  Restorative  Intentional
-                  </p>
-                </div>
-              </div>
+        <div className="relative flex justify-center md:justify-end">
+          <div className="absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_center,rgba(143,175,155,0.16),transparent_62%)]" />
+          <div className="relative w-full max-w-[640px] rounded-[2rem] border border-[color:var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.72),rgba(255,255,255,0.4))] p-4 shadow-[0_30px_80px_rgba(31,61,51,0.08)] sm:p-6">
+            <div className="rounded-[1.5rem] bg-[linear-gradient(180deg,rgba(245,242,235,0.9),rgba(255,255,255,0.72))] p-6 sm:p-8">
+              <Image
+                src="/logo-guided-rhythms.png"
+                alt="Guided Rhythms Massage logo"
+                width={900}
+                height={900}
+                className="h-auto w-full"
+                priority
+              />
             </div>
           </div>
         </div>
