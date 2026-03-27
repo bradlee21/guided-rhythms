@@ -14,7 +14,8 @@ export function Hero() {
           </h1>
 
           <p className="mt-6 text-base leading-8 text-[color:var(--text-soft)] sm:text-lg">
-            Professional therapeutic massage focused on calm, recovery, balance, and a grounded client experience from the very first interaction.
+            Professional therapeutic massage focused on calm, recovery, balance, and a grounded
+            client experience from the very first interaction.
           </p>
 
           <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
@@ -34,19 +35,20 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="relative flex justify-center md:justify-end">
-          <div className="absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_center,rgba(143,175,155,0.16),transparent_62%)]" />
-          <div className="relative w-full max-w-[640px] rounded-[2rem] border border-[color:var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.72),rgba(255,255,255,0.4))] p-4 shadow-[0_30px_80px_rgba(31,61,51,0.08)] sm:p-6">
-            <div className="rounded-[1.5rem] bg-[linear-gradient(180deg,rgba(245,242,235,0.9),rgba(255,255,255,0.72))] p-6 sm:p-8">
-              <Image
-                src="/logo-guided-rhythms.png"
-                alt="Guided Rhythms Massage logo"
-                width={900}
-                height={900}
-                className="h-auto w-full"
-                priority
-              />
-            </div>
+        <div className="relative flex min-h-[420px] items-center justify-center md:min-h-[520px]">
+          <div className="absolute h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle,rgba(143,175,155,0.16)_0%,rgba(194,163,107,0.08)_38%,transparent_72%)] blur-2xl" />
+
+          <div className="absolute h-[300px] w-[300px] rounded-full bg-white/28 blur-3xl" />
+
+          <div className="relative w-full max-w-[520px]">
+            <Image
+              src="/logo-guided-rhythms.png"
+              alt="Guided Rhythms Massage logo"
+              width={1200}
+              height={1200}
+              className="h-auto w-full object-contain"
+              priority
+            />
           </div>
         </div>
       </div>
