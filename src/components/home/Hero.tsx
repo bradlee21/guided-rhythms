@@ -1,4 +1,5 @@
 import Image from "next/image";
+import logoGuidedRhythms from "../../../public/logo-guided-rhythms.png";
 
 export function Hero() {
   return (
@@ -42,7 +43,7 @@ export function Hero() {
 
           <div className="relative w-full max-w-[520px]">
             <Image
-              src="/logo-guided-rhythms.png"
+              src={logoGuidedRhythms}
               alt="Guided Rhythms Massage logo"
               width={1200}
               height={1200}
