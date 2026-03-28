@@ -1,11 +1,10 @@
 import Image from "next/image";
-import logoGuidedRhythms from "../../../public/logo-guided-rhythms.png";
 
 export function Hero() {
   return (
     <section className="relative overflow-hidden">
-      <div className="mx-auto grid max-w-6xl gap-14 px-6 py-16 sm:px-8 sm:py-20 md:grid-cols-[0.95fr_1.05fr] md:items-center md:gap-16">
-        <div className="max-w-2xl">
+      <div className="mx-auto grid max-w-6xl items-center gap-16 px-6 py-14 sm:px-8 sm:py-18 lg:grid-cols-2">
+        <div className="max-w-2xl space-y-6">
           <p className="mb-5 text-sm font-medium uppercase tracking-[0.22em] text-[color:var(--muted-sage)]">
             Guided Rhythms Massage
           </p>
@@ -14,7 +13,7 @@ export function Hero() {
             Intentional care that helps the body return to rhythm.
           </h1>
 
-          <p className="mt-6 text-base leading-8 text-[color:var(--text-soft)] sm:text-lg">
+          <p className="max-w-xl text-[17px] leading-relaxed text-neutral-600">
             Professional therapeutic massage focused on calm, recovery, balance, and a grounded
             client experience from the very first interaction.
           </p>
@@ -24,26 +23,25 @@ export function Hero() {
               href="#contact"
               className="inline-flex items-center justify-center rounded-full bg-[color:var(--forest-green)] px-6 py-3 text-sm font-medium text-white transition hover:opacity-90"
             >
-              Book Session
+              Book Your Session
             </a>
 
             <a
-              href="#trust"
-              className="inline-flex items-center justify-center rounded-full border border-[color:var(--border-soft)] bg-white px-6 py-3 text-sm font-medium text-[color:var(--foreground)] transition hover:bg-[color:var(--soft-sand)]"
+              href="#approach"
+              className="inline-flex items-center justify-center rounded-full border border-[color:var(--border-soft)] bg-white/75 px-6 py-3 text-sm font-medium text-[color:var(--foreground)] transition hover:bg-[color:var(--soft-sand)]"
             >
-              Learn More
+              Our Approach
             </a>
           </div>
         </div>
 
-        <div className="relative flex min-h-[420px] items-center justify-center md:min-h-[520px]">
-          <div className="absolute h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle,rgba(143,175,155,0.16)_0%,rgba(194,163,107,0.08)_38%,transparent_72%)] blur-2xl" />
-
-          <div className="absolute h-[300px] w-[300px] rounded-full bg-white/28 blur-3xl" />
+        <div className="relative flex min-h-[420px] items-center justify-center md:min-h-[500px]">
+          <div className="absolute h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle,rgba(143,175,155,0.18)_0%,rgba(194,163,107,0.10)_34%,transparent_72%)] blur-3xl" />
+          <div className="absolute h-[240px] w-[520px] rounded-full bg-[radial-gradient(circle,rgba(31,61,51,0.06)_0%,transparent_72%)] blur-3xl rotate-[-10deg]" />
 
           <div className="relative w-full max-w-[520px]">
             <Image
-              src={logoGuidedRhythms}
+              src="/logo-guided-rhythms.png"
               alt="Guided Rhythms Massage logo"
               width={1200}
               height={1200}
