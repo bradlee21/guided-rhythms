@@ -15,14 +15,11 @@ const items = [
 
 export function TrustStrip() {
   return (
-    <section id="trust">
-      <div className="mx-auto max-w-6xl px-6 py-8 sm:px-8 sm:py-10">
+    <section id="trust" className="relative">
+      <div className="mx-auto max-w-6xl px-6 py-6 sm:px-8 sm:py-8">
         <div className="grid gap-6 md:grid-cols-3">
           {items.map((item) => (
-            <div
-              key={item.title}
-              className="rounded-xl border border-neutral-200/40 bg-white/40 p-6 backdrop-blur-sm"
-            >
+            <div key={item.title} className="px-1 py-2">
               <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[color:var(--forest-green)]">
                 {item.title}
               </p>

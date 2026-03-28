@@ -3,17 +3,33 @@ import Image from "next/image";
 export function Hero() {
   return (
     <section className="relative overflow-hidden">
-      <div className="mx-auto grid max-w-6xl items-center gap-16 px-6 py-14 sm:px-8 sm:py-18 lg:grid-cols-2">
-        <div className="max-w-2xl space-y-6">
+      <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 sm:px-8 sm:py-18 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-16">
+        <div className="relative order-1 flex min-h-[280px] items-center justify-start sm:min-h-[340px] lg:min-h-[460px]">
+          <div className="absolute left-0 top-1/2 h-[320px] w-[320px] -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(143,175,155,0.18)_0%,rgba(194,163,107,0.10)_34%,transparent_72%)] blur-3xl" />
+          <div className="absolute left-8 top-1/2 h-[180px] w-[360px] -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(31,61,51,0.06)_0%,transparent_72%)] blur-3xl rotate-[-10deg]" />
+
+          <div className="relative w-full max-w-[300px] sm:max-w-[360px] lg:max-w-[420px]">
+            <Image
+              src="/logo-guided-rhythms.png"
+              alt="Guided Rhythms Massage logo"
+              width={1200}
+              height={1200}
+              className="h-auto w-full object-contain"
+              priority
+            />
+          </div>
+        </div>
+
+        <div className="order-2 max-w-2xl">
           <p className="mb-5 text-sm font-medium uppercase tracking-[0.22em] text-[color:var(--muted-sage)]">
             Guided Rhythms Massage
           </p>
 
-          <h1 className="text-4xl font-semibold leading-tight tracking-[-0.03em] text-[color:var(--foreground)] sm:text-5xl md:text-6xl">
+          <h1 className="max-w-2xl text-4xl font-semibold leading-tight tracking-[-0.03em] text-[color:var(--foreground)] sm:text-5xl md:text-6xl">
             Intentional care that helps the body return to rhythm.
           </h1>
 
-          <p className="max-w-xl text-[17px] leading-relaxed text-neutral-600">
+          <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-[color:var(--text-soft)]">
             Professional therapeutic massage focused on calm, recovery, balance, and a grounded
             client experience from the very first interaction.
           </p>
@@ -32,22 +48,6 @@ export function Hero() {
             >
               Our Approach
             </a>
-          </div>
-        </div>
-
-        <div className="relative flex min-h-[420px] items-center justify-center md:min-h-[500px]">
-          <div className="absolute h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle,rgba(143,175,155,0.18)_0%,rgba(194,163,107,0.10)_34%,transparent_72%)] blur-3xl" />
-          <div className="absolute h-[240px] w-[520px] rounded-full bg-[radial-gradient(circle,rgba(31,61,51,0.06)_0%,transparent_72%)] blur-3xl rotate-[-10deg]" />
-
-          <div className="relative w-full max-w-[520px]">
-            <Image
-              src="/logo-guided-rhythms.png"
-              alt="Guided Rhythms Massage logo"
-              width={1200}
-              height={1200}
-              className="h-auto w-full object-contain"
-              priority
-            />
           </div>
         </div>
       </div>
