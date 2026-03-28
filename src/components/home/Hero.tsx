@@ -4,17 +4,17 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden">
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 sm:px-8 sm:py-18 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-16">
-        <div className="relative order-1 flex min-h-[280px] items-center justify-start sm:min-h-[340px] lg:min-h-[460px]">
-          <div className="absolute left-0 top-1/2 h-[320px] w-[320px] -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(143,175,155,0.18)_0%,rgba(194,163,107,0.10)_34%,transparent_72%)] blur-3xl" />
-          <div className="absolute left-8 top-1/2 h-[180px] w-[360px] -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(31,61,51,0.06)_0%,transparent_72%)] blur-3xl rotate-[-10deg]" />
+        <div className="relative order-1 flex min-h-[280px] items-center justify-center sm:min-h-[340px] lg:min-h-[460px] lg:justify-start">
+          <div className="absolute left-1/2 top-1/2 h-[320px] w-[320px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(143,175,155,0.18)_0%,rgba(194,163,107,0.10)_34%,transparent_72%)] blur-3xl lg:left-0 lg:translate-x-0" />
+          <div className="absolute left-1/2 top-1/2 h-[180px] w-[360px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(31,61,51,0.06)_0%,transparent_72%)] blur-3xl rotate-[-10deg] lg:left-8 lg:translate-x-0" />
 
-          <div className="relative w-full max-w-[300px] sm:max-w-[360px] lg:max-w-[420px]">
+          <div className="relative mx-auto w-full max-w-[300px] sm:max-w-[360px] lg:mx-0 lg:max-w-[420px]">
             <Image
               src="/logo-guided-rhythms.png"
               alt="Guided Rhythms Massage logo"
               width={1200}
               height={1200}
-              className="h-auto w-full object-contain"
+              className="mx-auto h-auto w-full object-contain lg:mx-0"
               priority
             />
           </div>
