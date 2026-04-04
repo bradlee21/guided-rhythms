@@ -1,62 +1,575 @@
-import Approach from "@/components/home/Approach";
-import { Hero } from "@/components/home/Hero";
-import { SiteHeader } from "@/components/home/SiteHeader";
-import { TrustStrip } from "@/components/home/TrustStrip";
+import Image from "next/image";
 
-function SoftDivider() {
-  return (
-    <div className="relative mx-auto my-2 h-16 max-w-6xl px-6 sm:px-8">
-      <div className="absolute left-1/2 top-1/2 h-px w-full max-w-4xl -translate-x-1/2 -translate-y-1/2 bg-[linear-gradient(90deg,transparent,rgba(143,175,155,0.18),rgba(194,163,107,0.18),rgba(143,175,155,0.18),transparent)]" />
-      <div className="absolute left-1/2 top-1/2 h-8 w-full max-w-3xl -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle,rgba(194,163,107,0.08)_0%,rgba(143,175,155,0.06)_35%,transparent_72%)] blur-2xl" />
-    </div>
-  );
-}
+const brand = {
+  background: "#F4F1E8",
+  backgroundSoft: "#E7E1D2",
+  surface: "rgba(255,255,255,0.70)",
+  surfaceStrong: "rgba(255,255,255,0.88)",
+  border: "rgba(47,58,44,0.10)",
+  text: "#2F3A2C",
+  textMuted: "#6F6A5C",
+  primary: "#6F8F55",
+  secondary: "#446E49",
+  accent: "#C9922E",
+  accentDeep: "#9C6A2A",
+  glow: "rgba(201,146,46,0.14)",
+};
 
 export default function HomePage() {
+  const philosophy = [
+    {
+      title: "Presence",
+      body: "We believe clients can feel the difference between routine work and genuine attention. Presence matters.",
+    },
+    {
+      title: "Listening",
+      body: "Healing starts with being heard. Every session begins with understanding your body, your goals, and your concerns.",
+    },
+    {
+      title: "Intention",
+      body: "We do not believe in rushed, mechanical sessions. Each treatment should have purpose, flow, and direction.",
+    },
+    {
+      title: "Restoration",
+      body: "Our goal is not just temporary relief, but a restorative experience that supports long-term wellness and recovery.",
+    },
+  ];
+
+  const differentiators = [
+    "Intentional, unhurried sessions",
+    "Client-first communication",
+    "Therapeutic work with a human approach",
+    "A calm, grounded atmosphere",
+  ];
+
+  const services = [
+    "Therapeutic Massage",
+    "Swedish-Based Relaxation",
+    "Deep Tissue / Focused Work",
+    "Sports Massage Influence",
+    "Customized Sessions",
+  ];
+
+  const firstVisit = [
+    {
+      title: "Conversation First",
+      body: "Your goals, pain points, preferences, and concerns should shape the session before any hands-on work begins.",
+    },
+    {
+      title: "Thoughtful Treatment",
+      body: "Sessions are tailored with purpose rather than delivered like a one-size-fits-all routine.",
+    },
+    {
+      title: "Comfort & Professionalism",
+      body: "We want every client to feel respected, heard, safe, and genuinely cared for from the start.",
+    },
+  ];
+
+  const therapists = [
+    {
+      name: "Brad Ivy",
+      role: "Therapeutic, recovery-minded work with a strong focus on listening, intention, and long-term client care.",
+    },
+    {
+      name: "Josh Green",
+      role: "A thoughtful, client-centered approach shaped by creativity, presence, and a desire to build a restorative experience.",
+    },
+  ];
+
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[color:var(--background)] text-[color:var(--foreground)]">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-[-12rem] top-[-8rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(143,175,155,0.12)_0%,rgba(143,175,155,0.06)_28%,transparent_70%)] blur-3xl" />
-        <div className="absolute right-[-10rem] top-[6rem] h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(194,163,107,0.10)_0%,rgba(138,90,54,0.06)_32%,transparent_72%)] blur-3xl" />
-        <div className="absolute left-1/2 top-[32rem] h-[16rem] w-[56rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(31,61,51,0.05)_0%,rgba(143,175,155,0.04)_35%,transparent_75%)] blur-3xl" />
-        <div className="absolute bottom-[8rem] left-[8%] h-[22rem] w-[22rem] rounded-full bg-[radial-gradient(circle,rgba(194,163,107,0.08)_0%,transparent_72%)] blur-3xl" />
-        <div className="absolute right-[10%] top-[58rem] h-[18rem] w-[18rem] rounded-full bg-[radial-gradient(circle,rgba(143,175,155,0.08)_0%,transparent_72%)] blur-3xl" />
-      </div>
+    <main
+      className="relative min-h-screen overflow-hidden"
+      style={{ backgroundColor: brand.background, color: brand.text }}
+    >
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `
+            radial-gradient(circle at 12% 10%, ${brand.glow}, transparent 20%),
+            radial-gradient(circle at 88% 14%, rgba(111,143,85,0.10), transparent 20%),
+            radial-gradient(circle at 50% 100%, rgba(255,255,255,0.32), transparent 30%),
+            linear-gradient(180deg, ${brand.backgroundSoft} 0%, ${brand.background} 52%, #EFE8DB 100%)
+          `,
+        }}
+      />
+      <div className="absolute inset-0 opacity-[0.14] [background-image:linear-gradient(rgba(47,58,44,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(47,58,44,0.04)_1px,transparent_1px)] [background-size:72px_72px]" />
+      <div
+        className="absolute left-[-8rem] top-[-6rem] h-[22rem] w-[22rem] rounded-full blur-3xl"
+        style={{ backgroundColor: brand.glow }}
+      />
+      <div
+        className="absolute right-[-8rem] top-[10rem] h-[24rem] w-[24rem] rounded-full blur-3xl"
+        style={{ backgroundColor: "rgba(111,143,85,0.10)" }}
+      />
 
       <div className="relative z-10">
-        <SiteHeader />
-        <Hero />
-        <SoftDivider />
-        <TrustStrip />
-        <SoftDivider />
-        <Approach />
+        <header className="px-6 pb-6 pt-6 md:px-10 lg:px-16">
+          <div
+            className="mx-auto flex max-w-7xl items-center justify-between pb-5"
+            style={{ borderBottom: `1px solid ${brand.border}` }}
+          >
+            <div className="flex items-center gap-5">
+              <div
+                className="relative h-24 w-24 overflow-hidden rounded-2xl md:h-28 md:w-28"
+                style={{
+                  border: `1px solid ${brand.border}`,
+                  backgroundColor: brand.surfaceStrong,
+                  boxShadow: "0 18px 50px rgba(47,58,44,0.08)",
+                }}
+              >
+                <Image
+                  src="/guided-rhythms-logo.png"
+                  alt="Guided Rhythms Massage logo"
+                  fill
+                  className="object-contain p-2.5"
+                  priority
+                />
+              </div>
 
-        <section id="contact" className="relative">
-          <div className="mx-auto max-w-6xl px-6 py-14 sm:px-8 sm:py-18">
+              <div>
+                <p
+                  className="text-[0.72rem] uppercase tracking-[0.38em]"
+                  style={{ color: brand.secondary }}
+                >
+                  Guided Rhythms Massage
+                </p>
+                <p className="mt-2 text-sm md:text-base" style={{ color: brand.textMuted }}>
+                  Intentional care for restoration and wellness
+                </p>
+              </div>
+            </div>
+
+            <nav
+              className="hidden items-center gap-8 text-sm md:flex"
+              style={{ color: brand.textMuted }}
+            >
+              <a className="opacity-80 transition hover:opacity-100" href="#about">
+                About
+              </a>
+              <a className="opacity-80 transition hover:opacity-100" href="#philosophy">
+                Philosophy
+              </a>
+              <a className="opacity-80 transition hover:opacity-100" href="#services">
+                Services
+              </a>
+              <a className="opacity-80 transition hover:opacity-100" href="#new-clients">
+                New Clients
+              </a>
+              <a
+                className="rounded-full px-4 py-2 transition"
+                href="#contact"
+                style={{
+                  border: `1px solid ${brand.border}`,
+                  backgroundColor: brand.surface,
+                  color: brand.text,
+                }}
+              >
+                Contact
+              </a>
+            </nav>
+          </div>
+        </header>
+
+        <section className="px-6 pb-20 pt-10 md:px-10 md:pt-16 lg:px-16 lg:pb-28">
+          <div className="mx-auto grid max-w-7xl items-end gap-16 lg:grid-cols-[1.15fr_0.85fr]">
             <div className="relative">
-              <div className="absolute inset-x-0 top-1/2 h-48 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(31,61,51,0.07)_0%,rgba(143,175,155,0.05)_24%,rgba(194,163,107,0.05)_38%,transparent_74%)] blur-3xl" />
+              <div
+                className="absolute -left-8 top-5 hidden h-32 w-32 rounded-full lg:block"
+                style={{ border: `1px solid ${brand.border}` }}
+              />
+              <div
+                className="absolute left-28 top-28 hidden h-px w-36 lg:block"
+                style={{
+                  background: `linear-gradient(to right, ${brand.primary}, transparent)`,
+                }}
+              />
 
-              <div className="relative max-w-3xl">
-                <p className="text-sm font-medium uppercase tracking-[0.22em] text-[color:var(--muted-sage)]">
+              <p
+                className="mb-5 text-xs uppercase tracking-[0.4em]"
+                style={{ color: brand.accentDeep }}
+              >
+                Serving Central Pennsylvania
+              </p>
+
+              <h1 className="max-w-4xl text-5xl font-semibold leading-[0.95] tracking-[-0.04em] sm:text-6xl md:text-7xl">
+                A massage practice built on
+                <span
+                  className="block bg-clip-text text-transparent"
+                  style={{
+                    backgroundImage: `linear-gradient(to right, ${brand.secondary}, ${brand.primary}, ${brand.accent})`,
+                  }}
+                >
+                  presence, listening, and purpose.
+                </span>
+              </h1>
+
+              <p
+                className="mt-8 max-w-2xl text-lg leading-8 md:text-xl"
+                style={{ color: brand.textMuted }}
+              >
+                Guided Rhythms Massage is being shaped around a simple belief:
+                people should never feel processed. They should feel heard,
+                cared for, and treated with intention.
+              </p>
+
+              <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+                <a
+                  href="#about"
+                  className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition hover:scale-[1.01]"
+                  style={{
+                    background: `linear-gradient(to right, ${brand.primary}, ${brand.accent})`,
+                    color: "#FFFFFF",
+                    boxShadow: `0 12px 30px ${brand.glow}`,
+                  }}
+                >
+                  Meet the Therapists
+                </a>
+                <a
+                  href="#philosophy"
+                  className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition"
+                  style={{
+                    border: `1px solid ${brand.border}`,
+                    backgroundColor: brand.surface,
+                    color: brand.text,
+                  }}
+                >
+                  Our Philosophy
+                </a>
+              </div>
+            </div>
+
+            <div className="relative">
+              <div
+                className="absolute inset-x-8 top-8 h-full rounded-[2rem] blur-2xl"
+                style={{
+                  background: `linear-gradient(to bottom, ${brand.glow}, transparent)`,
+                }}
+              />
+              <div
+                className="relative overflow-hidden rounded-[2rem] p-8 backdrop-blur-xl"
+                style={{
+                  border: `1px solid ${brand.border}`,
+                  backgroundColor: brand.surface,
+                  boxShadow: "0 20px 60px rgba(47,58,44,0.08)",
+                }}
+              >
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "radial-gradient(circle at top left, rgba(255,255,255,0.55), transparent 36%)",
+                  }}
+                />
+
+                <div className="relative">
+                  <p
+                    className="text-xs uppercase tracking-[0.35em]"
+                    style={{ color: brand.textMuted }}
+                  >
+                    What sets the tone
+                  </p>
+
+                  <div className="mt-8 space-y-6">
+                    {differentiators.map((item) => (
+                      <div
+                        key={item}
+                        className="flex items-start gap-4 pb-6 last:pb-0"
+                        style={{ borderBottom: `1px solid ${brand.border}` }}
+                      >
+                        <div
+                          className="mt-2 h-2.5 w-2.5 rounded-full"
+                          style={{
+                            backgroundColor: brand.accent,
+                            boxShadow: `0 0 20px ${brand.glow}`,
+                          }}
+                        />
+                        <p className="text-lg leading-7">{item}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div
+                    className="mt-10 rounded-[1.5rem] p-6"
+                    style={{
+                      border: `1px solid ${brand.border}`,
+                      background:
+                        "linear-gradient(to bottom right, rgba(255,255,255,0.62), rgba(255,255,255,0.24))",
+                    }}
+                  >
+                    <p
+                      className="text-sm uppercase tracking-[0.28em]"
+                      style={{ color: brand.secondary }}
+                    >
+                      The direction
+                    </p>
+                    <p className="mt-3 text-base leading-7" style={{ color: brand.textMuted }}>
+                      This site should feel restorative, grounded, welcoming, and
+                      intentionally built around the Guided Rhythms identity.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="about" className="px-6 py-20 md:px-10 lg:px-16">
+          <div className="mx-auto max-w-7xl">
+            <div
+              className="mb-12 flex items-end justify-between gap-6 pb-6"
+              style={{ borderBottom: `1px solid ${brand.border}` }}
+            >
+              <div>
+                <p
+                  className="text-xs uppercase tracking-[0.35em]"
+                  style={{ color: brand.secondary }}
+                >
+                  About us
+                </p>
+                <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] md:text-5xl">
+                  Two therapists building something thoughtful.
+                </h2>
+              </div>
+              <p className="hidden max-w-xl text-right lg:block" style={{ color: brand.textMuted }}>
+                Guided Rhythms Massage is being built around client trust,
+                meaningful care, and a long-term vision for restorative practice.
+              </p>
+            </div>
+
+            <div className="grid gap-8 md:grid-cols-2">
+              {therapists.map((therapist, index) => (
+                <article
+                  key={therapist.name}
+                  className="relative overflow-hidden rounded-[2rem] p-8"
+                  style={{
+                    border: `1px solid ${brand.border}`,
+                    backgroundColor: brand.surface,
+                    boxShadow: "0 18px 40px rgba(47,58,44,0.06)",
+                  }}
+                >
+                  <div
+                    className="absolute right-0 top-0 h-32 w-32 rounded-full blur-2xl"
+                    style={{ backgroundColor: "rgba(111,143,85,0.10)" }}
+                  />
+                  <p
+                    className="text-sm uppercase tracking-[0.3em]"
+                    style={{ color: brand.textMuted }}
+                  >
+                    {index === 0 ? "Therapist one" : "Therapist two"}
+                  </p>
+                  <h3 className="mt-5 text-3xl font-semibold tracking-[-0.03em]">
+                    {therapist.name}
+                  </h3>
+                  <p className="mt-5 max-w-xl text-lg leading-8" style={{ color: brand.textMuted }}>
+                    {therapist.role}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="philosophy" className="px-6 py-20 md:px-10 lg:px-16">
+          <div className="mx-auto max-w-7xl">
+            <div className="max-w-3xl">
+              <p
+                className="text-xs uppercase tracking-[0.35em]"
+                style={{ color: brand.secondary }}
+              >
+                Our philosophy
+              </p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] md:text-5xl">
+                Massage should feel intentional, not mechanical.
+              </h2>
+              <p className="mt-6 text-lg leading-8" style={{ color: brand.textMuted }}>
+                We believe the best care happens when technique, communication,
+                atmosphere, and presence all work together. Clients should feel
+                the difference in the room, not just on the table.
+              </p>
+            </div>
+
+            <div className="mt-12 grid gap-6 md:grid-cols-2">
+              {philosophy.map((item) => (
+                <article
+                  key={item.title}
+                  className="group relative overflow-hidden rounded-[2rem] p-8"
+                  style={{
+                    border: `1px solid ${brand.border}`,
+                    background:
+                      "linear-gradient(to bottom right, rgba(255,255,255,0.72), rgba(255,255,255,0.34))",
+                    boxShadow: "0 18px 40px rgba(47,58,44,0.05)",
+                  }}
+                >
+                  <div
+                    className="absolute inset-x-0 top-0 h-px opacity-70"
+                    style={{
+                      background: `linear-gradient(to right, transparent, ${brand.accent}, transparent)`,
+                    }}
+                  />
+                  <h3 className="text-2xl font-semibold tracking-[-0.03em]">{item.title}</h3>
+                  <p className="mt-4 text-base leading-8" style={{ color: brand.textMuted }}>
+                    {item.body}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="services" className="px-6 py-20 md:px-10 lg:px-16">
+          <div
+            className="mx-auto max-w-7xl rounded-[2rem] p-8 md:p-12"
+            style={{
+              border: `1px solid ${brand.border}`,
+              backgroundColor: brand.surface,
+              boxShadow: "0 20px 50px rgba(47,58,44,0.05)",
+            }}
+          >
+            <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+              <div>
+                <p
+                  className="text-xs uppercase tracking-[0.35em]"
+                  style={{ color: brand.secondary }}
+                >
+                  Service direction
+                </p>
+                <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] md:text-5xl">
+                  Focused care without an overbuilt menu.
+                </h2>
+                <p className="mt-6 text-lg leading-8" style={{ color: brand.textMuted }}>
+                  This first version of the site introduces the kind of work we
+                  offer without pretending the full booking system already exists.
+                </p>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                {services.map((service) => (
+                  <div
+                    key={service}
+                    className="rounded-[1.5rem] px-5 py-5 text-base"
+                    style={{
+                      border: `1px solid ${brand.border}`,
+                      backgroundColor: "rgba(255,255,255,0.54)",
+                      color: brand.text,
+                    }}
+                  >
+                    {service}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="new-clients" className="px-6 py-20 md:px-10 lg:px-16">
+          <div className="mx-auto max-w-7xl">
+            <div className="max-w-3xl">
+              <p
+                className="text-xs uppercase tracking-[0.35em]"
+                style={{ color: brand.secondary }}
+              >
+                For new clients
+              </p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] md:text-5xl">
+                The first visit should feel clear, calm, and personal.
+              </h2>
+            </div>
+
+            <div className="mt-12 grid gap-6 md:grid-cols-3">
+              {firstVisit.map((item) => (
+                <article
+                  key={item.title}
+                  className="relative rounded-[2rem] p-8"
+                  style={{
+                    border: `1px solid ${brand.border}`,
+                    backgroundColor: brand.surface,
+                    boxShadow: "0 18px 40px rgba(47,58,44,0.05)",
+                  }}
+                >
+                  <div
+                    className="mb-6 h-px w-16"
+                    style={{
+                      background: `linear-gradient(to right, ${brand.primary}, transparent)`,
+                    }}
+                  />
+                  <h3 className="text-2xl font-semibold tracking-[-0.03em]">{item.title}</h3>
+                  <p className="mt-4 text-base leading-8" style={{ color: brand.textMuted }}>
+                    {item.body}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="contact" className="px-6 pb-24 pt-16 md:px-10 lg:px-16">
+          <div
+            className="mx-auto max-w-7xl overflow-hidden rounded-[2.25rem] p-8 md:p-12"
+            style={{
+              border: `1px solid ${brand.border}`,
+              background:
+                "linear-gradient(to bottom right, rgba(255,255,255,0.76), rgba(255,255,255,0.46), rgba(255,255,255,0.66))",
+              boxShadow: "0 24px 60px rgba(47,58,44,0.06)",
+            }}
+          >
+            <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+              <div>
+                <p
+                  className="text-xs uppercase tracking-[0.35em]"
+                  style={{ color: brand.secondary }}
+                >
                   Contact
                 </p>
-
-                <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-[color:var(--foreground)] sm:text-4xl">
-                  A calm, professional foundation for Guided Rhythms.
+                <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] md:text-5xl">
+                  This is the foundation. The fuller practice is still being built.
                 </h2>
-
-                <p className="mt-5 max-w-2xl text-base leading-8 text-[color:var(--text-soft)]">
-                  This first version of the site is intentionally simpleclear brand, clear message,
-                  and room to grow well.
+                <p className="mt-6 max-w-2xl text-lg leading-8" style={{ color: brand.textMuted }}>
+                  Right now, the site should help people understand who you are,
+                  what you believe, and how to reach you. Booking, intake, and
+                  client tools can come later.
                 </p>
+              </div>
 
-                <div className="mt-8">
-                  <a
-                    href="mailto:hello@guidedrhythmsmassage.com"
-                    className="inline-flex items-center justify-center rounded-full bg-[color:var(--forest-green)] px-6 py-3 text-sm font-medium text-white shadow-[0_14px_30px_rgba(31,61,51,0.16)] transition hover:opacity-90"
+              <div
+                className="space-y-5 rounded-[1.75rem] p-6"
+                style={{
+                  border: `1px solid ${brand.border}`,
+                  backgroundColor: "rgba(255,255,255,0.58)",
+                }}
+              >
+                <div>
+                  <p
+                    className="text-sm uppercase tracking-[0.28em]"
+                    style={{ color: brand.textMuted }}
                   >
-                    Contact Guided Rhythms
-                  </a>
+                    Email
+                  </p>
+                  <p className="mt-2 text-lg">bradlee.ivycc@gmail.com</p>
+                  <p className="text-lg">greenrjoshua@gmail.com</p>
+                </div>
+
+                <div className="pt-5" style={{ borderTop: `1px solid ${brand.border}` }}>
+                  <p
+                    className="text-sm uppercase tracking-[0.28em]"
+                    style={{ color: brand.textMuted }}
+                  >
+                    Phone
+                  </p>
+                  <p className="mt-2 text-lg">(717) 855-6808</p>
+                  <p className="text-lg">(717) 648-9671</p>
+                </div>
+
+                <div className="pt-5" style={{ borderTop: `1px solid ${brand.border}` }}>
+                  <p
+                    className="text-sm uppercase tracking-[0.28em]"
+                    style={{ color: brand.textMuted }}
+                  >
+                    Current purpose
+                  </p>
+                  <p className="mt-2 text-base leading-7" style={{ color: brand.textMuted }}>
+                    Brand presence, trust building, and a polished first
+                    impression for Guided Rhythms Massage.
+                  </p>
                 </div>
               </div>
             </div>
