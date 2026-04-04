@@ -541,10 +541,14 @@ export default function HomePage() {
                     className="text-sm uppercase tracking-[0.28em]"
                     style={{ color: brand.textMuted }}
                   >
-                    Email
+                    Josh Green
                   </p>
-                  <p className="mt-2 text-lg">bradlee.ivycc@gmail.com</p>
-                  <p className="text-lg">greenrjoshua@gmail.com</p>
+                  <p className="mt-3 text-base" style={{ color: brand.text }}>
+                    greenrjoshua@gmail.com
+                  </p>
+                  <p className="mt-1 text-base" style={{ color: brand.text }}>
+                    (717) 648-9671
+                  </p>
                 </div>
 
                 <div className="pt-5" style={{ borderTop: `1px solid ${brand.border}` }}>
@@ -552,10 +556,14 @@ export default function HomePage() {
                     className="text-sm uppercase tracking-[0.28em]"
                     style={{ color: brand.textMuted }}
                   >
-                    Phone
+                    Brad Ivy
                   </p>
-                  <p className="mt-2 text-lg">(717) 855-6808</p>
-                  <p className="text-lg">(717) 648-9671</p>
+                  <p className="mt-3 text-base" style={{ color: brand.text }}>
+                    bradlee.ivycc@gmail.com
+                  </p>
+                  <p className="mt-1 text-base" style={{ color: brand.text }}>
+                    (717) 855-6808
+                  </p>
                 </div>
 
                 <div className="pt-5" style={{ borderTop: `1px solid ${brand.border}` }}>
