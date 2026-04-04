@@ -30,22 +30,22 @@ export default function HomePage() {
     },
     {
       title: "Listening",
-      body: "Every session begins with understanding the person in front of us, their goals, concerns, comfort, and what their body may be asking for.",
+      body: "Each session begins with understanding the person in front of ustheir goals, comfort, concerns, and what kind of support would serve them best.",
     },
     {
       title: "Intention",
-      body: "Our work is never meant to feel rushed or mechanical. Each session should have direction, purpose, and a clear sense of care behind it.",
+      body: "Our work is never meant to feel rushed or mechanical. Every session should have direction, purpose, and a clear sense of care behind it.",
     },
     {
       title: "Restoration",
-      body: "We want clients to leave feeling more than temporary relief. Our aim is to support restoration that feels calming, thoughtful, and meaningful.",
+      body: "We want clients to leave feeling more than temporary relief. Our aim is to create care that feels calming, meaningful, and restorative.",
     },
   ];
 
   const differentiators = [
     "Intentional, unhurried sessions",
     "Care shaped around the individual",
-    "Therapeutic work with a grounded approach",
+    "Thoughtful therapeutic support",
     "A calm and restorative atmosphere",
   ];
 
@@ -56,7 +56,7 @@ export default function HomePage() {
     },
     {
       title: "Thoughtful Treatment",
-      body: "Your session is shaped with care and purpose rather than treated like a routine. The goal is to create work that truly fits you.",
+      body: "Your session is shaped with care and purpose rather than treated like a routine. The goal is to create work that actually fits you.",
     },
     {
       title: "Comfort & Professionalism",
@@ -207,7 +207,7 @@ export default function HomePage() {
                 style={{ color: brand.textMuted }}
               >
                 Guided Rhythms Massage offers thoughtful massage therapy rooted
-                in presence, communication, and purposeful care so clients feel
+                in presence, communication, and purposeful careso clients feel
                 genuinely seen, supported, and restored.
               </p>
 
@@ -325,7 +325,7 @@ export default function HomePage() {
               <p className="hidden max-w-xl text-right text-lg leading-8 lg:block" style={{ color: brand.textMuted }}>
                 Guided Rhythms Massage exists to offer thoughtful, restorative
                 care rooted in presence, professionalism, and a genuine respect
-                for each client&apos;s experience.
+                for each clients experience.
               </p>
             </div>
 
@@ -429,7 +429,7 @@ export default function HomePage() {
 
               <div className="grid gap-4">
                 <article
-                  className="rounded-[1.75rem] p-6"
+                  className="rounded-[1.75rem] p-6 md:p-7"
                   style={{
                     border: `1px solid ${brand.border}`,
                     background:
@@ -445,7 +445,7 @@ export default function HomePage() {
                   </p>
                   <p className="mt-4 text-lg leading-8" style={{ color: brand.textMuted }}>
                     Each session is shaped with intention, taking into account
-                    how you&apos;re feeling, what you want to focus on, and the kind
+                    how youre feeling, what you want to focus on, and the kind
                     of care that would best serve you that day.
                   </p>
                 </article>
@@ -548,10 +548,10 @@ export default function HomePage() {
                   Contact
                 </p>
                 <h2 className={sectionTitleClass}>
-                  We&apos;d love to connect with you.
+                  Wed love to connect with you.
                 </h2>
                 <p className={`${sectionBodyClass} max-w-2xl`} style={{ color: brand.textMuted }}>
-                  Whether you&apos;re interested in learning more about the practice
+                  Whether youre interested in learning more about the practice
                   or reaching out directly, Guided Rhythms Massage is committed
                   to making every interaction feel thoughtful, clear, and
                   personal.
