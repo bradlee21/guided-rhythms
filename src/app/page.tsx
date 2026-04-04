@@ -67,12 +67,12 @@ export default function HomePage() {
 
   const therapists = [
     {
-      name: "Brad Ivy",
-      role: "Therapeutic, recovery-minded work with a strong focus on listening, intention, and long-term client care.",
-    },
-    {
       name: "Josh Green",
       role: "A thoughtful, client-centered approach shaped by creativity, presence, and a desire to build a restorative experience.",
+    },
+    {
+      name: "Brad Ivy",
+      role: "Therapeutic, recovery-minded work with a strong focus on listening, intention, and long-term client care.",
     },
   ];
 
@@ -337,7 +337,7 @@ export default function HomePage() {
             </div>
 
             <div className="grid gap-8 md:grid-cols-2">
-              {therapists.map((therapist, index) => (
+              {therapists.map((therapist) => (
                 <article
                   key={therapist.name}
                   className="relative overflow-hidden rounded-[2rem] p-8"
@@ -351,13 +351,7 @@ export default function HomePage() {
                     className="absolute right-0 top-0 h-32 w-32 rounded-full blur-2xl"
                     style={{ backgroundColor: "rgba(111,143,85,0.10)" }}
                   />
-                  <p
-                    className="text-sm uppercase tracking-[0.3em]"
-                    style={{ color: brand.textMuted }}
-                  >
-                    {index === 0 ? "Therapist one" : "Therapist two"}
-                  </p>
-                  <h3 className="mt-5 text-3xl font-semibold tracking-[-0.03em]">
+                  <h3 className="text-3xl font-semibold tracking-[-0.03em]">
                     {therapist.name}
                   </h3>
                   <p className="mt-5 max-w-xl text-lg leading-8" style={{ color: brand.textMuted }}>
