@@ -42,14 +42,6 @@ export default function HomePage() {
     "A calm and restorative atmosphere",
   ];
 
-  const services = [
-    "Therapeutic massage",
-    "Swedish-based relaxation",
-    "Focused deep tissue work",
-    "Recovery-oriented bodywork",
-    "Customized sessions",
-  ];
-
   const firstVisit = [
     {
       title: "Conversation First",
@@ -422,7 +414,7 @@ export default function HomePage() {
               boxShadow: "0 20px 50px rgba(47,58,44,0.05)",
             }}
           >
-            <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+            <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr]">
               <div>
                 <p
                   className="text-xs uppercase tracking-[0.35em]"
@@ -431,29 +423,79 @@ export default function HomePage() {
                   Service direction
                 </p>
                 <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] md:text-5xl">
-                  Care designed around relaxation, recovery, and focused support.
+                  Care shaped around the person, not a preset routine.
                 </h2>
                 <p className="mt-6 text-lg leading-8" style={{ color: brand.textMuted }}>
-                  Our sessions are shaped around each clients needs, combining
-                  relaxation, therapeutic focus, and thoughtful attention to
-                  create care that feels both personal and purposeful.
+                  Guided Rhythms Massage offers customized sessions built around
+                  your goals, comfort, and the kind of support your body needs.
+                  The focus is not on running through a fixed routine, but on
+                  providing thoughtful care that feels personal, intentional,
+                  and restorative.
                 </p>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                {services.map((service) => (
-                  <div
-                    key={service}
-                    className="rounded-[1.5rem] px-5 py-5 text-base"
+              <div className="grid gap-4">
+                <article
+                  className="rounded-[1.75rem] p-6 md:p-7"
+                  style={{
+                    border: `1px solid ${brand.border}`,
+                    background:
+                      "linear-gradient(to bottom right, rgba(255,255,255,0.70), rgba(255,255,255,0.38))",
+                    boxShadow: "0 16px 36px rgba(47,58,44,0.04)",
+                  }}
+                >
+                  <p
+                    className="text-sm uppercase tracking-[0.28em]"
+                    style={{ color: brand.secondary }}
+                  >
+                    Customized Sessions
+                  </p>
+                  <p className="mt-4 text-lg leading-8" style={{ color: brand.textMuted }}>
+                    Each session is shaped with intention, taking into account
+                    how youre feeling, what you want to focus on, and the kind
+                    of care that would best serve you that day.
+                  </p>
+                </article>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <article
+                    className="rounded-[1.5rem] p-5"
                     style={{
                       border: `1px solid ${brand.border}`,
                       backgroundColor: "rgba(255,255,255,0.54)",
-                      color: brand.text,
                     }}
                   >
-                    {service}
-                  </div>
-                ))}
+                    <p
+                      className="text-sm uppercase tracking-[0.24em]"
+                      style={{ color: brand.secondary }}
+                    >
+                      Restorative Care
+                    </p>
+                    <p className="mt-3 text-base leading-7" style={{ color: brand.textMuted }}>
+                      Care that supports relaxation, calm, and a more grounded
+                      physical and mental state.
+                    </p>
+                  </article>
+
+                  <article
+                    className="rounded-[1.5rem] p-5"
+                    style={{
+                      border: `1px solid ${brand.border}`,
+                      backgroundColor: "rgba(255,255,255,0.54)",
+                    }}
+                  >
+                    <p
+                      className="text-sm uppercase tracking-[0.24em]"
+                      style={{ color: brand.secondary }}
+                    >
+                      Focused Support
+                    </p>
+                    <p className="mt-3 text-base leading-7" style={{ color: brand.textMuted }}>
+                      Thoughtful work for areas that need more attention, always
+                      guided by communication and client comfort.
+                    </p>
+                  </article>
+                </div>
               </div>
             </div>
           </div>
