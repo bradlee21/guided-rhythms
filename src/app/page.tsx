@@ -15,6 +15,13 @@ const brand = {
   glow: "rgba(201,146,46,0.14)",
 };
 
+const eyebrowClass = "text-xs uppercase tracking-[0.35em]";
+const sectionTitleClass =
+  "mt-3 text-3xl font-semibold tracking-[-0.03em] md:text-5xl";
+const sectionBodyClass = "mt-6 text-lg leading-8";
+const cardTitleClass = "text-2xl font-semibold tracking-[-0.03em]";
+const cardBodyClass = "mt-4 text-base leading-7";
+
 export default function HomePage() {
   const philosophy = [
     {
@@ -23,7 +30,7 @@ export default function HomePage() {
     },
     {
       title: "Listening",
-      body: "Every session begins with understanding the person in front of ustheir goals, concerns, comfort, and what their body may be asking for.",
+      body: "Every session begins with understanding the person in front of us, their goals, concerns, comfort, and what their body may be asking for.",
     },
     {
       title: "Intention",
@@ -49,7 +56,7 @@ export default function HomePage() {
     },
     {
       title: "Thoughtful Treatment",
-      body: "Your session is shaped with care and purpose rather than treated like a routine. The goal is to create work that actually fits you.",
+      body: "Your session is shaped with care and purpose rather than treated like a routine. The goal is to create work that truly fits you.",
     },
     {
       title: "Comfort & Professionalism",
@@ -162,7 +169,7 @@ export default function HomePage() {
           </div>
         </header>
 
-        <section className="px-6 pb-20 pt-10 md:px-10 md:pt-16 lg:px-16 lg:pb-28">
+        <section className="px-6 pb-20 pt-10 md:px-10 md:pt-16 lg:px-16 lg:pb-24">
           <div className="mx-auto grid max-w-7xl items-end gap-16 lg:grid-cols-[1.15fr_0.85fr]">
             <div className="relative">
               <div
@@ -223,6 +230,7 @@ export default function HomePage() {
                     border: `1px solid ${brand.border}`,
                     backgroundColor: brand.surface,
                     color: brand.text,
+                    boxShadow: "0 12px 30px rgba(47,58,44,0.05)",
                   }}
                 >
                   Our Philosophy
@@ -254,10 +262,7 @@ export default function HomePage() {
                 />
 
                 <div className="relative">
-                  <p
-                    className="text-xs uppercase tracking-[0.35em]"
-                    style={{ color: brand.textMuted }}
-                  >
+                  <p className={eyebrowClass} style={{ color: brand.textMuted }}>
                     What sets the tone
                   </p>
 
@@ -275,7 +280,7 @@ export default function HomePage() {
                             boxShadow: `0 0 20px ${brand.glow}`,
                           }}
                         />
-                        <p className="text-lg leading-7">{item}</p>
+                        <p className="text-base leading-7">{item}</p>
                       </div>
                     ))}
                   </div>
@@ -288,13 +293,10 @@ export default function HomePage() {
                         "linear-gradient(to bottom right, rgba(255,255,255,0.62), rgba(255,255,255,0.24))",
                     }}
                   >
-                    <p
-                      className="text-sm uppercase tracking-[0.28em]"
-                      style={{ color: brand.secondary }}
-                    >
+                    <p className="text-sm uppercase tracking-[0.28em]" style={{ color: brand.secondary }}>
                       The direction
                     </p>
-                    <p className="mt-3 text-base leading-7" style={{ color: brand.textMuted }}>
+                    <p className={cardBodyClass} style={{ color: brand.textMuted }}>
                       Every part of the practice is shaped around calm
                       professionalism, meaningful care, and an experience that
                       feels personal rather than routine.
@@ -313,20 +315,17 @@ export default function HomePage() {
               style={{ borderBottom: `1px solid ${brand.border}` }}
             >
               <div>
-                <p
-                  className="text-xs uppercase tracking-[0.35em]"
-                  style={{ color: brand.secondary }}
-                >
+                <p className={eyebrowClass} style={{ color: brand.secondary }}>
                   About us
                 </p>
-                <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] md:text-5xl">
+                <h2 className={sectionTitleClass}>
                   Two therapists building something thoughtful.
                 </h2>
               </div>
-              <p className="hidden max-w-xl text-right lg:block" style={{ color: brand.textMuted }}>
+              <p className="hidden max-w-xl text-right text-lg leading-8 lg:block" style={{ color: brand.textMuted }}>
                 Guided Rhythms Massage exists to offer thoughtful, restorative
                 care rooted in presence, professionalism, and a genuine respect
-                for each clients experience.
+                for each client&apos;s experience.
               </p>
             </div>
 
@@ -345,7 +344,7 @@ export default function HomePage() {
                     className="absolute right-0 top-0 h-32 w-32 rounded-full blur-2xl"
                     style={{ backgroundColor: "rgba(111,143,85,0.10)" }}
                   />
-                  <h3 className="text-3xl font-semibold tracking-[-0.03em]">
+                  <h3 className="text-[1.75rem] font-semibold tracking-[-0.03em]">
                     {therapist.name}
                   </h3>
                   <p className="mt-5 max-w-xl text-lg leading-8" style={{ color: brand.textMuted }}>
@@ -360,16 +359,13 @@ export default function HomePage() {
         <section id="philosophy" className="px-6 py-20 md:px-10 lg:px-16">
           <div className="mx-auto max-w-7xl">
             <div className="max-w-3xl">
-              <p
-                className="text-xs uppercase tracking-[0.35em]"
-                style={{ color: brand.secondary }}
-              >
+              <p className={eyebrowClass} style={{ color: brand.secondary }}>
                 Our philosophy
               </p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] md:text-5xl">
+              <h2 className={sectionTitleClass}>
                 Massage should feel intentional, not mechanical.
               </h2>
-              <p className="mt-6 text-lg leading-8" style={{ color: brand.textMuted }}>
+              <p className={sectionBodyClass} style={{ color: brand.textMuted }}>
                 We believe meaningful massage therapy is built on more than
                 technique alone. It is shaped by communication, presence,
                 thoughtful care, and an environment that allows clients to feel
@@ -395,8 +391,8 @@ export default function HomePage() {
                       background: `linear-gradient(to right, transparent, ${brand.accent}, transparent)`,
                     }}
                   />
-                  <h3 className="text-2xl font-semibold tracking-[-0.03em]">{item.title}</h3>
-                  <p className="mt-4 text-base leading-8" style={{ color: brand.textMuted }}>
+                  <h3 className={cardTitleClass}>{item.title}</h3>
+                  <p className={cardBodyClass} style={{ color: brand.textMuted }}>
                     {item.body}
                   </p>
                 </article>
@@ -416,16 +412,13 @@ export default function HomePage() {
           >
             <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr]">
               <div>
-                <p
-                  className="text-xs uppercase tracking-[0.35em]"
-                  style={{ color: brand.secondary }}
-                >
+                <p className={eyebrowClass} style={{ color: brand.secondary }}>
                   Service direction
                 </p>
-                <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] md:text-5xl">
+                <h2 className={sectionTitleClass}>
                   Care shaped around the person, not a preset routine.
                 </h2>
-                <p className="mt-6 text-lg leading-8" style={{ color: brand.textMuted }}>
+                <p className={sectionBodyClass} style={{ color: brand.textMuted }}>
                   Guided Rhythms Massage offers customized sessions built around
                   your goals, comfort, and the kind of support your body needs.
                   The focus is not on running through a fixed routine, but on
@@ -436,7 +429,7 @@ export default function HomePage() {
 
               <div className="grid gap-4">
                 <article
-                  className="rounded-[1.75rem] p-6 md:p-7"
+                  className="rounded-[1.75rem] p-6"
                   style={{
                     border: `1px solid ${brand.border}`,
                     background:
@@ -452,7 +445,7 @@ export default function HomePage() {
                   </p>
                   <p className="mt-4 text-lg leading-8" style={{ color: brand.textMuted }}>
                     Each session is shaped with intention, taking into account
-                    how youre feeling, what you want to focus on, and the kind
+                    how you&apos;re feeling, what you want to focus on, and the kind
                     of care that would best serve you that day.
                   </p>
                 </article>
@@ -471,7 +464,7 @@ export default function HomePage() {
                     >
                       Restorative Care
                     </p>
-                    <p className="mt-3 text-base leading-7" style={{ color: brand.textMuted }}>
+                    <p className={cardBodyClass} style={{ color: brand.textMuted }}>
                       Care that supports relaxation, calm, and a more grounded
                       physical and mental state.
                     </p>
@@ -490,7 +483,7 @@ export default function HomePage() {
                     >
                       Focused Support
                     </p>
-                    <p className="mt-3 text-base leading-7" style={{ color: brand.textMuted }}>
+                    <p className={cardBodyClass} style={{ color: brand.textMuted }}>
                       Thoughtful work for areas that need more attention, always
                       guided by communication and client comfort.
                     </p>
@@ -504,13 +497,10 @@ export default function HomePage() {
         <section id="new-clients" className="px-6 py-20 md:px-10 lg:px-16">
           <div className="mx-auto max-w-7xl">
             <div className="max-w-3xl">
-              <p
-                className="text-xs uppercase tracking-[0.35em]"
-                style={{ color: brand.secondary }}
-              >
+              <p className={eyebrowClass} style={{ color: brand.secondary }}>
                 For new clients
               </p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] md:text-5xl">
+              <h2 className={sectionTitleClass}>
                 The first visit should feel clear, calm, and personal.
               </h2>
             </div>
@@ -532,8 +522,8 @@ export default function HomePage() {
                       background: `linear-gradient(to right, ${brand.primary}, transparent)`,
                     }}
                   />
-                  <h3 className="text-2xl font-semibold tracking-[-0.03em]">{item.title}</h3>
-                  <p className="mt-4 text-base leading-8" style={{ color: brand.textMuted }}>
+                  <h3 className={cardTitleClass}>{item.title}</h3>
+                  <p className={cardBodyClass} style={{ color: brand.textMuted }}>
                     {item.body}
                   </p>
                 </article>
@@ -542,7 +532,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="contact" className="px-6 pb-24 pt-16 md:px-10 lg:px-16">
+        <section id="contact" className="px-6 py-20 md:px-10 lg:px-16">
           <div
             className="mx-auto max-w-7xl overflow-hidden rounded-[2.25rem] p-8 md:p-12"
             style={{
@@ -554,17 +544,14 @@ export default function HomePage() {
           >
             <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
               <div>
-                <p
-                  className="text-xs uppercase tracking-[0.35em]"
-                  style={{ color: brand.secondary }}
-                >
+                <p className={eyebrowClass} style={{ color: brand.secondary }}>
                   Contact
                 </p>
-                <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] md:text-5xl">
-                  Wed love to connect with you.
+                <h2 className={sectionTitleClass}>
+                  We&apos;d love to connect with you.
                 </h2>
-                <p className="mt-6 max-w-2xl text-lg leading-8" style={{ color: brand.textMuted }}>
-                  Whether youre interested in learning more about the practice
+                <p className={`${sectionBodyClass} max-w-2xl`} style={{ color: brand.textMuted }}>
+                  Whether you&apos;re interested in learning more about the practice
                   or reaching out directly, Guided Rhythms Massage is committed
                   to making every interaction feel thoughtful, clear, and
                   personal.
