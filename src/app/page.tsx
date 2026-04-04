@@ -19,49 +19,49 @@ export default function HomePage() {
   const philosophy = [
     {
       title: "Presence",
-      body: "We believe clients can feel the difference between routine work and genuine attention. Presence matters.",
+      body: "We believe clients can feel the difference between routine work and genuine attention. Being fully present is part of the care itself.",
     },
     {
       title: "Listening",
-      body: "Healing starts with being heard. Every session begins with understanding your body, your goals, and your concerns.",
+      body: "Every session begins with understanding the person in front of ustheir goals, concerns, comfort, and what their body may be asking for.",
     },
     {
       title: "Intention",
-      body: "We do not believe in rushed, mechanical sessions. Each treatment should have purpose, flow, and direction.",
+      body: "Our work is never meant to feel rushed or mechanical. Each session should have direction, purpose, and a clear sense of care behind it.",
     },
     {
       title: "Restoration",
-      body: "Our goal is not just temporary relief, but a restorative experience that supports long-term wellness and recovery.",
+      body: "We want clients to leave feeling more than temporary relief. Our aim is to support restoration that feels calming, thoughtful, and meaningful.",
     },
   ];
 
   const differentiators = [
     "Intentional, unhurried sessions",
-    "Client-first communication",
-    "Therapeutic work with a human approach",
-    "A calm, grounded atmosphere",
+    "Care shaped around the individual",
+    "Therapeutic work with a grounded approach",
+    "A calm and restorative atmosphere",
   ];
 
   const services = [
-    "Therapeutic Massage",
-    "Swedish-Based Relaxation",
-    "Deep Tissue / Focused Work",
-    "Sports Massage Influence",
-    "Customized Sessions",
+    "Therapeutic massage",
+    "Swedish-based relaxation",
+    "Focused deep tissue work",
+    "Recovery-oriented bodywork",
+    "Customized sessions",
   ];
 
   const firstVisit = [
     {
       title: "Conversation First",
-      body: "Your goals, pain points, preferences, and concerns should shape the session before any hands-on work begins.",
+      body: "We begin by understanding your goals, concerns, preferences, and any areas that need special attention before the session begins.",
     },
     {
       title: "Thoughtful Treatment",
-      body: "Sessions are tailored with purpose rather than delivered like a one-size-fits-all routine.",
+      body: "Your session is shaped with care and purpose rather than treated like a routine. The goal is to create work that actually fits you.",
     },
     {
       title: "Comfort & Professionalism",
-      body: "We want every client to feel respected, heard, safe, and genuinely cared for from the start.",
+      body: "We want every client to feel respected, welcomed, and at ease in an environment built on professionalism, trust, and genuine care.",
     },
   ];
 
@@ -378,9 +378,10 @@ export default function HomePage() {
                 Massage should feel intentional, not mechanical.
               </h2>
               <p className="mt-6 text-lg leading-8" style={{ color: brand.textMuted }}>
-                We believe the best care happens when technique, communication,
-                atmosphere, and presence all work together. Clients should feel
-                the difference in the room, not just on the table.
+                We believe meaningful massage therapy is built on more than
+                technique alone. It is shaped by communication, presence,
+                thoughtful care, and an environment that allows clients to feel
+                both supported and at ease.
               </p>
             </div>
 
@@ -430,12 +431,12 @@ export default function HomePage() {
                   Service direction
                 </p>
                 <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] md:text-5xl">
-                  Focused care without an overbuilt menu.
+                  Care designed around relaxation, recovery, and focused support.
                 </h2>
                 <p className="mt-6 text-lg leading-8" style={{ color: brand.textMuted }}>
-                  Our work is designed to support relaxation, recovery, and
-                  focused therapeutic care through sessions shaped around each
-                  clients needs and goals.
+                  Our sessions are shaped around each clients needs, combining
+                  relaxation, therapeutic focus, and thoughtful attention to
+                  create care that feels both personal and purposeful.
                 </p>
               </div>
 
@@ -562,11 +563,11 @@ export default function HomePage() {
                     className="text-sm uppercase tracking-[0.28em]"
                     style={{ color: brand.textMuted }}
                   >
-                    Current purpose
+                    Guided Rhythms Massage
                   </p>
                   <p className="mt-2 text-base leading-7" style={{ color: brand.textMuted }}>
-                    Brand presence, trust building, and a polished first
-                    impression for Guided Rhythms Massage.
+                    Thoughtful massage therapy rooted in presence,
+                    professionalism, and restorative care.
                   </p>
                 </div>
               </div>
