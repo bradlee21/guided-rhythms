@@ -107,32 +107,28 @@ export default function HomePage() {
             className="mx-auto flex max-w-7xl items-center justify-between pb-5"
             style={{ borderBottom: `1px solid ${brand.border}` }}
           >
-            <div className="flex items-center gap-5">
-              <div
-                className="relative h-24 w-24 overflow-hidden rounded-2xl md:h-28 md:w-28"
-                style={{
-                  border: `1px solid ${brand.border}`,
-                  backgroundColor: brand.surfaceStrong,
-                  boxShadow: "0 18px 50px rgba(47,58,44,0.08)",
-                }}
-              >
+            <div className="flex items-center gap-6 md:gap-8">
+              <div className="relative h-28 w-28 shrink-0 md:h-36 md:w-36 lg:h-40 lg:w-40">
                 <Image
                   src="/guided-rhythms-logo.png"
                   alt="Guided Rhythms Massage logo"
                   fill
-                  className="object-contain p-2.5"
+                  className="object-contain drop-shadow-[0_14px_30px_rgba(47,58,44,0.12)]"
                   priority
                 />
               </div>
 
-              <div>
+              <div className="min-w-0">
                 <p
-                  className="text-[0.72rem] uppercase tracking-[0.38em]"
+                  className="text-[0.72rem] uppercase tracking-[0.38em] md:text-[0.8rem]"
                   style={{ color: brand.secondary }}
                 >
                   Guided Rhythms Massage
                 </p>
-                <p className="mt-2 text-sm md:text-base" style={{ color: brand.textMuted }}>
+                <p
+                  className="mt-2 text-base md:text-[1.15rem]"
+                  style={{ color: brand.textMuted }}
+                >
                   Intentional care for restoration and wellness
                 </p>
               </div>
