@@ -108,7 +108,7 @@ export default function HomePage() {
             style={{ borderBottom: `1px solid ${brand.border}` }}
           >
             <div className="flex shrink-0 flex-col items-start">
-              <div className="relative h-24 w-24 md:h-32 md:w-32 lg:h-40 lg:w-40">
+              <div className="relative h-28 w-28 md:h-36 md:w-36 lg:h-44 lg:w-44">
                 <Image
                   src="/guided-rhythms-logo.png"
                   alt="Guided Rhythms Massage logo"
