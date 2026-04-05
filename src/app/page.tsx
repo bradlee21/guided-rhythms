@@ -102,9 +102,9 @@ export default function HomePage() {
       />
 
       <div className="relative z-10">
-        <header className="px-6 pb-3 pt-5 md:px-10 lg:px-16">
+        <header className="px-6 pb-0 pt-5 md:px-10 lg:px-16">
           <div
-            className="mx-auto flex max-w-7xl items-center justify-between gap-8 pb-1"
+            className="mx-auto flex max-w-7xl items-center justify-between gap-8 pb-0"
             style={{ borderBottom: `1px solid ${brand.border}` }}
           >
             <div className="flex shrink-0 items-center gap-5 md:gap-6">
