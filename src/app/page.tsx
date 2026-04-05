@@ -107,8 +107,8 @@ export default function HomePage() {
             className="mx-auto flex max-w-7xl items-start justify-between gap-8 pb-4"
             style={{ borderBottom: `1px solid ${brand.border}` }}
           >
-            <div className="flex shrink-0 flex-col items-start">
-              <div className="relative h-28 w-28 md:h-36 md:w-36 lg:h-44 lg:w-44">
+            <div className="flex shrink-0 flex-col items-center text-center">
+              <div className="relative h-28 w-28 md:h-40 md:w-40 lg:h-48 lg:w-48">
                 <Image
                   src="/guided-rhythms-logo.png"
                   alt="Guided Rhythms Massage logo"
@@ -119,7 +119,7 @@ export default function HomePage() {
               </div>
 
               <p
-                className="mt-3 text-[0.72rem] uppercase tracking-[0.34em] md:text-[0.78rem]"
+                className="mt-4 text-[0.72rem] uppercase tracking-[0.34em] md:text-[0.78rem]"
                 style={{ color: brand.secondary }}
               >
                 Guided Rhythms Massage
