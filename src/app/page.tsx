@@ -102,9 +102,9 @@ export default function HomePage() {
       />
 
       <div className="relative z-10">
-        <header className="px-6 pb-5 pt-5 md:px-10 lg:px-16">
+        <header className="px-6 pb-3 pt-5 md:px-10 lg:px-16">
           <div
-            className="mx-auto flex max-w-7xl items-start justify-between gap-8 pb-4"
+            className="mx-auto flex max-w-7xl items-center justify-between gap-8 pb-1"
             style={{ borderBottom: `1px solid ${brand.border}` }}
           >
             <div className="flex shrink-0 items-center gap-5 md:gap-6">
@@ -135,7 +135,7 @@ export default function HomePage() {
             </div>
 
             <nav
-              className="hidden items-center gap-8 pt-3 text-sm md:flex"
+              className="hidden items-center gap-8 text-sm md:flex"
               style={{ color: brand.textMuted }}
             >
               <a className="opacity-80 transition hover:opacity-100" href="#about">
