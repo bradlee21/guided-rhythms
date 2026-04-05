@@ -104,68 +104,62 @@ export default function HomePage() {
       <div className="relative z-10">
         <header className="px-6 pb-5 pt-5 md:px-10 lg:px-16">
           <div
-            className="mx-auto max-w-7xl pb-4"
+            className="mx-auto flex max-w-7xl items-start justify-between gap-8 pb-4"
             style={{ borderBottom: `1px solid ${brand.border}` }}
           >
-            <div className="relative min-h-[108px] md:min-h-[124px]">
-              <div className="absolute left-0 top-1/2 z-10 -translate-y-1/2">
-                <div className="relative h-24 w-24 md:h-32 md:w-32 lg:h-36 lg:w-36">
-                  <Image
-                    src="/guided-rhythms-logo.png"
-                    alt="Guided Rhythms Massage logo"
-                    fill
-                    className="object-contain drop-shadow-[0_10px_24px_rgba(47,58,44,0.10)]"
-                    priority
-                  />
-                </div>
+            <div className="flex shrink-0 flex-col items-start">
+              <div className="relative h-24 w-24 md:h-32 md:w-32 lg:h-40 lg:w-40">
+                <Image
+                  src="/guided-rhythms-logo.png"
+                  alt="Guided Rhythms Massage logo"
+                  fill
+                  className="object-contain drop-shadow-[0_12px_26px_rgba(47,58,44,0.10)]"
+                  priority
+                />
               </div>
 
-              <div className="flex h-[72px] items-center justify-between pl-[7rem] md:pl-[9.5rem] lg:pl-[11rem]">
-                <div className="min-w-0">
-                  <p
-                    className="text-[0.72rem] uppercase tracking-[0.34em] md:text-[0.78rem]"
-                    style={{ color: brand.secondary }}
-                  >
-                    Guided Rhythms Massage
-                  </p>
-                  <p
-                    className="mt-2 text-sm md:text-base"
-                    style={{ color: brand.textMuted }}
-                  >
-                    Intentional care for restoration and wellness
-                  </p>
-                </div>
-
-                <nav
-                  className="hidden items-center gap-8 text-sm md:flex"
-                  style={{ color: brand.textMuted }}
-                >
-                  <a className="opacity-80 transition hover:opacity-100" href="#about">
-                    About
-                  </a>
-                  <a className="opacity-80 transition hover:opacity-100" href="#philosophy">
-                    Philosophy
-                  </a>
-                  <a className="opacity-80 transition hover:opacity-100" href="#services">
-                    Services
-                  </a>
-                  <a className="opacity-80 transition hover:opacity-100" href="#new-clients">
-                    New Clients
-                  </a>
-                  <a
-                    className="rounded-full px-4 py-2 transition"
-                    href="#contact"
-                    style={{
-                      border: `1px solid ${brand.border}`,
-                      backgroundColor: brand.surface,
-                      color: brand.text,
-                    }}
-                  >
-                    Contact
-                  </a>
-                </nav>
-              </div>
+              <p
+                className="mt-3 text-[0.72rem] uppercase tracking-[0.34em] md:text-[0.78rem]"
+                style={{ color: brand.secondary }}
+              >
+                Guided Rhythms Massage
+              </p>
+              <p
+                className="mt-2 text-sm md:text-base"
+                style={{ color: brand.textMuted }}
+              >
+                Intentional care for restoration and wellness
+              </p>
             </div>
+
+            <nav
+              className="hidden items-center gap-8 pt-3 text-sm md:flex"
+              style={{ color: brand.textMuted }}
+            >
+              <a className="opacity-80 transition hover:opacity-100" href="#about">
+                About
+              </a>
+              <a className="opacity-80 transition hover:opacity-100" href="#philosophy">
+                Philosophy
+              </a>
+              <a className="opacity-80 transition hover:opacity-100" href="#services">
+                Services
+              </a>
+              <a className="opacity-80 transition hover:opacity-100" href="#new-clients">
+                New Clients
+              </a>
+              <a
+                className="rounded-full px-4 py-2 transition"
+                href="#contact"
+                style={{
+                  border: `1px solid ${brand.border}`,
+                  backgroundColor: brand.surface,
+                  color: brand.text,
+                }}
+              >
+                Contact
+              </a>
+            </nav>
           </div>
         </header>
 
