@@ -102,40 +102,52 @@ export default function HomePage() {
       />
 
       <div className="relative z-10">
-        <header className="px-6 pb-4 pt-6 md:px-10 lg:px-16">
+        <header className="px-6 pb-5 pt-5 md:px-10 lg:px-16">
           <div
-            className="mx-auto flex max-w-7xl items-center justify-between pb-4"
+            className="mx-auto flex max-w-7xl items-center justify-between gap-8 pb-4"
             style={{ borderBottom: `1px solid ${brand.border}` }}
           >
-            <div className="min-w-0">
-              <p
-                className="text-[0.72rem] uppercase tracking-[0.38em] md:text-[0.78rem]"
-                style={{ color: brand.secondary }}
-              >
-                Guided Rhythms Massage
-              </p>
-              <p
-                className="mt-2 text-sm md:text-base"
-                style={{ color: brand.textMuted }}
-              >
-                Intentional care for restoration and wellness
-              </p>
+            <div className="flex min-w-0 items-center gap-4 md:gap-5">
+              <div className="relative h-16 w-16 shrink-0 md:h-20 md:w-20 lg:h-24 lg:w-24">
+                <Image
+                  src="/guided-rhythms-logo.png"
+                  alt="Guided Rhythms Massage logo"
+                  fill
+                  className="object-contain drop-shadow-[0_10px_22px_rgba(47,58,44,0.10)]"
+                  priority
+                />
+              </div>
+
+              <div className="min-w-0">
+                <p
+                  className="text-[0.72rem] uppercase tracking-[0.34em] md:text-[0.76rem]"
+                  style={{ color: brand.secondary }}
+                >
+                  Guided Rhythms Massage
+                </p>
+                <p
+                  className="mt-2 text-sm md:text-base"
+                  style={{ color: brand.textMuted }}
+                >
+                  Intentional care for restoration and wellness
+                </p>
+              </div>
             </div>
 
             <nav
               className="hidden items-center gap-8 text-sm md:flex"
               style={{ color: brand.textMuted }}
             >
-              <a className="transition hover:opacity-100 opacity-80" href="#about">
+              <a className="opacity-80 transition hover:opacity-100" href="#about">
                 About
               </a>
-              <a className="transition hover:opacity-100 opacity-80" href="#philosophy">
+              <a className="opacity-80 transition hover:opacity-100" href="#philosophy">
                 Philosophy
               </a>
-              <a className="transition hover:opacity-100 opacity-80" href="#services">
+              <a className="opacity-80 transition hover:opacity-100" href="#services">
                 Services
               </a>
-              <a className="transition hover:opacity-100 opacity-80" href="#new-clients">
+              <a className="opacity-80 transition hover:opacity-100" href="#new-clients">
                 New Clients
               </a>
               <a
@@ -156,34 +168,8 @@ export default function HomePage() {
         <section className="px-6 pb-20 pt-10 md:px-10 md:pt-16 lg:px-16 lg:pb-24">
           <div className="mx-auto grid max-w-7xl items-end gap-16 lg:grid-cols-[1.15fr_0.85fr]">
             <div className="relative">
-              <div className="mb-8 flex items-center gap-6">
-                <div className="relative h-28 w-28 shrink-0 md:h-36 md:w-36 lg:h-44 lg:w-44">
-                  <Image
-                    src="/guided-rhythms-logo.png"
-                    alt="Guided Rhythms Massage logo"
-                    fill
-                    className="object-contain drop-shadow-[0_14px_30px_rgba(47,58,44,0.12)]"
-                    priority
-                  />
-                </div>
-
-                <div className="hidden md:block">
-                  <p
-                    className="text-[0.76rem] uppercase tracking-[0.38em]"
-                    style={{ color: brand.secondary }}
-                  >
-                    Guided Rhythms Massage
-                  </p>
-                  <p
-                    className="mt-2 text-base lg:text-lg"
-                    style={{ color: brand.textMuted }}
-                  >
-                    Intentional care for restoration and wellness
-                  </p>
-                </div>
-              </div>
               <div
-                className="absolute -left-8 top-32 hidden h-32 w-32 rounded-full lg:block"
+                className="absolute -left-8 top-5 hidden h-32 w-32 rounded-full lg:block"
                 style={{ border: `1px solid ${brand.border}` }}
               />
               <div
