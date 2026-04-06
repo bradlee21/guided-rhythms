@@ -31,7 +31,7 @@ export function IntakeSummary({
   compact?: boolean;
 }) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" aria-label="Intake review summary">
       {intakeFormSections.map((section) => (
         <section
           key={section.key}

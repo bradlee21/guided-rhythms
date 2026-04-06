@@ -66,6 +66,7 @@ export function IntakeForm({
   }, [form, state.fieldErrors]);
 
   const currentStep = intakeStepOrder[stepIndex];
+  const isReviewStep = currentStep.key === "review";
   const currentSection = intakeFormSections.find(
     (section) => section.key === currentStep.key,
   );
@@ -90,6 +91,10 @@ export function IntakeForm({
       setStepIndex((value) => Math.min(value + 1, intakeStepOrder.length - 1));
     }
   }
+
+  const submitReview = form.handleSubmit(async (values) => {
+    await formAction(toFormData(values));
+  });
 
   if (state.success) {
     return (
@@ -116,9 +121,15 @@ export function IntakeForm({
   return (
     <form
       className="space-y-6"
-      onSubmit={form.handleSubmit(async (values) => {
-        await formAction(toFormData(values));
-      })}
+      onSubmit={async (event) => {
+        if (!isReviewStep) {
+          event.preventDefault();
+          await handleNext();
+          return;
+        }
+
+        await submitReview(event);
+      }}
     >
       <input type="hidden" {...form.register("token")} />
       <div className="rounded-[1.75rem] p-6" style={{ backgroundColor: "rgba(255,255,255,0.7)", border: `1px solid ${brand.border}` }}>
@@ -175,8 +186,35 @@ export function IntakeForm({
         </section>
       ) : null}
 
-      {currentStep.key === "review" ? (
-        <IntakeSummary values={intakeSubmissionSchema.parse(form.getValues())} />
+      {isReviewStep ? (
+        <section
+          className="space-y-5 rounded-[1.75rem] p-6"
+          style={{
+            backgroundColor: "rgba(255,255,255,0.68)",
+            border: `1px solid ${brand.border}`,
+          }}
+        >
+          <div className="space-y-3">
+            <p
+              className="text-sm uppercase tracking-[0.24em]"
+              style={{ color: brand.secondary }}
+            >
+              Final review
+            </p>
+            <h3 className="text-2xl font-semibold tracking-[-0.03em]">
+              Review your intake before you submit
+            </h3>
+            <p
+              className="max-w-3xl text-base leading-7"
+              style={{ color: brand.textMuted }}
+            >
+              This is your final chance to look over each section. If anything
+              needs adjusting, use Previous to go back and update it before you
+              submit.
+            </p>
+          </div>
+          <IntakeSummary values={intakeSubmissionSchema.parse(form.getValues())} />
+        </section>
       ) : null}
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -201,7 +239,11 @@ export function IntakeForm({
               className="rounded-full px-5 py-2.5 text-sm font-semibold text-white"
               style={{ background: `linear-gradient(to right, ${brand.primary}, ${brand.accent})` }}
             >
-              {currentStep.key === "welcome" ? "Start intake" : "Next"}
+              {currentStep.key === "welcome"
+                ? "Start intake"
+                : currentStep.key === "consent_and_policies"
+                  ? "Next: review"
+                  : "Next"}
             </button>
           ) : (
             <button
