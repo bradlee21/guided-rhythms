@@ -1,17 +1,27 @@
+import { BookingRequestForm } from "@/components/booking/BookingRequestForm";
 import { PageShell } from "@/components/app/PageShell";
 import { PlaceholderPanel } from "@/components/app/PlaceholderPanel";
+import { listPublicServices } from "@/server/booking/queries";
 
-export default function ReturningBookingPage() {
+export const dynamic = "force-dynamic";
+
+export default async function ReturningBookingPage() {
+  const services = await listPublicServices();
+
   return (
     <PageShell
       eyebrow="Booking"
-      title="Returning client booking"
-      description="This route will support future returning-client booking. It exists now only as a clean shell so the app structure is ready for the next implementation slice."
+      title="Returning client request"
+      description="Request another session by sharing your preferred service, timing, and anything helpful for review before scheduling."
     >
-      <PlaceholderPanel
-        title="Scaffold only"
-        body="No booking workflow is implemented yet. This page simply reserves the route and shared visual language for future work."
-      />
+      {services.length ? (
+        <BookingRequestForm mode="returning" services={services} />
+      ) : (
+        <PlaceholderPanel
+          title="Services not available yet"
+          body="No public services are available to request right now. Seed the services table and confirm Supabase environment variables are configured."
+        />
+      )}
     </PageShell>
   );
 }

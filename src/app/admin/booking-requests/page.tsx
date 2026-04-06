@@ -1,17 +1,19 @@
+import { BookingRequestList } from "@/components/booking/BookingRequestList";
 import { AdminPageShell } from "@/components/admin/AdminPageShell";
-import { AdminPlaceholderCard } from "@/components/admin/AdminPlaceholderCard";
+import { listBookingRequests } from "@/server/booking/queries";
 
-export default function AdminBookingRequestsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function AdminBookingRequestsPage() {
+  const requests = await listBookingRequests();
+
   return (
     <AdminPageShell
       eyebrow="Admin"
       title="Booking requests"
-      description="This route is reserved for reviewing inbound booking requests. No request list, filtering, or decision actions are implemented yet."
+      description="Review submitted booking requests, check the requested service, and move each request through the initial review statuses."
     >
-      <AdminPlaceholderCard
-        title="Workflow deferred"
-        body="Booking request intake, review states, and conversion into appointments will be built in a later slice."
-      />
+      <BookingRequestList requests={requests} />
     </AdminPageShell>
   );
 }
