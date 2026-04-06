@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+import { getAuthenticatedAdminUser } from "@/lib/auth/admin";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { hasServiceRoleSupabaseEnv } from "@/lib/supabase/env";
 import {
@@ -129,12 +130,19 @@ export async function updateBookingRequestStatus(input: {
     throw new Error("Supabase is not connected.");
   }
 
+  const adminUser = await getAuthenticatedAdminUser();
+
+  if (!adminUser) {
+    throw new Error("Authentication required.");
+  }
+
   const supabase = createAdminClient();
 
   const { error } = await supabase
     .from("booking_requests")
     .update({
       status: parsed.data.status,
+      reviewed_by: adminUser.id,
       reviewed_at: new Date().toISOString(),
     })
     .eq("id", parsed.data.id);
@@ -161,11 +169,18 @@ export async function updateBookingRequestAdminNotes(input: {
     throw new Error("Supabase is not connected.");
   }
 
+  const adminUser = await getAuthenticatedAdminUser();
+
+  if (!adminUser) {
+    throw new Error("Authentication required.");
+  }
+
   const supabase = createAdminClient();
   const { error } = await supabase
     .from("booking_requests")
     .update({
       admin_notes: parsed.data.admin_notes || null,
+      reviewed_by: adminUser.id,
       reviewed_at: new Date().toISOString(),
     })
     .eq("id", parsed.data.id);

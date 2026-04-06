@@ -6,6 +6,14 @@ import {
   hasPublicSupabaseEnv,
 } from "@/lib/supabase/env";
 
+function getSafeRedirectPath(nextPath: string | null) {
+  if (!nextPath || !nextPath.startsWith("/") || nextPath.startsWith("//")) {
+    return "/admin";
+  }
+
+  return nextPath;
+}
+
 export async function updateSession(request: NextRequest) {
   if (!hasPublicSupabaseEnv()) {
     return NextResponse.next({
@@ -41,7 +49,30 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
+  const isLoginRoute = request.nextUrl.pathname === "/login";
+
+  if (isAdminRoute && !user) {
+    const loginUrl = request.nextUrl.clone();
+    loginUrl.pathname = "/login";
+    loginUrl.searchParams.set(
+      "next",
+      `${request.nextUrl.pathname}${request.nextUrl.search}`,
+    );
+
+    return NextResponse.redirect(loginUrl);
+  }
+
+  if (isLoginRoute && user) {
+    const nextPath = request.nextUrl.searchParams.get("next");
+    return NextResponse.redirect(
+      new URL(getSafeRedirectPath(nextPath), request.url),
+    );
+  }
 
   return response;
 }

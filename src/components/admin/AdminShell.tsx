@@ -4,11 +4,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { AdminSignOutButton } from "@/components/admin/AdminSignOutButton";
 import { adminNavItems } from "@/components/admin/admin-nav";
 import { brand } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 
-export function AdminShell({ children }: { children: ReactNode }) {
+export function AdminShell({
+  children,
+  adminEmail,
+}: {
+  children: ReactNode;
+  adminEmail: string | null;
+}) {
   const pathname = usePathname();
 
   return (
@@ -80,23 +87,16 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 className="text-xs uppercase tracking-[0.32em]"
                 style={{ color: brand.secondary }}
               >
-                Practice App Foundation
+                Guided Rhythms Admin
               </p>
               <p className="mt-2 text-sm leading-6" style={{ color: brand.textMuted }}>
-                Route scaffolding only. Booking, intake, appointments, SOAP, and
-                follow-up workflows remain unimplemented in this slice.
+                {adminEmail
+                  ? `Signed in as ${adminEmail}.`
+                  : "Authenticated admin session."}{" "}
+                Booking requests are protected; other admin areas remain scaffolded.
               </p>
             </div>
-            <div
-              className="rounded-full px-4 py-2 text-sm"
-              style={{
-                backgroundColor: "rgba(255,255,255,0.78)",
-                border: `1px solid ${brand.border}`,
-                color: brand.textMuted,
-              }}
-            >
-              Admin preview shell
-            </div>
+            <AdminSignOutButton />
           </header>
 
           <div

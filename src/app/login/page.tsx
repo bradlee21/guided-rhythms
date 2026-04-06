@@ -1,110 +1,63 @@
-"use client";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { redirect } from "next/navigation";
 
 import { PageShell } from "@/components/app/PageShell";
 import { PlaceholderPanel } from "@/components/app/PlaceholderPanel";
-import { brand } from "@/lib/brand";
+import { AdminLoginForm } from "@/components/auth/AdminLoginForm";
+import { getAuthenticatedAdminUser } from "@/lib/auth/admin";
+import { hasPublicSupabaseEnv } from "@/lib/supabase/env";
 
-const loginSchema = z.object({
-  email: z.string().email("Enter a valid email address."),
-  password: z.string().min(8, "Password must be at least 8 characters."),
-});
+function getSafeNextPath(nextPath: string | undefined) {
+  if (!nextPath || !nextPath.startsWith("/")) {
+    return "/admin";
+  }
 
-type LoginValues = z.infer<typeof loginSchema>;
+  if (nextPath.startsWith("//")) {
+    return "/admin";
+  }
 
-export default function LoginPage() {
-  const [submitted, setSubmitted] = useState<LoginValues | null>(null);
-  const form = useForm<LoginValues>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
+  return nextPath;
+}
 
-  const onSubmit = (values: LoginValues) => {
-    setSubmitted(values);
-  };
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const { next } = await searchParams;
+  const nextPath = getSafeNextPath(next);
+
+  if (hasPublicSupabaseEnv()) {
+    const user = await getAuthenticatedAdminUser();
+
+    if (user) {
+      redirect(nextPath);
+    }
+  }
 
   return (
     <PageShell
       eyebrow="Admin Access"
-      title="Login scaffold"
-      description="This page establishes the future admin authentication entry point and form foundation. Supabase auth wiring is not connected yet in this slice."
+      title="Admin sign in"
+      description="Sign in with your Guided Rhythms admin account to access the protected admin area."
     >
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <PlaceholderPanel
-          title="Authentication foundation"
-          body="The form is validated with react-hook-form and zod so future auth wiring can attach cleanly. Submission currently stays local to the page."
+          title="Sign in"
+          body="Use your Supabase-authenticated admin credentials. The admin area is now protected and unauthenticated visitors are redirected here."
         >
-          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
-            <div>
-              <label className="block text-sm font-medium" htmlFor="email">
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                autoComplete="email"
-                {...form.register("email")}
-                className="mt-2 w-full rounded-2xl px-4 py-3 outline-none"
-                style={{
-                  backgroundColor: "rgba(255,255,255,0.82)",
-                  border: `1px solid ${brand.border}`,
-                }}
-              />
-              {form.formState.errors.email ? (
-                <p className="mt-2 text-sm" style={{ color: "#8A5A36" }}>
-                  {form.formState.errors.email.message}
-                </p>
-              ) : null}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium" htmlFor="password">
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                autoComplete="current-password"
-                {...form.register("password")}
-                className="mt-2 w-full rounded-2xl px-4 py-3 outline-none"
-                style={{
-                  backgroundColor: "rgba(255,255,255,0.82)",
-                  border: `1px solid ${brand.border}`,
-                }}
-              />
-              {form.formState.errors.password ? (
-                <p className="mt-2 text-sm" style={{ color: "#8A5A36" }}>
-                  {form.formState.errors.password.message}
-                </p>
-              ) : null}
-            </div>
-
-            <button
-              type="submit"
-              className="inline-flex rounded-full px-5 py-2.5 text-sm font-semibold text-white"
-              style={{
-                background: `linear-gradient(to right, ${brand.primary}, ${brand.accent})`,
-              }}
-            >
-              Validate form
-            </button>
-          </form>
+          {hasPublicSupabaseEnv() ? (
+            <AdminLoginForm nextPath={nextPath} />
+          ) : (
+            <p className="text-base leading-7">
+              Supabase auth is not configured yet. Add the public Supabase
+              environment variables to enable admin sign in.
+            </p>
+          )}
         </PlaceholderPanel>
 
         <PlaceholderPanel
-          title="Current behavior"
-          body={
-            submitted
-              ? `Validation passed for ${submitted.email}. Auth exchange and session creation are not connected yet.`
-              : "Submit the form to verify client-side validation only. No auth request is sent."
-          }
+          title="What happens next"
+          body="After sign-in you will be redirected into the admin area. Public booking routes continue to work without admin authentication."
         />
       </div>
     </PageShell>
