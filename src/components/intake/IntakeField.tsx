@@ -1,6 +1,6 @@
 "use client";
 
-import type { UseFormReturn } from "react-hook-form";
+import { Controller, type UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
 import { BookingField } from "@/components/booking/BookingField";
@@ -12,6 +12,50 @@ import {
 } from "@/lib/validators/intake";
 
 type IntakeFormInput = z.input<typeof intakeSubmissionSchema>;
+
+function IntakeCheckboxField({
+  field,
+  form,
+  error,
+}: {
+  field: IntakeFormField;
+  form: UseFormReturn<IntakeFormInput, unknown, IntakeSubmissionValues>;
+  error?: string;
+}) {
+  return (
+    <Controller
+      name={field.key as keyof IntakeSubmissionValues}
+      control={form.control}
+      defaultValue={false}
+      render={({ field: checkboxField }) => (
+        <div>
+          <label
+            className="flex items-start gap-3 rounded-2xl px-4 py-3 text-sm"
+            style={{
+              backgroundColor: "rgba(255,255,255,0.82)",
+              border: `1px solid ${brand.border}`,
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={Boolean(checkboxField.value)}
+              onBlur={checkboxField.onBlur}
+              name={checkboxField.name}
+              ref={checkboxField.ref}
+              onChange={(event) => checkboxField.onChange(event.target.checked)}
+            />
+            <span>{field.label}</span>
+          </label>
+          {error ? (
+            <p className="mt-2 text-sm" style={{ color: "#9C6A2A" }}>
+              {error}
+            </p>
+          ) : null}
+        </div>
+      )}
+    />
+  );
+}
 
 export function IntakeField({
   field,
@@ -37,27 +81,11 @@ export function IntakeField({
 
   if (field.input === "checkbox") {
     return (
-      <div>
-        <label
-          className="flex items-start gap-3 rounded-2xl px-4 py-3 text-sm"
-          style={{
-            backgroundColor: "rgba(255,255,255,0.82)",
-            border: `1px solid ${brand.border}`,
-          }}
-        >
-          <input
-            type="checkbox"
-            value="true"
-            {...form.register(field.key as keyof IntakeSubmissionValues)}
-          />
-          <span>{field.label}</span>
-        </label>
-        {error?.message ? (
-          <p className="mt-2 text-sm" style={{ color: "#9C6A2A" }}>
-            {error.message as string}
-          </p>
-        ) : null}
-      </div>
+      <IntakeCheckboxField
+        field={field}
+        form={form}
+        error={error?.message as string | undefined}
+      />
     );
   }
 
