@@ -2,7 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { hasServiceRoleSupabaseEnv } from "@/lib/supabase/env";
 import {
   bookingRequestAdminNotesSchema,
   bookingRequestSchema,
@@ -49,55 +50,69 @@ export async function createBookingRequest(
     } satisfies BookingActionState;
   }
 
-  const supabase = await createClient();
+  if (!hasServiceRoleSupabaseEnv()) {
+    return {
+      ...defaultActionState,
+      message:
+        "The database is not connected yet. Add the Supabase URL, anon key, and service-role key.",
+    } satisfies BookingActionState;
+  }
+
+  const supabase = createAdminClient();
   const values = parsed.data;
 
-  const { data: existingClient } = await supabase
-    .from("clients")
-    .select("id")
-    .ilike("email", values.email)
-    .limit(1)
-    .maybeSingle();
+  try {
+    const { data: existingClient } = await supabase
+      .from("clients")
+      .select("id")
+      .ilike("email", values.email)
+      .limit(1)
+      .maybeSingle();
 
-  const { data, error } = await supabase
-    .from("booking_requests")
-    .insert({
-      client_id: existingClient?.id ?? null,
-      first_name: values.first_name,
-      last_name: values.last_name,
-      email: values.email,
-      phone: values.phone,
-      is_new_client: values.is_new_client,
-      requested_service_id: values.requested_service_id,
-      preferred_days: values.preferred_days.length ? values.preferred_days : null,
-      preferred_times: values.preferred_times.length
-        ? values.preferred_times
-        : null,
-      preferred_date_1: values.preferred_date_1 || null,
-      preferred_date_2: values.preferred_date_2 || null,
-      preferred_date_3: values.preferred_date_3 || null,
-      pain_points: values.pain_points || null,
-      goals: values.goals || null,
-      referral_source: values.referral_source || null,
-      notes: values.notes || null,
-    })
-    .select("id")
-    .single();
+    const { data, error } = await supabase
+      .from("booking_requests")
+      .insert({
+        client_id: existingClient?.id ?? null,
+        first_name: values.first_name,
+        last_name: values.last_name,
+        email: values.email,
+        phone: values.phone,
+        is_new_client: values.is_new_client,
+        requested_service_id: values.requested_service_id,
+        preferred_days: values.preferred_days.length
+          ? values.preferred_days
+          : null,
+        preferred_times: values.preferred_times.length
+          ? values.preferred_times
+          : null,
+        preferred_date_1: values.preferred_date_1 || null,
+        preferred_date_2: values.preferred_date_2 || null,
+        preferred_date_3: values.preferred_date_3 || null,
+        pain_points: values.pain_points || null,
+        goals: values.goals || null,
+        referral_source: values.referral_source || null,
+        notes: values.notes || null,
+      })
+      .select("id")
+      .single();
 
-  if (error) {
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    revalidatePath("/admin/booking-requests");
+
+    return {
+      success: true,
+      message: "Your request has been submitted.",
+      requestId: data.id,
+    } satisfies BookingActionState;
+  } catch {
     return {
       ...defaultActionState,
       message: "Unable to submit the booking request right now.",
     } satisfies BookingActionState;
   }
-
-  revalidatePath("/admin/booking-requests");
-
-  return {
-    success: true,
-    message: "Your request has been submitted.",
-    requestId: data.id,
-  } satisfies BookingActionState;
 }
 
 export async function updateBookingRequestStatus(input: {
@@ -110,7 +125,12 @@ export async function updateBookingRequestStatus(input: {
     throw new Error("Invalid booking request status update.");
   }
 
-  const supabase = await createClient();
+  if (!hasServiceRoleSupabaseEnv()) {
+    throw new Error("Supabase is not connected.");
+  }
+
+  const supabase = createAdminClient();
+
   const { error } = await supabase
     .from("booking_requests")
     .update({
@@ -137,11 +157,16 @@ export async function updateBookingRequestAdminNotes(input: {
     throw new Error("Invalid admin notes update.");
   }
 
-  const supabase = await createClient();
+  if (!hasServiceRoleSupabaseEnv()) {
+    throw new Error("Supabase is not connected.");
+  }
+
+  const supabase = createAdminClient();
   const { error } = await supabase
     .from("booking_requests")
     .update({
       admin_notes: parsed.data.admin_notes || null,
+      reviewed_at: new Date().toISOString(),
     })
     .eq("id", parsed.data.id);
 

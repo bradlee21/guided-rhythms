@@ -5,7 +5,10 @@ import { useState, useTransition } from "react";
 
 import { BookingRequestStatusBadge } from "@/components/booking/BookingRequestStatusBadge";
 import { brand } from "@/lib/brand";
-import { updateBookingRequestAdminNotes, updateBookingRequestStatus } from "@/server/booking/actions";
+import {
+  updateBookingRequestAdminNotes,
+  updateBookingRequestStatus,
+} from "@/server/booking/actions";
 import type { BookingRequestStatus } from "@/types/booking";
 
 const reviewStatuses: BookingRequestStatus[] = [
@@ -40,7 +43,10 @@ export function AdminBookingRequestActions({
     >
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="text-sm uppercase tracking-[0.24em]" style={{ color: brand.secondary }}>
+          <p
+            className="text-sm uppercase tracking-[0.24em]"
+            style={{ color: brand.secondary }}
+          >
             Review actions
           </p>
           <div className="mt-3">
@@ -98,19 +104,19 @@ export function AdminBookingRequestActions({
           </p>
           <button
             type="button"
-          disabled={isNotesPending}
-          onClick={() =>
-            startNotesTransition(async () => {
-              setMessage(null);
-              try {
-                await updateBookingRequestAdminNotes({ id, admin_notes: notes });
-                setMessage("Admin notes saved.");
-                router.refresh();
-              } catch {
-                setMessage("Unable to save admin notes right now.");
-              }
-            })
-          }
+            disabled={isNotesPending}
+            onClick={() =>
+              startNotesTransition(async () => {
+                setMessage(null);
+                try {
+                  await updateBookingRequestAdminNotes({ id, admin_notes: notes });
+                  setMessage("Admin notes saved.");
+                  router.refresh();
+                } catch {
+                  setMessage("Unable to save admin notes right now.");
+                }
+              })
+            }
             className="rounded-full px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
             style={{
               background: `linear-gradient(to right, ${brand.primary}, ${brand.accent})`,

@@ -14,8 +14,10 @@ function formatSubmittedDate(value: string) {
 
 export function BookingRequestList({
   requests,
+  emptyMessage,
 }: {
   requests: BookingRequestListItem[];
+  emptyMessage?: string;
 }) {
   if (!requests.length) {
     return (
@@ -27,7 +29,7 @@ export function BookingRequestList({
         }}
       >
         <p className="text-base leading-7" style={{ color: brand.textMuted }}>
-          No booking requests have been submitted yet.
+          {emptyMessage ?? "No booking requests have been submitted yet."}
         </p>
       </section>
     );

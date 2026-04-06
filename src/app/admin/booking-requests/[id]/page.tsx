@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 
+import { PlaceholderPanel } from "@/components/app/PlaceholderPanel";
 import { AdminPageShell } from "@/components/admin/AdminPageShell";
 import { AdminBookingRequestActions } from "@/components/booking/AdminBookingRequestActions";
 import { BookingRequestStatusBadge } from "@/components/booking/BookingRequestStatusBadge";
@@ -53,11 +54,35 @@ export default async function AdminBookingRequestDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const request = await getBookingRequestById(id);
+  const requestResult = await getBookingRequestById(id);
 
-  if (!request) {
+  if (requestResult.connection === "connected" && !requestResult.data) {
     notFound();
   }
+
+  if (requestResult.connection !== "connected") {
+    return (
+      <AdminPageShell
+        eyebrow="Admin"
+        title="Booking request"
+        description="The detail route is in place, but the request could not be loaded from Supabase."
+      >
+        <PlaceholderPanel
+          title={
+            requestResult.connection === "not_configured"
+              ? "Database not connected"
+              : "Unable to load booking request"
+          }
+          body={
+            requestResult.message ??
+            "Guided Rhythms could not load this booking request right now."
+          }
+        />
+      </AdminPageShell>
+    );
+  }
+
+  const request = requestResult.data;
 
   return (
     <AdminPageShell

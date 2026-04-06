@@ -6,7 +6,7 @@ import { listPublicServices } from "@/server/booking/queries";
 export const dynamic = "force-dynamic";
 
 export default async function NewBookingPage() {
-  const services = await listPublicServices();
+  const servicesResult = await listPublicServices();
 
   return (
     <PageShell
@@ -14,12 +14,19 @@ export default async function NewBookingPage() {
       title="New client request"
       description="Share the service you want, the dates that work best, and the context that will help Guided Rhythms review your first booking request."
     >
-      {services.length ? (
-        <BookingRequestForm mode="new" services={services} />
+      {servicesResult.data.length ? (
+        <BookingRequestForm mode="new" services={servicesResult.data} />
       ) : (
         <PlaceholderPanel
-          title="Services not available yet"
-          body="No public services are available to request right now. Seed the services table and confirm Supabase environment variables are configured."
+          title={
+            servicesResult.connection === "connected"
+              ? "No services found"
+              : "Database not connected"
+          }
+          body={
+            servicesResult.message ??
+            "No public services are available to request right now."
+          }
         />
       )}
     </PageShell>
