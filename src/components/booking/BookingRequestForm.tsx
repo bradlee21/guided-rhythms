@@ -18,6 +18,7 @@ import type {
   BookingService,
 } from "@/types/booking";
 import {
+  firstVisitServiceSlug,
   bookingPreferredDayOptions,
   bookingPreferredTimeOptions,
 } from "@/types/booking";
@@ -217,6 +218,9 @@ export function BookingRequestForm({
               {services.map((service) => (
                 <option key={service.id} value={service.id}>
                   {service.name}
+                  {mode === "new" && service.slug === firstVisitServiceSlug
+                    ? " — new clients only, includes consultation"
+                    : ""}
                 </option>
               ))}
             </select>

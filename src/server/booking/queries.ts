@@ -4,7 +4,9 @@ import {
   hasPublicSupabaseEnv,
   hasServiceRoleSupabaseEnv,
 } from "@/lib/supabase/env";
-import type {
+import {
+  firstVisitServiceSlug,
+  type BookingFormMode,
   BookingRequestListItem,
   BookingRequestRecord,
   BookingService,
@@ -39,7 +41,7 @@ function normalizeStringArray(value: unknown) {
   return value.filter((item): item is string => typeof item === "string");
 }
 
-export async function listPublicServices() {
+export async function listPublicServices(mode: BookingFormMode = "new") {
   if (!hasPublicSupabaseEnv()) {
     return {
       data: [] satisfies BookingService[],
@@ -51,13 +53,19 @@ export async function listPublicServices() {
 
   try {
     const supabase = await createClient();
-    const { data, error } = await supabase
+    let query = supabase
       .from("services")
       .select(
         "id, name, slug, category, description, hands_on_minutes, intake_minutes, buffer_minutes, total_block_minutes, base_price_cents",
       )
       .eq("is_active", true)
-      .eq("is_public", true)
+      .eq("is_public", true);
+
+    if (mode === "returning") {
+      query = query.neq("slug", firstVisitServiceSlug);
+    }
+
+    const { data, error } = await query
       .order("sort_order", { ascending: true })
       .order("hands_on_minutes", { ascending: true });
 

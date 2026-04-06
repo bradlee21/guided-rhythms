@@ -6,7 +6,7 @@ import { listPublicServices } from "@/server/booking/queries";
 export const dynamic = "force-dynamic";
 
 export default async function ReturningBookingPage() {
-  const servicesResult = await listPublicServices();
+  const servicesResult = await listPublicServices("returning");
 
   return (
     <PageShell

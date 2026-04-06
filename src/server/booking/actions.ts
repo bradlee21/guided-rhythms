@@ -10,7 +10,10 @@ import {
   bookingRequestSchema,
   bookingRequestStatusSchema,
 } from "@/lib/validators/booking";
-import type { BookingActionState } from "@/types/booking";
+import {
+  firstVisitServiceSlug,
+  type BookingActionState,
+} from "@/types/booking";
 
 const defaultActionState: BookingActionState = {
   success: false,
@@ -63,6 +66,41 @@ export async function createBookingRequest(
   const values = parsed.data;
 
   try {
+    const { data: requestedService, error: serviceError } = await supabase
+      .from("services")
+      .select("id, slug")
+      .eq("id", values.requested_service_id)
+      .eq("is_active", true)
+      .eq("is_public", true)
+      .maybeSingle();
+
+    if (serviceError) {
+      throw new Error(serviceError.message);
+    }
+
+    if (!requestedService) {
+      return {
+        ...defaultActionState,
+        message: "Please choose an available service.",
+        fieldErrors: {
+          requested_service_id: ["Please choose an available service."],
+        },
+      } satisfies BookingActionState;
+    }
+
+    if (!values.is_new_client && requestedService.slug === firstVisitServiceSlug) {
+      return {
+        ...defaultActionState,
+        message:
+          "Returning clients cannot request First Visit Therapeutic Massage.",
+        fieldErrors: {
+          requested_service_id: [
+            "Returning clients must choose a standard service.",
+          ],
+        },
+      } satisfies BookingActionState;
+    }
+
     const { data: existingClient } = await supabase
       .from("clients")
       .select("id")

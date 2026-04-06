@@ -30,6 +30,8 @@ export type BookingPreferredTime = (typeof bookingPreferredTimeOptions)[number];
 
 export type BookingFormMode = "new" | "returning";
 
+export const firstVisitServiceSlug = "first-visit-therapeutic-60";
+
 export type BookingService = {
   id: string;
   name: string;
@@ -109,3 +111,7 @@ export type BookingActionState = {
   requestId?: string;
   fieldErrors?: Partial<Record<keyof BookingFormValues, string[]>>;
 };
+
+export function isFirstVisitServiceSlug(slug: string | null | undefined) {
+  return slug === firstVisitServiceSlug;
+}

@@ -10,6 +10,7 @@ import { brand } from "@/lib/brand";
 import { formatDateOnly } from "@/lib/dates";
 import { getBookingRequestById } from "@/server/booking/queries";
 import type { AppointmentStatus } from "@/types/appointment";
+import { isFirstVisitServiceSlug } from "@/types/booking";
 
 export const dynamic = "force-dynamic";
 
@@ -79,6 +80,9 @@ export default async function AdminBookingRequestDetailPage({
 
   const request = requestResult.data;
   const serviceBlockMinutes = request.requested_service?.total_block_minutes ?? 0;
+  const hasClientTypeServiceMismatch =
+    !request.is_new_client &&
+    isFirstVisitServiceSlug(request.requested_service?.slug);
 
   return (
     <AdminPageShell
@@ -176,6 +180,28 @@ export default async function AdminBookingRequestDetailPage({
         </div>
 
         <div className="space-y-6">
+          {hasClientTypeServiceMismatch ? (
+            <section
+              className="rounded-[1.75rem] p-6"
+              style={{
+                backgroundColor: "rgba(255,245,234,0.86)",
+                border: `1px solid ${brand.border}`,
+              }}
+            >
+              <p
+                className="text-sm uppercase tracking-[0.24em]"
+                style={{ color: brand.secondary }}
+              >
+                Service mismatch
+              </p>
+              <p className="mt-3 text-sm leading-6" style={{ color: brand.textMuted }}>
+                This request is marked as returning client but selected First Visit
+                Therapeutic Massage, which is reserved for new clients. Review the
+                request before moving forward.
+              </p>
+            </section>
+          ) : null}
+
           <AdminBookingRequestActions
             id={request.id}
             status={request.status}
