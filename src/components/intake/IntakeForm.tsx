@@ -119,17 +119,7 @@ export function IntakeForm({
   }
 
   return (
-    <form
-      className="space-y-6"
-      onSubmit={async (event) => {
-        if (!isReviewStep) {
-          event.preventDefault();
-          return;
-        }
-
-        await submitReview(event);
-      }}
-    >
+    <form className="space-y-6">
       <input type="hidden" {...form.register("token")} />
       <div className="rounded-[1.75rem] p-6" style={{ backgroundColor: "rgba(255,255,255,0.7)", border: `1px solid ${brand.border}` }}>
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -246,7 +236,10 @@ export function IntakeForm({
             </button>
           ) : (
             <button
-              type="submit"
+              type="button"
+              onClick={() => {
+                void submitReview();
+              }}
               disabled={isPending}
               className="rounded-full px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
               style={{ background: `linear-gradient(to right, ${brand.primary}, ${brand.accent})` }}
