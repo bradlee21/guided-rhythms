@@ -151,7 +151,7 @@ export async function getBookingRequestById(id: string) {
     const { data, error } = await supabase
       .from("booking_requests")
       .select(
-        "id, client_id, first_name, last_name, email, phone, is_new_client, requested_service_id, requested_therapist_id, preferred_days, preferred_times, preferred_date_1, preferred_date_2, preferred_date_3, pain_points, goals, referral_source, notes, status, admin_notes, reviewed_by, reviewed_at, created_at, updated_at, requested_service:services(id, name, slug, category, description, hands_on_minutes, intake_minutes, buffer_minutes, total_block_minutes, base_price_cents)",
+        "id, client_id, first_name, last_name, email, phone, is_new_client, requested_service_id, requested_therapist_id, preferred_days, preferred_times, preferred_date_1, preferred_date_2, preferred_date_3, pain_points, goals, referral_source, notes, status, admin_notes, reviewed_by, reviewed_at, created_at, updated_at, requested_service:services(id, name, slug, category, description, hands_on_minutes, intake_minutes, buffer_minutes, total_block_minutes, base_price_cents), appointment:appointments(id, status, appointment_date, start_time, end_time)",
       )
       .eq("id", id)
       .maybeSingle();
@@ -202,6 +202,26 @@ export async function getBookingRequestById(id: string) {
           typeof row.requested_service === "object" &&
           !Array.isArray(row.requested_service)
             ? normalizeService(row.requested_service as Record<string, unknown>)
+            : null,
+        appointment:
+          row.appointment &&
+          typeof row.appointment === "object" &&
+          !Array.isArray(row.appointment)
+            ? {
+                id: String((row.appointment as Record<string, unknown>).id),
+                status: String(
+                  (row.appointment as Record<string, unknown>).status,
+                ),
+                appointment_date: String(
+                  (row.appointment as Record<string, unknown>).appointment_date,
+                ),
+                start_time: String(
+                  (row.appointment as Record<string, unknown>).start_time,
+                ).slice(0, 5),
+                end_time: String(
+                  (row.appointment as Record<string, unknown>).end_time,
+                ).slice(0, 5),
+              }
             : null,
       } satisfies BookingRequestRecord,
       connection: "connected",

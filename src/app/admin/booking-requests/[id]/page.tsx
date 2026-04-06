@@ -2,10 +2,13 @@ import { notFound } from "next/navigation";
 
 import { PlaceholderPanel } from "@/components/app/PlaceholderPanel";
 import { AdminPageShell } from "@/components/admin/AdminPageShell";
+import { AppointmentStatusBadge } from "@/components/appointments/AppointmentStatusBadge";
+import { AppointmentConversionForm } from "@/components/appointments/AppointmentConversionForm";
 import { AdminBookingRequestActions } from "@/components/booking/AdminBookingRequestActions";
 import { BookingRequestStatusBadge } from "@/components/booking/BookingRequestStatusBadge";
 import { brand } from "@/lib/brand";
 import { getBookingRequestById } from "@/server/booking/queries";
+import type { AppointmentStatus } from "@/types/appointment";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +26,7 @@ function formatDate(value: string | null) {
 
 function formatDateTime(value: string | null) {
   if (!value) {
-    return "Not reviewed yet";
+    return "Not provided";
   }
 
   return new Intl.DateTimeFormat("en-US", {
@@ -38,7 +41,10 @@ function formatDateTime(value: string | null) {
 function DetailRow({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-sm uppercase tracking-[0.22em]" style={{ color: brand.secondary }}>
+      <p
+        className="text-sm uppercase tracking-[0.22em]"
+        style={{ color: brand.secondary }}
+      >
         {label}
       </p>
       <p className="mt-2 text-base leading-7" style={{ color: brand.textMuted }}>
@@ -83,12 +89,13 @@ export default async function AdminBookingRequestDetailPage({
   }
 
   const request = requestResult.data;
+  const serviceBlockMinutes = request.requested_service?.total_block_minutes ?? 0;
 
   return (
     <AdminPageShell
       eyebrow="Admin"
       title={`${request.first_name} ${request.last_name}`}
-      description="Review the full booking request, update its status, and store internal notes for the next step in the scheduling process."
+      description="Review the full booking request, update its status, and convert approved requests into real scheduled appointments."
     >
       <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
         <div
@@ -98,9 +105,15 @@ export default async function AdminBookingRequestDetailPage({
             border: `1px solid ${brand.border}`,
           }}
         >
-          <div className="flex flex-col gap-4 border-b pb-6 md:flex-row md:items-center md:justify-between" style={{ borderColor: brand.border }}>
+          <div
+            className="flex flex-col gap-4 border-b pb-6 md:flex-row md:items-center md:justify-between"
+            style={{ borderColor: brand.border }}
+          >
             <div>
-              <p className="text-sm uppercase tracking-[0.22em]" style={{ color: brand.secondary }}>
+              <p
+                className="text-sm uppercase tracking-[0.22em]"
+                style={{ color: brand.secondary }}
+              >
                 Request details
               </p>
               <p className="mt-3 text-sm leading-6" style={{ color: brand.textMuted }}>
@@ -133,9 +146,18 @@ export default async function AdminBookingRequestDetailPage({
               label="Requested therapist id"
               value={request.requested_therapist_id || "Not provided"}
             />
-            <DetailRow label="Preferred date 1" value={formatDate(request.preferred_date_1)} />
-            <DetailRow label="Preferred date 2" value={formatDate(request.preferred_date_2)} />
-            <DetailRow label="Preferred date 3" value={formatDate(request.preferred_date_3)} />
+            <DetailRow
+              label="Preferred date 1"
+              value={formatDate(request.preferred_date_1)}
+            />
+            <DetailRow
+              label="Preferred date 2"
+              value={formatDate(request.preferred_date_2)}
+            />
+            <DetailRow
+              label="Preferred date 3"
+              value={formatDate(request.preferred_date_3)}
+            />
             <DetailRow
               label="Preferred days"
               value={request.preferred_days?.join(", ") ?? "Not provided"}
@@ -152,8 +174,15 @@ export default async function AdminBookingRequestDetailPage({
             <DetailRow label="Goals" value={request.goals || "Not provided"} />
             <DetailRow label="Client notes" value={request.notes || "Not provided"} />
             <DetailRow label="Reviewed by" value={request.reviewed_by || "Not assigned"} />
-            <DetailRow label="Review timestamp" value={formatDateTime(request.reviewed_at)} />
+            <DetailRow
+              label="Review timestamp"
+              value={formatDateTime(request.reviewed_at)}
+            />
             <DetailRow label="Updated at" value={formatDateTime(request.updated_at)} />
+            <DetailRow
+              label="Linked appointment"
+              value={request.appointment?.id || "Not created"}
+            />
           </div>
         </div>
 
@@ -163,6 +192,73 @@ export default async function AdminBookingRequestDetailPage({
             status={request.status}
             adminNotes={request.admin_notes}
           />
+
+          {request.appointment ? (
+            <section
+              className="rounded-[1.75rem] p-6"
+              style={{
+                backgroundColor: "rgba(255,255,255,0.68)",
+                border: `1px solid ${brand.border}`,
+              }}
+            >
+              <p
+                className="text-sm uppercase tracking-[0.24em]"
+                style={{ color: brand.secondary }}
+              >
+                Appointment created
+              </p>
+              <div className="mt-3">
+                <AppointmentStatusBadge
+                  status={request.appointment.status as AppointmentStatus}
+                />
+              </div>
+              <p className="mt-4 text-sm leading-6" style={{ color: brand.textMuted }}>
+                {formatDate(request.appointment.appointment_date)} |{" "}
+                {request.appointment.start_time} - {request.appointment.end_time}
+              </p>
+              <a
+                href={`/admin/appointments/${request.appointment.id}`}
+                className="mt-4 inline-flex rounded-full px-4 py-2 text-sm font-semibold"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.82)",
+                  border: `1px solid ${brand.border}`,
+                }}
+              >
+                View appointment
+              </a>
+            </section>
+          ) : null}
+
+          {request.status === "approved" && !request.appointment ? (
+            <section
+              className="rounded-[1.75rem] p-6"
+              style={{
+                backgroundColor: "rgba(255,255,255,0.68)",
+                border: `1px solid ${brand.border}`,
+              }}
+            >
+              <p
+                className="text-sm uppercase tracking-[0.24em]"
+                style={{ color: brand.secondary }}
+              >
+                Create appointment
+              </p>
+              <p className="mt-3 text-sm leading-6" style={{ color: brand.textMuted }}>
+                Approved requests can be converted into one real scheduled
+                appointment. End time is derived from the selected service block.
+              </p>
+              <div className="mt-6">
+                <AppointmentConversionForm
+                  bookingRequestId={request.id}
+                  serviceBlockMinutes={serviceBlockMinutes}
+                  defaultPriceCents={
+                    request.requested_service?.base_price_cents ?? 0
+                  }
+                  defaultLocationType="office"
+                />
+              </div>
+            </section>
+          ) : null}
         </div>
       </section>
     </AdminPageShell>

@@ -69,6 +69,13 @@ export type BookingRequestRecord = {
   created_at: string;
   updated_at: string;
   requested_service: BookingService | null;
+  appointment: {
+    id: string;
+    status: string;
+    appointment_date: string;
+    start_time: string;
+    end_time: string;
+  } | null;
 };
 
 export type BookingRequestListItem = Pick<
