@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+import { isApprovedAdminEmail } from "@/lib/auth/admin-access";
 import {
   getPublicSupabaseEnv,
   hasPublicSupabaseEnv,
@@ -55,6 +56,7 @@ export async function updateSession(request: NextRequest) {
 
   const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
   const isLoginRoute = request.nextUrl.pathname === "/login";
+  const isApprovedAdmin = isApprovedAdminEmail(user?.email);
 
   if (isAdminRoute && !user) {
     const loginUrl = request.nextUrl.clone();
@@ -67,7 +69,19 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (isLoginRoute && user) {
+  if (isAdminRoute && user && !isApprovedAdmin) {
+    const loginUrl = request.nextUrl.clone();
+    loginUrl.pathname = "/login";
+    loginUrl.searchParams.set("denied", "1");
+    loginUrl.searchParams.set(
+      "next",
+      `${request.nextUrl.pathname}${request.nextUrl.search}`,
+    );
+
+    return NextResponse.redirect(loginUrl);
+  }
+
+  if (isLoginRoute && user && isApprovedAdmin) {
     const nextPath = request.nextUrl.searchParams.get("next");
     return NextResponse.redirect(
       new URL(getSafeRedirectPath(nextPath), request.url),

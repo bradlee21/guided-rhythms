@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { PageShell } from "@/components/app/PageShell";
 import { PlaceholderPanel } from "@/components/app/PlaceholderPanel";
+import { AdminSignOutButton } from "@/components/admin/AdminSignOutButton";
 import { AdminLoginForm } from "@/components/auth/AdminLoginForm";
 import { getAuthenticatedAdminUser } from "@/lib/auth/admin";
 import { hasPublicSupabaseEnv } from "@/lib/supabase/env";
@@ -21,17 +22,17 @@ function getSafeNextPath(nextPath: string | undefined) {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ denied?: string; next?: string }>;
 }) {
-  const { next } = await searchParams;
+  const { denied, next } = await searchParams;
   const nextPath = getSafeNextPath(next);
+  const isDenied = denied === "1";
+  const user = hasPublicSupabaseEnv()
+    ? await getAuthenticatedAdminUser()
+    : null;
 
-  if (hasPublicSupabaseEnv()) {
-    const user = await getAuthenticatedAdminUser();
-
-    if (user) {
-      redirect(nextPath);
-    }
+  if (user?.isApprovedAdmin) {
+    redirect(nextPath);
   }
 
   return (
@@ -42,22 +43,39 @@ export default async function LoginPage({
     >
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <PlaceholderPanel
-          title="Sign in"
-          body="Use your Supabase-authenticated admin credentials. The admin area is now protected and unauthenticated visitors are redirected here."
+          title={user ? "Access denied" : "Sign in"}
+          body={
+            user
+              ? "Your account is authenticated, but it is not approved for Guided Rhythms admin access."
+              : isDenied
+                ? "That account is not approved for the Guided Rhythms admin area. Sign in with an approved admin account."
+                : "Use your Supabase-authenticated admin credentials. The admin area is now protected and unauthenticated visitors are redirected here."
+          }
         >
-          {hasPublicSupabaseEnv() ? (
-            <AdminLoginForm nextPath={nextPath} />
-          ) : (
+          {!hasPublicSupabaseEnv() ? (
             <p className="text-base leading-7">
               Supabase auth is not configured yet. Add the public Supabase
               environment variables to enable admin sign in.
             </p>
+          ) : user ? (
+            <div className="space-y-4">
+              <p className="text-sm leading-6">
+                Signed in as {user.email ?? "an authenticated user"}.
+              </p>
+              <AdminSignOutButton />
+            </div>
+          ) : (
+            <AdminLoginForm nextPath={nextPath} />
           )}
         </PlaceholderPanel>
 
         <PlaceholderPanel
           title="What happens next"
-          body="After sign-in you will be redirected into the admin area. Public booking routes continue to work without admin authentication."
+          body={
+            user
+              ? "Ask an approved admin to add your email to the admin allowlist, or sign out and return to the public site."
+              : "After sign-in you will be redirected into the admin area if your email is approved. Public booking routes continue to work without admin authentication."
+          }
         />
       </div>
     </PageShell>
