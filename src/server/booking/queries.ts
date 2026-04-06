@@ -1,5 +1,9 @@
 import { createAdminClient } from "@/lib/supabase/admin";
-import { hasServiceRoleSupabaseEnv } from "@/lib/supabase/env";
+import { createClient } from "@/lib/supabase/server";
+import {
+  hasPublicSupabaseEnv,
+  hasServiceRoleSupabaseEnv,
+} from "@/lib/supabase/env";
 import type {
   BookingRequestListItem,
   BookingRequestRecord,
@@ -36,17 +40,17 @@ function normalizeStringArray(value: unknown) {
 }
 
 export async function listPublicServices() {
-  if (!hasServiceRoleSupabaseEnv()) {
+  if (!hasPublicSupabaseEnv()) {
     return {
       data: [] satisfies BookingService[],
       connection: "not_configured",
       message:
-        "The database is not connected yet. Add the Supabase URL, anon key, and service-role key to continue.",
+        "The database is not connected yet. Add the Supabase URL and anon key to continue.",
     } satisfies BookingQueryResult<BookingService[]>;
   }
 
   try {
-    const supabase = createAdminClient();
+    const supabase = await createClient();
     const { data, error } = await supabase
       .from("services")
       .select(
