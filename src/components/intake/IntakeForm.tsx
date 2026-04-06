@@ -124,7 +124,6 @@ export function IntakeForm({
       onSubmit={async (event) => {
         if (!isReviewStep) {
           event.preventDefault();
-          await handleNext();
           return;
         }
 
