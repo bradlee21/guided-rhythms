@@ -2,15 +2,8 @@ import Link from "next/link";
 
 import { AppointmentStatusBadge } from "@/components/appointments/AppointmentStatusBadge";
 import { brand } from "@/lib/brand";
+import { formatDateOnly } from "@/lib/dates";
 import type { AppointmentListItem } from "@/types/appointment";
-
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(value));
-}
 
 export function AppointmentList({
   appointments,
@@ -55,8 +48,8 @@ export function AppointmentList({
               </p>
               <p className="text-sm leading-6" style={{ color: brand.textMuted }}>
                 {appointment.service?.name ?? "No service"} |{" "}
-                {formatDate(appointment.appointment_date)} | {appointment.start_time} -{" "}
-                {appointment.end_time}
+                {formatDateOnly(appointment.appointment_date)} |{" "}
+                {appointment.start_time} - {appointment.end_time}
               </p>
             </div>
             <AppointmentStatusBadge status={appointment.status} />

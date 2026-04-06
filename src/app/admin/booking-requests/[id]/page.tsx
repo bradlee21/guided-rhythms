@@ -7,22 +7,11 @@ import { AppointmentConversionForm } from "@/components/appointments/Appointment
 import { AdminBookingRequestActions } from "@/components/booking/AdminBookingRequestActions";
 import { BookingRequestStatusBadge } from "@/components/booking/BookingRequestStatusBadge";
 import { brand } from "@/lib/brand";
+import { formatDateOnly } from "@/lib/dates";
 import { getBookingRequestById } from "@/server/booking/queries";
 import type { AppointmentStatus } from "@/types/appointment";
 
 export const dynamic = "force-dynamic";
-
-function formatDate(value: string | null) {
-  if (!value) {
-    return "Not provided";
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(value));
-}
 
 function formatDateTime(value: string | null) {
   if (!value) {
@@ -148,15 +137,15 @@ export default async function AdminBookingRequestDetailPage({
             />
             <DetailRow
               label="Preferred date 1"
-              value={formatDate(request.preferred_date_1)}
+              value={formatDateOnly(request.preferred_date_1)}
             />
             <DetailRow
               label="Preferred date 2"
-              value={formatDate(request.preferred_date_2)}
+              value={formatDateOnly(request.preferred_date_2)}
             />
             <DetailRow
               label="Preferred date 3"
-              value={formatDate(request.preferred_date_3)}
+              value={formatDateOnly(request.preferred_date_3)}
             />
             <DetailRow
               label="Preferred days"
@@ -213,7 +202,7 @@ export default async function AdminBookingRequestDetailPage({
                 />
               </div>
               <p className="mt-4 text-sm leading-6" style={{ color: brand.textMuted }}>
-                {formatDate(request.appointment.appointment_date)} |{" "}
+                {formatDateOnly(request.appointment.appointment_date)} |{" "}
                 {request.appointment.start_time} - {request.appointment.end_time}
               </p>
               <a

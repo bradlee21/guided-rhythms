@@ -6,22 +6,11 @@ import { AdminPageShell } from "@/components/admin/AdminPageShell";
 import { AdminAppointmentActions } from "@/components/appointments/AdminAppointmentActions";
 import { AppointmentStatusBadge } from "@/components/appointments/AppointmentStatusBadge";
 import { brand } from "@/lib/brand";
+import { formatDateOnly } from "@/lib/dates";
 import { followUpStatusMeta, intakeStatusMeta } from "@/lib/status/appointment";
 import { getAppointmentById } from "@/server/appointments/queries";
 
 export const dynamic = "force-dynamic";
-
-function formatDate(value: string | null) {
-  if (!value) {
-    return "Not provided";
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(value));
-}
 
 function formatDateTime(value: string | null) {
   if (!value) {
@@ -128,7 +117,10 @@ export default async function AdminAppointmentDetailPage({
             <DetailRow label="Client email" value={appointment.client?.email || "Not available"} />
             <DetailRow label="Client phone" value={appointment.client?.phone || "Not available"} />
             <DetailRow label="Service" value={appointment.service?.name || "Not available"} />
-            <DetailRow label="Appointment date" value={formatDate(appointment.appointment_date)} />
+            <DetailRow
+              label="Appointment date"
+              value={formatDateOnly(appointment.appointment_date)}
+            />
             <DetailRow label="Time" value={`${appointment.start_time} - ${appointment.end_time}`} />
             <DetailRow label="Timezone" value={appointment.timezone} />
             <DetailRow label="Location type" value={appointment.location_type} />
