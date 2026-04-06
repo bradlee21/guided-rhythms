@@ -8,6 +8,7 @@ import { z } from "zod";
 
 import { BookingField } from "@/components/booking/BookingField";
 import { brand } from "@/lib/brand";
+import { formatCentsAsDollars } from "@/lib/format/money";
 import { appointmentConversionSchema } from "@/lib/validators/appointment";
 import { addMinutesToTime } from "@/server/appointments/helpers";
 import { createAppointmentFromBookingRequest } from "@/server/appointments/actions";
@@ -185,9 +186,9 @@ export function AppointmentConversionForm({
 
       <div className="grid gap-4 md:grid-cols-2">
         <BookingField
-          label="Price override in cents"
+          label="Price override (cents)"
           htmlFor="price_override_cents"
-          hint={`Leave blank to use the service default of ${defaultPriceCents} cents.`}
+          hint={`Leave blank to use the service default of ${formatCentsAsDollars(defaultPriceCents)}.`}
           error={form.formState.errors.price_override_cents?.message}
         >
           <input

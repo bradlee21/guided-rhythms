@@ -7,6 +7,7 @@ import { AdminAppointmentActions } from "@/components/appointments/AdminAppointm
 import { AppointmentStatusBadge } from "@/components/appointments/AppointmentStatusBadge";
 import { brand } from "@/lib/brand";
 import { formatDateOnly } from "@/lib/dates";
+import { formatCentsAsDollars } from "@/lib/format/money";
 import { followUpStatusMeta, intakeStatusMeta } from "@/lib/status/appointment";
 import { getAppointmentById } from "@/server/appointments/queries";
 
@@ -125,7 +126,10 @@ export default async function AdminAppointmentDetailPage({
             <DetailRow label="Timezone" value={appointment.timezone} />
             <DetailRow label="Location type" value={appointment.location_type} />
             <DetailRow label="Location label" value={appointment.location_label || "Not provided"} />
-            <DetailRow label="Price" value={`${appointment.price_cents} cents`} />
+            <DetailRow
+              label="Price"
+              value={formatCentsAsDollars(appointment.price_cents)}
+            />
             <DetailRow label="Intake status" value={intakeStatusMeta[appointment.intake_status]} />
             <DetailRow label="Follow-up status" value={followUpStatusMeta[appointment.follow_up_status]} />
             <DetailRow

@@ -1,13 +1,13 @@
 with pricing as (
   select
-    14000::int as first_visit_therapeutic_60,
-    12000::int as therapeutic_60,
-    17500::int as therapeutic_90,
-    23000::int as therapeutic_120,
-    13000::int as sports_60,
-    18500::int as sports_90,
-    12500::int as focused_therapeutic_60,
-    18000::int as focused_therapeutic_90
+    9500::int as first_visit_therapeutic_60,
+    11000::int as therapeutic_60,
+    15500::int as therapeutic_90,
+    21000::int as therapeutic_120,
+    11000::int as sports_60,
+    15500::int as sports_90,
+    11000::int as focused_therapeutic_60,
+    15500::int as focused_therapeutic_90
 )
 insert into public.services (
   name,
