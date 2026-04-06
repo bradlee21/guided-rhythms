@@ -1,17 +1,31 @@
+import { PlaceholderPanel } from "@/components/app/PlaceholderPanel";
 import { AdminPageShell } from "@/components/admin/AdminPageShell";
-import { AdminPlaceholderCard } from "@/components/admin/AdminPlaceholderCard";
+import { AdminIntakeList } from "@/components/intake/AdminIntakeList";
+import { listIntakes } from "@/server/intakes/queries";
 
-export default function AdminIntakesPage() {
+export const dynamic = "force-dynamic";
+
+export default async function AdminIntakesPage() {
+  const result = await listIntakes();
+
   return (
     <AdminPageShell
       eyebrow="Admin"
       title="Intakes"
-      description="This route is reserved for intake review and processing. Intake form rendering and submission are not part of this slice."
+      description="Review intake completion, identify health and safety notes, and mark submitted forms as reviewed."
     >
-      <AdminPlaceholderCard
-        title="Intake scaffold"
-        body="Submission review, completeness checks, and staff actions will be added once intake workflows are implemented."
-      />
+      {result.connection === "connected" ? (
+        <AdminIntakeList intakes={result.data} />
+      ) : (
+        <PlaceholderPanel
+          title={
+            result.connection === "not_configured"
+              ? "Database not connected"
+              : "Unable to load intakes"
+          }
+          body={result.message ?? "Guided Rhythms could not load intakes right now."}
+        />
+      )}
     </AdminPageShell>
   );
 }

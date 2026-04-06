@@ -4,6 +4,7 @@ import type {
   AppointmentListItem,
   AppointmentRecord,
 } from "@/types/appointment";
+import type { IntakeStatus } from "@/types/intake";
 
 export type AppointmentQueryResult<T> = {
   data: T;
@@ -61,6 +62,18 @@ function normalizeAppointment(
         }
       : null;
 
+  const intake =
+    row.intake && typeof row.intake === "object" && !Array.isArray(row.intake)
+      ? {
+          id: String((row.intake as Record<string, unknown>).id),
+          status: (row.intake as Record<string, unknown>).status as IntakeStatus,
+          completed_at:
+            ((row.intake as Record<string, unknown>).completed_at as string | null) ??
+            null,
+          created_at: String((row.intake as Record<string, unknown>).created_at),
+        }
+      : null;
+
   return {
     id: String(row.id),
     client_id: String(row.client_id),
@@ -91,6 +104,7 @@ function normalizeAppointment(
     client,
     service,
     booking_request: bookingRequest,
+    intake,
   };
 }
 
@@ -166,7 +180,7 @@ export async function getAppointmentById(id: string) {
     const { data, error } = await supabase
       .from("appointments")
       .select(
-        "id, client_id, booking_request_id, service_id, therapist_id, status, appointment_date, start_time, end_time, timezone, location_type, location_label, intake_status, follow_up_status, price_cents, internal_notes, confirmation_sent_at, reminder_sent_at, cancelled_at, cancelled_reason, rescheduled_from_appointment_id, created_at, updated_at, client:clients(id, first_name, last_name, preferred_name, email, phone), service:services(id, name, slug, total_block_minutes, base_price_cents), booking_request:booking_requests(id, status, first_name, last_name)",
+        "id, client_id, booking_request_id, service_id, therapist_id, status, appointment_date, start_time, end_time, timezone, location_type, location_label, intake_status, follow_up_status, price_cents, internal_notes, confirmation_sent_at, reminder_sent_at, cancelled_at, cancelled_reason, rescheduled_from_appointment_id, created_at, updated_at, client:clients(id, first_name, last_name, preferred_name, email, phone), service:services(id, name, slug, total_block_minutes, base_price_cents), booking_request:booking_requests(id, status, first_name, last_name), intake:intakes(id, status, completed_at, created_at)",
       )
       .eq("id", id)
       .maybeSingle();
@@ -198,7 +212,7 @@ export async function getAppointmentByBookingRequestId(bookingRequestId: string)
   const { data, error } = await supabase
     .from("appointments")
     .select(
-      "id, client_id, booking_request_id, service_id, therapist_id, status, appointment_date, start_time, end_time, timezone, location_type, location_label, intake_status, follow_up_status, price_cents, internal_notes, confirmation_sent_at, reminder_sent_at, cancelled_at, cancelled_reason, rescheduled_from_appointment_id, created_at, updated_at, client:clients(id, first_name, last_name, preferred_name, email, phone), service:services(id, name, slug, total_block_minutes, base_price_cents), booking_request:booking_requests(id, status, first_name, last_name)",
+      "id, client_id, booking_request_id, service_id, therapist_id, status, appointment_date, start_time, end_time, timezone, location_type, location_label, intake_status, follow_up_status, price_cents, internal_notes, confirmation_sent_at, reminder_sent_at, cancelled_at, cancelled_reason, rescheduled_from_appointment_id, created_at, updated_at, client:clients(id, first_name, last_name, preferred_name, email, phone), service:services(id, name, slug, total_block_minutes, base_price_cents), booking_request:booking_requests(id, status, first_name, last_name), intake:intakes(id, status, completed_at, created_at)",
     )
     .eq("booking_request_id", bookingRequestId)
     .maybeSingle();

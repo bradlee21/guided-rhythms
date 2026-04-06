@@ -5,10 +5,13 @@ import { PlaceholderPanel } from "@/components/app/PlaceholderPanel";
 import { AdminPageShell } from "@/components/admin/AdminPageShell";
 import { AdminAppointmentActions } from "@/components/appointments/AdminAppointmentActions";
 import { AppointmentStatusBadge } from "@/components/appointments/AppointmentStatusBadge";
+import { IntakeStatusBadge } from "@/components/intake/IntakeStatusBadge";
 import { brand } from "@/lib/brand";
 import { formatDateOnly } from "@/lib/dates";
 import { formatCentsAsDollars } from "@/lib/format/money";
+import { createIntakeToken, getIntakeTokenPath } from "@/lib/intake/token";
 import { followUpStatusMeta, intakeStatusMeta } from "@/lib/status/appointment";
+import { hasIntakeTokenSecret } from "@/lib/supabase/env";
 import { getAppointmentById } from "@/server/appointments/queries";
 
 export const dynamic = "force-dynamic";
@@ -79,6 +82,16 @@ export default async function AdminAppointmentDetailPage({
   }
 
   const appointment = appointmentResult.data;
+  const intakeLink =
+    appointment.intake && hasIntakeTokenSecret()
+      ? getIntakeTokenPath(
+          createIntakeToken({
+            intakeId: appointment.intake.id,
+            appointmentId: appointment.id,
+            createdAt: appointment.intake.created_at,
+          }),
+        )
+      : null;
 
   return (
     <AdminPageShell
@@ -144,7 +157,7 @@ export default async function AdminAppointmentDetailPage({
           </div>
 
           {appointment.booking_request ? (
-            <div className="mt-6">
+            <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 href={`/admin/booking-requests/${appointment.booking_request.id}`}
                 className="inline-flex rounded-full px-4 py-2 text-sm font-semibold"
@@ -155,11 +168,56 @@ export default async function AdminAppointmentDetailPage({
               >
                 View linked booking request
               </Link>
+              {appointment.intake ? (
+                <Link
+                  href={`/admin/intakes/${appointment.intake.id}`}
+                  className="inline-flex rounded-full px-4 py-2 text-sm font-semibold"
+                  style={{
+                    backgroundColor: "rgba(255,255,255,0.82)",
+                    border: `1px solid ${brand.border}`,
+                  }}
+                >
+                  View intake detail
+                </Link>
+              ) : null}
+              {intakeLink ? (
+                <Link
+                  href={intakeLink}
+                  className="inline-flex rounded-full px-4 py-2 text-sm font-semibold"
+                  style={{
+                    backgroundColor: "rgba(255,255,255,0.82)",
+                    border: `1px solid ${brand.border}`,
+                  }}
+                >
+                  Open client intake link
+                </Link>
+              ) : null}
             </div>
           ) : null}
         </div>
 
         <div className="space-y-6">
+          <section
+            className="rounded-[1.75rem] p-6"
+            style={{
+              backgroundColor: "rgba(255,255,255,0.68)",
+              border: `1px solid ${brand.border}`,
+            }}
+          >
+            <p className="text-sm uppercase tracking-[0.24em]" style={{ color: brand.secondary }}>
+              Intake
+            </p>
+            <div className="mt-3">
+              <IntakeStatusBadge status={appointment.intake_status} />
+            </div>
+            <p className="mt-4 text-sm leading-6" style={{ color: brand.textMuted }}>
+              {appointment.intake
+                ? appointment.intake.completed_at
+                  ? "The client has submitted the intake. You can open the intake detail for the full summary."
+                  : "An intake record exists, but the client has not completed it yet."
+                : "No intake record is attached to this appointment yet."}
+            </p>
+          </section>
           <AdminAppointmentActions
             id={appointment.id}
             status={appointment.status}

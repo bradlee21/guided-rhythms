@@ -1,8 +1,8 @@
 import type {
   AppointmentStatus,
   FollowUpStatus,
-  IntakeStatus,
 } from "@/types/appointment";
+import type { IntakeStatus } from "@/types/intake";
 
 export const appointmentStatusMeta: Record<
   AppointmentStatus,

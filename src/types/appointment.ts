@@ -1,3 +1,5 @@
+import type { IntakeStatus } from "@/types/intake";
+
 export const appointmentStatuses = [
   "pending_confirmation",
   "confirmed",
@@ -9,15 +11,6 @@ export const appointmentStatuses = [
   "cancelled",
   "no_show",
   "rescheduled",
-] as const;
-
-export const intakeStatuses = [
-  "not_sent",
-  "sent",
-  "in_progress",
-  "completed",
-  "reviewed",
-  "needs_update",
 ] as const;
 
 export const followUpStatuses = [
@@ -32,7 +25,6 @@ export const followUpStatuses = [
 export const appointmentLocationTypes = ["office", "custom"] as const;
 
 export type AppointmentStatus = (typeof appointmentStatuses)[number];
-export type IntakeStatus = (typeof intakeStatuses)[number];
 export type FollowUpStatus = (typeof followUpStatuses)[number];
 export type AppointmentLocationType =
   (typeof appointmentLocationTypes)[number];
@@ -81,6 +73,12 @@ export type AppointmentRecord = {
     status: string;
     first_name: string;
     last_name: string;
+  } | null;
+  intake: {
+    id: string;
+    status: IntakeStatus;
+    completed_at: string | null;
+    created_at: string;
   } | null;
 };
 

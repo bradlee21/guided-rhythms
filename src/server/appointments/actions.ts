@@ -164,6 +164,17 @@ export async function createAppointmentFromBookingRequest(
       throw new Error(appointmentError.message);
     }
 
+    const { error: intakeError } = await supabase.from("intakes").insert({
+      client_id: clientId,
+      appointment_id: appointment.id,
+      status: "not_sent",
+    });
+
+    if (intakeError) {
+      await supabase.from("appointments").delete().eq("id", appointment.id);
+      throw new Error(intakeError.message);
+    }
+
     const { error: requestUpdateError } = await supabase
       .from("booking_requests")
       .update({
@@ -182,6 +193,7 @@ export async function createAppointmentFromBookingRequest(
     revalidatePath(`/admin/booking-requests/${request.id}`);
     revalidatePath("/admin/appointments");
     revalidatePath(`/admin/appointments/${appointment.id}`);
+    revalidatePath("/admin/intakes");
 
     return {
       success: true,

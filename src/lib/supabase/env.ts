@@ -24,6 +24,13 @@ export function hasServiceRoleSupabaseEnv() {
   );
 }
 
+export function hasIntakeTokenSecret() {
+  return Boolean(
+    process.env.INTAKE_TOKEN_SECRET &&
+      process.env.INTAKE_TOKEN_SECRET.length >= 32,
+  );
+}
+
 function isValidServiceRoleKey(value: string) {
   if (value.startsWith("sb_secret_")) {
     return true;
