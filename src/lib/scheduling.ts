@@ -124,10 +124,16 @@ export async function getTherapists() {
   const supabase = await createServiceClient();
   const { data } = await supabase
     .from("therapists")
-    .select("id, full_name, email, bio, specialty, display_order")
+    .select("id, full_name, bio, specialty, display_order")
     .eq("is_active", true)
     .order("display_order");
-  return data ?? [];
+  return (data ?? []).map((t) => ({
+    id: t.id,
+    full_name: t.full_name,
+    email: "",
+    bio: t.bio,
+    specialty: t.specialty,
+  }));
 }
 
 export async function seedDefaultSchedule(therapistId: string) {

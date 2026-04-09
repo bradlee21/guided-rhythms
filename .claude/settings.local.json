@@ -16,7 +16,8 @@
       "Bash(echo \"===\")",
       "Bash(cat \"src/app/admin/booking-requests/[id]/page.tsx\")",
       "Bash(cat \"src/app/intake/[token]/page.tsx\")",
-      "Bash(cat src/components/booking/steps/StepTherapist.tsx)"
+      "Bash(cat src/components/booking/steps/StepTherapist.tsx)",
+      "Bash(git rm:*)"
     ]
   }
 }

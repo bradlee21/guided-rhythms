@@ -146,11 +146,12 @@ export default async function AppointmentDetailPage({
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <div style={{ padding: "24px", background: "#ffffff", border: `1px solid ${brand.borderMed}`, borderRadius: "2px" }}>
             <p style={{ fontSize: "11px", letterSpacing: "0.16em", textTransform: "uppercase", color: brand.textSoft, fontFamily: "'DM Sans', sans-serif", marginBottom: "12px" }}>Current status</p>
-            <div style={{ display: "inline-block", padding: "6px 14px", background: `${statusColor[appt.status]}18`, border: `1px solid ${statusColor[appt.status]}40`, borderRadius: "2px" }}>
+            <div style={{ display: "inline-block", padding: "6px 14px", background: `${statusColor[appt.status] ?? brand.textSoft}18`, border: `1px solid ${statusColor[appt.status] ?? brand.textSoft}40`, borderRadius: "2px", marginBottom: "20px" }}>
               <span style={{ fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", color: statusColor[appt.status] ?? brand.text, fontFamily: "'DM Sans', sans-serif", fontWeight: 400 }}>
                 {appt.status.replace(/_/g, " ")}
               </span>
             </div>
+            <AppointmentStatusForm appointmentId={id} currentStatus={appt.status} />
           </div>
 
           {intake && (
@@ -178,5 +179,69 @@ export default async function AppointmentDetailPage({
         </div>
       </div>
     </AdminPageShell>
+  );
+}
+
+function AppointmentStatusForm({ appointmentId, currentStatus }: { appointmentId: string; currentStatus: string }) {
+  const transitions: Record<string, { label: string; next: string; primary: boolean }[]> = {
+    pending_confirmation: [
+      { label: "Confirm", next: "confirmed", primary: true },
+      { label: "Cancel", next: "cancelled", primary: false },
+    ],
+    confirmed: [
+      { label: "Mark arrived", next: "arrived", primary: true },
+      { label: "Cancel", next: "cancelled", primary: false },
+    ],
+    arrived: [
+      { label: "Start session", next: "in_session", primary: true },
+    ],
+    in_session: [
+      { label: "Complete session", next: "completed", primary: true },
+    ],
+    completed: [],
+    cancelled: [],
+    no_show: [],
+  };
+
+  const actions = transitions[currentStatus] ?? [];
+  if (actions.length === 0) return null;
+
+  return (
+    <form style={{ display: "flex", flexDirection: "column", gap: "8px" }} action={async (formData: FormData) => {
+      "use server";
+      const next = formData.get("next") as string;
+      if (!next) return;
+      const { createServiceClient } = await import("@/lib/supabase/server");
+      const supabase = await createServiceClient();
+      await supabase.from("appointments").update({ status: next }).eq("id", appointmentId);
+      const { revalidatePath } = await import("next/cache");
+      revalidatePath(`/admin/appointments/${appointmentId}`);
+      revalidatePath("/admin");
+      revalidatePath("/admin/appointments");
+    }}>
+      {actions.map((action) => (
+        <button
+          key={action.next}
+          type="submit"
+          name="next"
+          value={action.next}
+          style={{
+            width: "100%",
+            padding: "11px 20px",
+            background: action.primary ? brand.forest : "transparent",
+            color: action.primary ? "#F0EBE0" : "#c0392b",
+            fontSize: "12px",
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            border: action.primary ? "none" : "1px solid rgba(192,57,43,0.3)",
+            borderRadius: "2px",
+            cursor: "pointer",
+            fontFamily: "'DM Sans', sans-serif",
+          }}
+        >
+          {action.label}
+        </button>
+      ))}
+    </form>
   );
 }
