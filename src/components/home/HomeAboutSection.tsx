@@ -3,57 +3,40 @@ import { brand, homeTypography } from "@/lib/brand";
 
 export function HomeAboutSection() {
   return (
-    <section id="about" className="px-6 py-20 md:px-10 lg:px-16">
+    <section id="about" className="px-6 py-24 md:px-10 lg:px-16">
       <div className="mx-auto max-w-7xl">
-        <div
-          className="mb-12 flex items-end justify-between gap-6 pb-6"
-          style={{ borderBottom: `1px solid ${brand.border}` }}
-        >
-          <div>
-            <p className={homeTypography.eyebrow} style={{ color: brand.secondary }}>
-              About us
-            </p>
-            <h2 className={homeTypography.sectionTitle}>
-              Two therapists building something thoughtful.
-            </h2>
-          </div>
-          <p
-            className="hidden max-w-xl text-right text-lg leading-8 lg:block"
-            style={{ color: brand.textMuted }}
-          >
-            Guided Rhythms Massage exists to offer thoughtful, restorative care
-            rooted in presence, professionalism, and a genuine respect for each
-            client&apos;s experience.
+
+        <div className="max-w-2xl">
+          <p className={homeTypography.eyebrow} style={{ color: brand.secondary }}>
+            About us
+          </p>
+          <h2 className={homeTypography.sectionTitle}>
+            Two therapists building something thoughtful.
+          </h2>
+          <p className="mt-6 text-lg leading-8" style={{ color: brand.textMuted }}>
+            Guided Rhythms Massage exists to offer thoughtful, restorative care rooted
+            in presence, professionalism, and a genuine respect for each client&apos;s experience.
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="mt-20">
           {homeContent.therapists.map((therapist) => (
-            <article
+            <div
               key={therapist.name}
-              className="relative overflow-hidden rounded-[2rem] p-8"
-              style={{
-                border: `1px solid ${brand.border}`,
-                backgroundColor: brand.surface,
-                boxShadow: "0 18px 40px rgba(47,58,44,0.06)",
-              }}
+              className="grid gap-6 py-10 md:grid-cols-[1fr_2fr] md:gap-16"
+              style={{ borderTop: `1px solid ${brand.border}` }}
             >
-              <div
-                className="absolute right-0 top-0 h-32 w-32 rounded-full blur-2xl"
-                style={{ backgroundColor: "rgba(111,143,85,0.10)" }}
-              />
-              <h3 className="text-[1.75rem] font-semibold tracking-[-0.03em]">
+              <h3 className="text-2xl md:text-3xl" style={{ color: brand.text }}>
                 {therapist.name}
               </h3>
-              <p
-                className="mt-5 max-w-xl text-lg leading-8"
-                style={{ color: brand.textMuted }}
-              >
+              <p className="text-base leading-7" style={{ color: brand.textMuted }}>
                 {therapist.role}
               </p>
-            </article>
+            </div>
           ))}
+          <div style={{ borderTop: `1px solid ${brand.border}` }} />
         </div>
+
       </div>
     </section>
   );

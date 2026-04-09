@@ -6,7 +6,7 @@ const points = [
 
 export default function Approach() {
   return (
-    <section id="approach">
+    <section id="approach" className="scroll-mt-28">
       <div className="mx-auto max-w-5xl px-6 py-24 sm:px-8">
         <p className="text-sm font-medium uppercase tracking-[0.22em] text-[color:var(--muted-sage)]">
           OUR APPROACH
