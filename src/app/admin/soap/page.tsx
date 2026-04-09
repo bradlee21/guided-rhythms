@@ -36,7 +36,7 @@ export default async function SoapNotesPage() {
       soap_notes ( id, updated_at )
     `)
     .eq("therapist_id", user.id)
-    .in("status", ["completed", "in_session", "ready_for_visit", "arrived", "confirmed"])
+    .in("status", ["completed", "in_session", "ready_for_visit", "arrived", "confirmed", "pending_confirmation"])
     .order("appointment_date", { ascending: false })
     .limit(50);
 

@@ -92,10 +92,7 @@ export default async function ClientsPage() {
                   background: i % 2 === 0 ? "#ffffff" : brand.background,
                   textDecoration: "none",
                   gap: "16px",
-                  transition: "background 0.15s",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = brand.backgroundSoft)}
-                onMouseLeave={(e) => (e.currentTarget.style.background = i % 2 === 0 ? "#ffffff" : brand.background)}
               >
                 <div>
                   <div style={{ fontSize: "15px", color: brand.text, fontFamily: "'DM Sans', sans-serif", marginBottom: "2px" }}>
