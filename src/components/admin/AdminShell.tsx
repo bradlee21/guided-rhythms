@@ -48,7 +48,9 @@ export function AdminShell({
           <nav className="mt-5 space-y-2">
             {adminNavItems.map((item) => {
               const isActive =
-                pathname === item.href || pathname.startsWith(`${item.href}/`);
+                item.href === "/admin"
+                  ? pathname === "/admin"
+                  : pathname === item.href || pathname.startsWith(item.href + "/");
 
               return (
                 <Link
