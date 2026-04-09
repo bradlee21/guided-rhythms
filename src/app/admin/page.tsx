@@ -210,6 +210,7 @@ export default async function AdminDashboard() {
               <a
                 key={appt.id}
                 href={`/admin/appointments/${appt.id}`}
+                className="hover:bg-[#F2EDE2]"
                 style={{
                   display: "grid",
                   gridTemplateColumns: "140px 1fr 1fr 120px 100px",
@@ -220,8 +221,6 @@ export default async function AdminDashboard() {
                   textDecoration: "none",
                   transition: "background 0.15s",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = brand.backgroundSoft)}
-                onMouseLeave={(e) => (e.currentTarget.style.background = i % 2 === 0 ? "#ffffff" : brand.background)}
               >
                 <span style={{ fontSize: "14px", color: brand.text, fontFamily: "'DM Sans', sans-serif" }}>
                   {formatDate(appt.appointment_date)}
