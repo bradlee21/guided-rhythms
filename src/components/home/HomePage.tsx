@@ -6,13 +6,11 @@ import { HomeHero } from "@/components/home/HomeHero";
 import { HomeNewClientsSection } from "@/components/home/HomeNewClientsSection";
 import { HomePhilosophySection } from "@/components/home/HomePhilosophySection";
 import { HomeServicesSection } from "@/components/home/HomeServicesSection";
-import { brand } from "@/lib/brand";
-
 export function HomePage() {
   return (
     <main
       className="relative min-h-screen overflow-hidden"
-      style={{ backgroundColor: brand.background, color: brand.text }}
+      style={{ backgroundColor: "var(--background)", color: "var(--text)" }}
     >
       <HomeBackground />
 
