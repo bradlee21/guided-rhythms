@@ -12,9 +12,11 @@ import { cn } from "@/lib/utils";
 export function AdminShell({
   children,
   adminEmail,
+  adminName,
 }: {
   children: ReactNode;
   adminEmail: string | null;
+  adminName?: string;
 }) {
   const pathname = usePathname();
 
@@ -92,7 +94,9 @@ export function AdminShell({
                 Guided Rhythms Admin
               </p>
               <p className="mt-2 text-sm leading-6" style={{ color: brand.textMuted }}>
-                {adminEmail
+                {adminName
+                  ? `Welcome, ${adminName}.`
+                  : adminEmail
                   ? `Signed in as ${adminEmail}.`
                   : "Authenticated admin session."}{" "}
                 Booking requests are protected; other admin areas remain scaffolded.
