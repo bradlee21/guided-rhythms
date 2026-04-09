@@ -1,15 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f5f2eb;
-  --foreground: #1f2b24;
-  --forest-green: #1f3d33;
-  --muted-sage: #8faf9b;
-  --soft-sand: #f1ece2;
-  --accent-gold: #c2a36b;
-  --woody-brown: #8a5a36;
-  --text-soft: #66675f;
-  --border-soft: rgba(31, 61, 51, 0.12);
+  --background: #F7F3EC;
+  --background-soft: #F2EDE2;
+  --surface: rgba(255, 255, 255, 0.65);
+  --surface-strong: rgba(255, 255, 255, 0.88);
+  --text: #1A2418;
+  --text-muted: #6A6050;
+  --text-soft: #9A8A72;
+  --forest: #2E4A30;
+  --forest-mid: #446E49;
+  --sage: #6F8F55;
+  --sage-light: #A8BC8E;
+  --gold: #C8881A;
+  --gold-light: #E0A84A;
+  --gold-pale: rgba(200, 136, 26, 0.10);
+  --border: rgba(30, 40, 32, 0.08);
+  --border-gold: rgba(200, 136, 26, 0.25);
+  --border-med: rgba(30, 40, 32, 0.12);
 }
 
 * {
@@ -21,46 +29,25 @@ html {
 }
 
 body {
-  margin: 0;
-  background:
-    radial-gradient(circle at top left, rgba(143, 175, 155, 0.06), transparent 28%),
-    radial-gradient(circle at top right, rgba(194, 163, 107, 0.05), transparent 24%),
-    linear-gradient(180deg, #f5f2eb 0%, #f6f3ed 35%, #f4f1ea 100%);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-:root {
-  --gold:           #C8881A;
-  --gold-light:     #E0A84A;
-  --gold-pale:      rgba(200, 136, 26, 0.12);
-  --forest:         #2E4A30;
-  --forest-mid:     #446E49;
-  --sage:           #6F8F55;
-  --surface:        rgba(255, 255, 255, 0.65);
-  --surface-strong: rgba(255, 255, 255, 0.88);
-  --text:           #1E2B20;
-  --text-muted:     #6B6657;
-  --border-gold:    rgba(200, 136, 26, 0.25);
-}
-
-body {
+  background-color: var(--background);
+  color: var(--text);
   font-family: 'DM Sans', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
+  background:
+    radial-gradient(circle at top left, rgba(111,143,85,0.05), transparent 28%),
+    radial-gradient(circle at top right, rgba(200,136,26,0.04), transparent 24%),
+    linear-gradient(180deg, #F7F3EC 0%, #F5F0E8 50%, #F2EDE2 100%);
 }
 
 h1, h2, h3, h4 {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-weight: 300;
-}
-
-h1, h2, h3, h4 {
-  font-weight: 400 !important;
   letter-spacing: -0.02em;
 }
 
-h1 {
-  font-size: clamp(2.8rem, 6vw, 5rem);
-  line-height: 1.05;
-}
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--background-soft); }
+::-webkit-scrollbar-thumb { background: var(--sage-light); border-radius: 3px; }

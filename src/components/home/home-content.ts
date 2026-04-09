@@ -23,6 +23,20 @@ export const homeContent = {
       body: "We want clients to leave feeling more than temporary relief. Our aim is to create care that feels calming, meaningful, and restorative.",
     },
   ],
+  services: [
+    {
+      title: "Customized Sessions",
+      description: "Each session is shaped with intention, taking into account how you're feeling, what you want to focus on, and the kind of care that would best serve you that day.",
+    },
+    {
+      title: "Restorative Care",
+      description: "Care that supports relaxation, calm, and a more grounded physical and mental state — built around your body's needs, not a fixed sequence.",
+    },
+    {
+      title: "Focused Support",
+      description: "Thoughtful work for areas that need more attention, always guided by communication and client comfort.",
+    },
+  ],
   firstVisit: [
     {
       title: "Conversation First",
@@ -52,11 +66,13 @@ export const homeContent = {
       name: "Josh Green",
       email: "greenrjoshua@gmail.com",
       phone: "(717) 648-9671",
+      specialty: "Holistic & Restorative",
     },
     {
       name: "Brad Ivy",
       email: "bradlee.ivycc@gmail.com",
       phone: "(717) 855-6808",
+      specialty: "Therapeutic & Deep Tissue",
     },
   ],
 } as const;

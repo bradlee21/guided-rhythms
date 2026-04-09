@@ -1,74 +1,120 @@
-import Image from "next/image";
+"use client";
 
+import { useState, useEffect } from "react";
+import Image from "next/image";
 import { brand } from "@/lib/brand";
 
-const navItems = [
-  { href: "#about", label: "About" },
-  { href: "#philosophy", label: "Philosophy" },
-  { href: "#services", label: "Services" },
-  { href: "#new-clients", label: "New Clients" },
-] as const;
-
 export function HomeHeader() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="px-6 pb-0 pt-5 md:px-10 lg:px-16">
-      <div
-        className="mx-auto flex max-w-7xl items-center justify-between gap-8 pb-0"
-        style={{ borderBottom: `1px solid ${brand.border}` }}
-      >
-        <div className="flex shrink-0 items-center gap-5 md:gap-6">
-          <div className="relative h-40 w-40 md:h-[13.75rem] md:w-[13.75rem] lg:h-[16.25rem] lg:w-[16.25rem]">
-            <Image
-              src="/guided-rhythms-logo.png"
-              alt="Guided Rhythms Massage logo"
-              fill
-              className="object-contain drop-shadow-[0_12px_26px_rgba(47,58,44,0.10)]"
-              priority
-            />
-          </div>
-
-          <div className="min-w-0 self-center text-center">
-            <p
-              className="text-[0.72rem] uppercase tracking-[0.34em] md:text-[0.78rem]"
-              style={{ color: brand.secondary }}
-            >
-              Guided Rhythms Massage
-            </p>
-            <p
-              className="mt-2 text-sm md:text-base"
-              style={{ color: brand.textMuted }}
-            >
-              Intentional care for restoration and wellness
-            </p>
-          </div>
-        </div>
-
-        <nav
-          className="hidden items-center gap-8 text-sm md:flex"
-          style={{ color: brand.textMuted }}
+    <header
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 50,
+        padding: "18px 56px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        borderBottom: `1px solid ${brand.border}`,
+        background: scrolled ? brand.surfaceStrong : brand.background,
+        backdropFilter: scrolled ? "blur(12px)" : "none",
+        WebkitBackdropFilter: scrolled ? "blur(12px)" : "none",
+        transition: "background 0.3s ease",
+      }}
+    >
+      {/* Logo + name */}
+      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <div
+          style={{
+            width: "38px",
+            height: "38px",
+            borderRadius: "50%",
+            border: `1px solid ${brand.borderGold}`,
+            background: brand.goldPale,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
         >
-          {navItems.map((item) => (
-            <a
-              key={item.href}
-              className="opacity-80 transition hover:opacity-100"
-              href={item.href}
-            >
-              {item.label}
-            </a>
-          ))}
-          <a
-            className="rounded-full px-4 py-2 transition"
-            href="#contact"
+          <Image
+            src="/guided-rhythms-logo.png"
+            alt="Guided Rhythms logo"
+            width={28}
+            height={28}
+            style={{ borderRadius: "50%", objectFit: "cover" }}
+          />
+        </div>
+        <div>
+          <div
             style={{
-              border: `1px solid ${brand.border}`,
-              backgroundColor: brand.surface,
-              color: brand.text,
+              fontSize: "11px",
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: brand.forest,
+              fontWeight: 400,
             }}
           >
-            Contact
-          </a>
-        </nav>
+            Guided Rhythms
+          </div>
+          <div
+            style={{
+              fontSize: "9px",
+              letterSpacing: "0.08em",
+              color: brand.textSoft,
+            }}
+          >
+            Massage Therapy
+          </div>
+        </div>
       </div>
+
+      {/* Nav */}
+      <nav style={{ display: "flex", gap: "32px", alignItems: "center" }}>
+        {["About", "Services", "New clients", "Philosophy"].map((link) => (
+          <a
+            key={link}
+            href={`#${link.toLowerCase().replace(" ", "-")}`}
+            style={{
+              fontSize: "11px",
+              letterSpacing: "0.05em",
+              color: brand.textMuted,
+              textDecoration: "none",
+              transition: "color 0.2s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = brand.forest)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = brand.textMuted)}
+          >
+            {link}
+          </a>
+        ))}
+        <a
+          href="#contact"
+          style={{
+            padding: "9px 24px",
+            background: brand.forest,
+            color: "#F0EBE0",
+            fontSize: "11px",
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            textDecoration: "none",
+            fontWeight: 400,
+            transition: "opacity 0.2s",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
+          onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+        >
+          Book now
+        </a>
+      </nav>
     </header>
   );
 }

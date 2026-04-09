@@ -1,58 +1,35 @@
 import { brand, homeTypography } from "@/lib/brand";
-
-const services = [
-  {
-    label: "Customized Sessions",
-    body: "Each session is shaped with intention, taking into account how you're feeling, what you want to focus on, and the kind of care that would best serve you that day.",
-  },
-  {
-    label: "Restorative Care",
-    body: "Care that supports relaxation, calm, and a more grounded physical and mental state — built around your body's needs, not a fixed sequence.",
-  },
-  {
-    label: "Focused Support",
-    body: "Thoughtful work for areas that need more attention, always guided by communication and client comfort.",
-  },
-];
+import { homeContent } from "@/components/home/home-content";
 
 export function HomeServicesSection() {
   return (
-    <section id="services" className="px-6 py-24 md:px-10 lg:px-16">
-      <div className="mx-auto max-w-7xl">
-
-        <div className="grid gap-10 md:grid-cols-2 md:gap-20">
-          <div>
-            <p className={homeTypography.eyebrow} style={{ color: brand.secondary }}>
-              Services
-            </p>
-            <h2 className={homeTypography.sectionTitle}>
-              Care shaped around the person.
-            </h2>
-          </div>
-          <p className="self-end text-lg leading-8" style={{ color: brand.textMuted }}>
-            Guided Rhythms Massage offers customized sessions built around your goals
-            and comfort. Not a fixed routine — thoughtful care that feels personal
-            and restorative.
-          </p>
+    <section id="services" style={{ padding: "88px 56px", borderBottom: `1px solid ${brand.border}` }}>
+      <p className={homeTypography.eyebrow} style={{ color: brand.textSoft, marginBottom: "16px" }}>Services</p>
+      <span style={{ width: "40px", height: "1px", background: brand.gold, display: "block", marginBottom: "48px" }} />
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "80px", alignItems: "start" }}>
+        <div>
+          <h2 style={{ fontSize: "clamp(32px, 3.5vw, 46px)", fontWeight: 300, lineHeight: 1.08, color: brand.text, letterSpacing: "-0.02em" }}>
+            Care shaped around the person.
+          </h2>
         </div>
-
-        <div className="mt-20 grid gap-16 sm:grid-cols-3">
-          {services.map((service) => (
-            <div key={service.label}>
-              <div
-                className="mb-6 h-px w-10"
-                style={{ background: brand.accent }}
-              />
-              <h3 className="text-2xl md:text-3xl" style={{ color: brand.text }}>
-                {service.label}
-              </h3>
-              <p className="mt-4 text-base leading-7" style={{ color: brand.textMuted }}>
-                {service.body}
-              </p>
+        <div style={{ borderTop: `1px solid ${brand.borderMed}` }}>
+          {homeContent.services.map((service) => (
+            <div
+              key={service.title}
+              style={{
+                padding: "28px 0",
+                borderBottom: `1px solid ${brand.border}`,
+                display: "grid",
+                gridTemplateColumns: "1fr 2fr",
+                gap: "24px",
+                alignItems: "start",
+              }}
+            >
+              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 400, color: brand.text }}>{service.title}</h3>
+              <p style={{ fontSize: "13px", lineHeight: 1.85, color: brand.textMuted }}>{service.description}</p>
             </div>
           ))}
         </div>
-
       </div>
     </section>
   );

@@ -1,92 +1,207 @@
-import { homeContent } from "@/components/home/home-content";
+"use client";
+
 import { brand, homeTypography } from "@/lib/brand";
 
 export function HomeHero() {
   return (
-    <section className="px-6 pb-24 pt-16 md:px-10 lg:px-16">
-      <div className="mx-auto max-w-7xl">
-
+    <section
+      style={{
+        display: "grid",
+        gridTemplateColumns: "3fr 2fr",
+        minHeight: "580px",
+        borderBottom: `1px solid ${brand.border}`,
+      }}
+    >
+      {/* Left — headline + CTAs */}
+      <div
+        style={{
+          padding: "64px 56px 64px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          borderRight: `1px solid ${brand.border}`,
+        }}
+      >
         <p
-          className="mb-6 text-xs uppercase tracking-[0.4em]"
-          style={{ color: brand.accentDeep }}
+          className={homeTypography.eyebrow}
+          style={{ color: brand.textSoft, marginBottom: "20px" }}
         >
           Serving Central Pennsylvania
         </p>
 
-        <h1 className="max-w-4xl text-5xl font-semibold leading-[0.95] tracking-[-0.04em] sm:text-6xl md:text-7xl">
-          A massage practice built on
-          <span
-            className="block bg-clip-text text-transparent"
-            style={{
-              backgroundImage: `linear-gradient(to right, ${brand.secondary}, ${brand.primary}, ${brand.accent})`,
-            }}
-          >
-            presence, listening, and purpose.
-          </span>
+        <span
+          style={{
+            width: "40px",
+            height: "1px",
+            background: brand.gold,
+            display: "block",
+            marginBottom: "28px",
+          }}
+        />
+
+        <h1
+          style={{
+            fontSize: "clamp(44px, 5.5vw, 64px)",
+            fontWeight: 300,
+            lineHeight: 1.0,
+            letterSpacing: "-0.025em",
+            color: brand.text,
+            marginBottom: "32px",
+          }}
+        >
+          Real work.<br />
+          Real care.<br />
+          <em style={{ color: brand.forest, fontStyle: "italic" }}>
+            Real results.
+          </em>
         </h1>
 
-        <div className="mt-12 grid gap-16 md:grid-cols-2 md:gap-24">
-          <p className="text-lg leading-8 md:text-xl" style={{ color: brand.textMuted }}>
-            Guided Rhythms Massage offers thoughtful massage therapy rooted in
-            presence, communication, and purposeful care so clients feel
-            genuinely seen, supported, and restored.
-          </p>
+        <p
+          className={homeTypography.sectionBody}
+          style={{
+            fontSize: "15px",
+            color: brand.textMuted,
+            maxWidth: "420px",
+            marginBottom: "48px",
+          }}
+        >
+          Guided Rhythms is a massage therapy practice built on genuine
+          attention — where your session is shaped around you, not a
+          preset routine.
+        </p>
 
-          <div>
-            <p
-              className={homeTypography.eyebrow}
-              style={{ color: brand.textMuted }}
-            >
-              What sets the tone
-            </p>
-            <ul className="mt-6 space-y-4">
-              {homeContent.differentiators.map((item) => (
-                <li key={item} className="flex items-start gap-3">
-                  <span
-                    className="mt-[0.4rem] h-1.5 w-1.5 shrink-0 rounded-full"
-                    style={{ backgroundColor: brand.accent }}
-                  />
-                  <span className="text-base leading-7" style={{ color: brand.text }}>
-                    {item}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <p
-              className="mt-8 text-base leading-7"
-              style={{ color: brand.textMuted }}
-            >
-              Every part of the practice is shaped around calm professionalism,
-              meaningful care, and an experience that feels personal rather than routine.
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-12 flex flex-col gap-4 sm:flex-row">
+        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+          <a
+            href="#contact"
+            style={{
+              padding: "13px 32px",
+              background: brand.forest,
+              color: "#F0EBE0",
+              fontSize: "11px",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              textDecoration: "none",
+              fontWeight: 400,
+              transition: "opacity 0.2s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+          >
+            Book a session
+          </a>
           <a
             href="#about"
-            className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition hover:scale-[1.01]"
             style={{
-              background: `linear-gradient(to right, ${brand.primary}, ${brand.accent})`,
-              color: "#FFFFFF",
-              boxShadow: `0 12px 30px ${brand.glow}`,
-            }}
-          >
-            Meet the Therapists
-          </a>
-          <a
-            href="#philosophy"
-            className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition"
-            style={{
-              border: `1px solid ${brand.border}`,
-              backgroundColor: brand.surface,
+              padding: "13px 32px",
+              border: `1px solid ${brand.borderMed}`,
               color: brand.text,
+              fontSize: "11px",
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              textDecoration: "none",
+              fontWeight: 400,
+              transition: "border-color 0.2s",
             }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.borderColor = brand.forest)
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.borderColor = brand.borderMed)
+            }
           >
-            Our Philosophy
+            Meet us first
           </a>
         </div>
+      </div>
 
+      {/* Right — two therapist panels */}
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        {/* Josh — top */}
+        <div
+          style={{
+            flex: 1,
+            padding: "40px",
+            borderBottom: `1px solid ${brand.border}`,
+            background: brand.backgroundSoft,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          <span
+            style={{
+              width: "28px",
+              height: "1px",
+              background: brand.gold,
+              display: "block",
+              marginBottom: "16px",
+            }}
+          />
+          <h3
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "26px",
+              fontWeight: 400,
+              color: brand.text,
+              marginBottom: "6px",
+            }}
+          >
+            Josh Green
+          </h3>
+          <p
+            className={homeTypography.eyebrow}
+            style={{ color: brand.textSoft, marginBottom: "12px" }}
+          >
+            Holistic &amp; restorative
+          </p>
+          <p className={homeTypography.cardBody} style={{ color: brand.textMuted }}>
+            A thoughtful, intuitive presence. Josh brings a client-centered
+            approach that makes every session feel intentional.
+          </p>
+        </div>
+
+        {/* Brad — bottom */}
+        <div
+          style={{
+            flex: 1,
+            padding: "40px",
+            background: brand.background,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          <span
+            style={{
+              width: "28px",
+              height: "1px",
+              background: brand.forest,
+              display: "block",
+              marginBottom: "16px",
+            }}
+          />
+          <h3
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "26px",
+              fontWeight: 400,
+              color: brand.text,
+              marginBottom: "6px",
+            }}
+          >
+            Brad Ivy
+          </h3>
+          <p
+            className={homeTypography.eyebrow}
+            style={{ color: brand.textSoft, marginBottom: "12px" }}
+          >
+            Therapeutic &amp; deep tissue
+          </p>
+          <p className={homeTypography.cardBody} style={{ color: brand.textMuted }}>
+            Recovery-minded work rooted in listening. If you&apos;re coming in
+            with real pain or tension, Brad is your person.
+          </p>
+        </div>
       </div>
     </section>
   );
