@@ -5,7 +5,11 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(git checkout:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(cat D:/Projects/guided-rhythms/src/app/admin/clients/[id]/page.tsx)",
+      "Bash(cat D:/Projects/guided-rhythms/src/app/admin/soap/[appointmentId]/page.tsx)",
+      "Bash(npx tsx:*)",
+      "Bash(npm install:*)"
     ]
   }
 }
