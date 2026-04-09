@@ -11,7 +11,12 @@
       "Bash(npx tsx:*)",
       "Bash(npm install:*)",
       "Bash(npx tsc:*)",
-      "Bash(npx supabase:*)"
+      "Bash(npx supabase:*)",
+      "Bash(cat src/app/admin/booking-requests/page.tsx)",
+      "Bash(echo \"===\")",
+      "Bash(cat \"src/app/admin/booking-requests/[id]/page.tsx\")",
+      "Bash(cat \"src/app/intake/[token]/page.tsx\")",
+      "Bash(cat src/components/booking/steps/StepTherapist.tsx)"
     ]
   }
 }

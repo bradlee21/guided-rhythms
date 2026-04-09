@@ -1,0 +1,1076 @@
+import { PlaceholderPanel } from "@/components/app/PlaceholderPanel";
+import { BookingRequestList } from "@/components/booking/BookingRequestList";
+import { AdminPageShell } from "@/components/admin/AdminPageShell";
+import { listBookingRequests } from "@/server/booking/queries";
+
+export const dynamic = "force-dynamic";
+
+export default async function AdminBookingRequestsPage() {
+  const requestsResult = await listBookingRequests();
+
+  return (
+    <AdminPageShell
+      eyebrow="Admin"
+      title="Booking requests"
+      description="Review submitted booking requests, check the requested service, and move each request through the initial review statuses."
+    >
+      {requestsResult.connection === "error" ||
+      requestsResult.connection === "not_configured" ? (
+        <PlaceholderPanel
+          title={
+            requestsResult.connection === "not_configured"
+              ? "Database not connected"
+              : "Unable to load booking requests"
+          }
+          body={
+            requestsResult.message ??
+            "Guided Rhythms could not load booking requests right now."
+          }
+        />
+      ) : (
+        <BookingRequestList
+          requests={requestsResult.data}
+          emptyMessage="No booking requests have been submitted yet."
+        />
+      )}
+    </AdminPageShell>
+  );
+}
+===
+import { notFound } from "next/navigation";
+
+import { PlaceholderPanel } from "@/components/app/PlaceholderPanel";
+import { AdminPageShell } from "@/components/admin/AdminPageShell";
+import { AppointmentStatusBadge } from "@/components/appointments/AppointmentStatusBadge";
+import { AppointmentConversionForm } from "@/components/appointments/AppointmentConversionForm";
+import { AdminBookingRequestActions } from "@/components/booking/AdminBookingRequestActions";
+import { BookingRequestStatusBadge } from "@/components/booking/BookingRequestStatusBadge";
+import { brand } from "@/lib/brand";
+import { formatDateOnly } from "@/lib/dates";
+import { getBookingRequestById } from "@/server/booking/queries";
+import type { AppointmentStatus } from "@/types/appointment";
+import { isFirstVisitServiceSlug } from "@/types/booking";
+
+export const dynamic = "force-dynamic";
+
+function formatDateTime(value: string | null) {
+  if (!value) {
+    return "Not provided";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
+
+function DetailRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <p
+        className="text-sm uppercase tracking-[0.22em]"
+        style={{ color: brand.secondary }}
+      >
+        {label}
+      </p>
+      <p className="mt-2 text-base leading-7" style={{ color: brand.textMuted }}>
+        {value}
+      </p>
+    </div>
+  );
+}
+
+export default async function AdminBookingRequestDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const requestResult = await getBookingRequestById(id);
+
+  if (requestResult.connection === "connected" && !requestResult.data) {
+    notFound();
+  }
+
+  if (requestResult.connection !== "connected") {
+    return (
+      <AdminPageShell
+        eyebrow="Admin"
+        title="Booking request"
+        description="The detail route is in place, but the request could not be loaded from Supabase."
+      >
+        <PlaceholderPanel
+          title={
+            requestResult.connection === "not_configured"
+              ? "Database not connected"
+              : "Unable to load booking request"
+          }
+          body={
+            requestResult.message ??
+            "Guided Rhythms could not load this booking request right now."
+          }
+        />
+      </AdminPageShell>
+    );
+  }
+
+  const request = requestResult.data;
+  const serviceBlockMinutes = request.requested_service?.total_block_minutes ?? 0;
+  const hasClientTypeServiceMismatch =
+    !request.is_new_client &&
+    isFirstVisitServiceSlug(request.requested_service?.slug);
+
+  return (
+    <AdminPageShell
+      eyebrow="Admin"
+      title={`${request.first_name} ${request.last_name}`}
+      description="Review the full booking request, update its status, and convert approved requests into real scheduled appointments."
+    >
+      <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
+        <div
+          className="rounded-[1.75rem] p-6"
+          style={{
+            backgroundColor: "rgba(255,255,255,0.7)",
+            border: `1px solid ${brand.border}`,
+          }}
+        >
+          <div
+            className="flex flex-col gap-4 border-b pb-6 md:flex-row md:items-center md:justify-between"
+            style={{ borderColor: brand.border }}
+          >
+            <div>
+              <p
+                className="text-sm uppercase tracking-[0.22em]"
+                style={{ color: brand.secondary }}
+              >
+                Request details
+              </p>
+              <p className="mt-3 text-sm leading-6" style={{ color: brand.textMuted }}>
+                Submitted {formatDateTime(request.created_at)}
+              </p>
+            </div>
+            <BookingRequestStatusBadge status={request.status} />
+          </div>
+
+          <div className="mt-6 grid gap-6 md:grid-cols-2">
+            <DetailRow label="Email" value={request.email} />
+            <DetailRow label="Phone" value={request.phone} />
+            <DetailRow
+              label="Client type"
+              value={request.is_new_client ? "New client" : "Returning client"}
+            />
+            <DetailRow
+              label="Linked client id"
+              value={request.client_id || "Not linked"}
+            />
+            <DetailRow
+              label="Service"
+              value={request.requested_service?.name ?? "No service selected"}
+            />
+            <DetailRow
+              label="Requested service id"
+              value={request.requested_service_id || "Not provided"}
+            />
+            <DetailRow
+              label="Requested therapist id"
+              value={request.requested_therapist_id || "Not provided"}
+            />
+            <DetailRow
+              label="Preferred date 1"
+              value={formatDateOnly(request.preferred_date_1)}
+            />
+            <DetailRow
+              label="Preferred date 2"
+              value={formatDateOnly(request.preferred_date_2)}
+            />
+            <DetailRow
+              label="Preferred date 3"
+              value={formatDateOnly(request.preferred_date_3)}
+            />
+            <DetailRow
+              label="Preferred days"
+              value={request.preferred_days?.join(", ") ?? "Not provided"}
+            />
+            <DetailRow
+              label="Preferred times"
+              value={request.preferred_times?.join(", ") ?? "Not provided"}
+            />
+            <DetailRow
+              label="Referral source"
+              value={request.referral_source || "Not provided"}
+            />
+            <DetailRow label="Pain points" value={request.pain_points || "Not provided"} />
+            <DetailRow label="Goals" value={request.goals || "Not provided"} />
+            <DetailRow label="Client notes" value={request.notes || "Not provided"} />
+            <DetailRow label="Reviewed by" value={request.reviewed_by || "Not assigned"} />
+            <DetailRow
+              label="Review timestamp"
+              value={formatDateTime(request.reviewed_at)}
+            />
+            <DetailRow label="Updated at" value={formatDateTime(request.updated_at)} />
+            <DetailRow
+              label="Linked appointment"
+              value={request.appointment?.id || "Not created"}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          {hasClientTypeServiceMismatch ? (
+            <section
+              className="rounded-[1.75rem] p-6"
+              style={{
+                backgroundColor: "rgba(255,245,234,0.86)",
+                border: `1px solid ${brand.border}`,
+              }}
+            >
+              <p
+                className="text-sm uppercase tracking-[0.24em]"
+                style={{ color: brand.secondary }}
+              >
+                Service mismatch
+              </p>
+              <p className="mt-3 text-sm leading-6" style={{ color: brand.textMuted }}>
+                This request is marked as returning client but selected First Visit
+                Therapeutic Massage, which is reserved for new clients. Review the
+                request before moving forward.
+              </p>
+            </section>
+          ) : null}
+
+          <AdminBookingRequestActions
+            id={request.id}
+            status={request.status}
+            adminNotes={request.admin_notes}
+          />
+
+          {request.appointment ? (
+            <section
+              className="rounded-[1.75rem] p-6"
+              style={{
+                backgroundColor: "rgba(255,255,255,0.68)",
+                border: `1px solid ${brand.border}`,
+              }}
+            >
+              <p
+                className="text-sm uppercase tracking-[0.24em]"
+                style={{ color: brand.secondary }}
+              >
+                Appointment created
+              </p>
+              <div className="mt-3">
+                <AppointmentStatusBadge
+                  status={request.appointment.status as AppointmentStatus}
+                />
+              </div>
+              <p className="mt-4 text-sm leading-6" style={{ color: brand.textMuted }}>
+                {formatDateOnly(request.appointment.appointment_date)} |{" "}
+                {request.appointment.start_time} - {request.appointment.end_time}
+              </p>
+              <a
+                href={`/admin/appointments/${request.appointment.id}`}
+                className="mt-4 inline-flex rounded-full px-4 py-2 text-sm font-semibold"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.82)",
+                  border: `1px solid ${brand.border}`,
+                }}
+              >
+                View appointment
+              </a>
+            </section>
+          ) : null}
+
+          {request.status === "approved" && !request.appointment ? (
+            <section
+              className="rounded-[1.75rem] p-6"
+              style={{
+                backgroundColor: "rgba(255,255,255,0.68)",
+                border: `1px solid ${brand.border}`,
+              }}
+            >
+              <p
+                className="text-sm uppercase tracking-[0.24em]"
+                style={{ color: brand.secondary }}
+              >
+                Create appointment
+              </p>
+              <p className="mt-3 text-sm leading-6" style={{ color: brand.textMuted }}>
+                Approved requests can be converted into one real scheduled
+                appointment. End time is derived from the selected service block.
+              </p>
+              <div className="mt-6">
+                <AppointmentConversionForm
+                  bookingRequestId={request.id}
+                  serviceBlockMinutes={serviceBlockMinutes}
+                  defaultPriceCents={
+                    request.requested_service?.base_price_cents ?? 0
+                  }
+                  defaultLocationType="office"
+                />
+              </div>
+            </section>
+          ) : null}
+        </div>
+      </section>
+    </AdminPageShell>
+  );
+}
+===
+import { PageShell } from "@/components/app/PageShell";
+import { PlaceholderPanel } from "@/components/app/PlaceholderPanel";
+import { IntakeForm } from "@/components/intake/IntakeForm";
+import { IntakeSummary } from "@/components/intake/IntakeSummary";
+import { mapIntakeAnswersToValues, createDefaultIntakeValues } from "@/lib/intake/answers";
+import { getIntakeByToken } from "@/server/intakes/queries";
+
+export const dynamic = "force-dynamic";
+
+export default async function IntakeTokenPage({
+  params,
+}: {
+  params: Promise<{ token: string }>;
+}) {
+  const { token } = await params;
+  const result = await getIntakeByToken(token);
+
+  if (result.state !== "connected") {
+    return (
+      <PageShell
+        eyebrow="Intake"
+        title="Intake form"
+        description="This secure link is tied to one intake and appointment context."
+      >
+        <PlaceholderPanel
+          title={
+            result.state === "expired"
+              ? "Intake link expired"
+              : result.state === "not_configured"
+                ? "Secure intake access not configured"
+                : "Invalid intake link"
+          }
+          body={result.message}
+        />
+      </PageShell>
+    );
+  }
+
+  const { intake, formValues } = result;
+  const isLocked = intake.status === "completed" || intake.status === "reviewed";
+
+  return (
+    <PageShell
+      eyebrow="Intake"
+      title="Guided intake"
+      description="A calm, step-by-step intake that helps Guided Rhythms understand your needs before the session."
+    >
+      {isLocked ? (
+        <div className="space-y-6">
+          <PlaceholderPanel
+            title="Intake already submitted"
+            body="This intake has already been completed. If something important has changed, please contact Guided Rhythms before your appointment."
+          />
+          <IntakeSummary
+            values={mapIntakeAnswersToValues(
+              intake.answers,
+              createDefaultIntakeValues(intake.client ?? undefined),
+            )}
+          />
+        </div>
+      ) : (
+        <IntakeForm intake={intake} defaultValues={formValues} />
+      )}
+    </PageShell>
+  );
+}
+===
+"use client";
+
+import { BookingState } from "../BookingFlow";
+
+interface Props {
+  therapists: { id: string; full_name: string; bio: string; specialty: string }[];
+  state: BookingState;
+  update: (patch: Partial<BookingState>) => void;
+  onNext: () => void;
+}
+
+export default function StepTherapist({ therapists, state, update, onNext }: Props) {
+  return (
+    <div>
+      <p style={{ fontFamily: "var(--font-sans)", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--text-soft)", marginBottom: 8 }}>
+        Step 1
+      </p>
+      <h2 style={{ fontFamily: "var(--font-serif)", fontWeight: 300, fontSize: "clamp(1.75rem, 4vw, 2.5rem)", color: "var(--text)", marginBottom: "2rem", letterSpacing: "-0.02em", lineHeight: 1.1 }}>
+        Choose your therapist
+      </h2>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        {therapists.map((t) => {
+          const selected = state.therapistId === t.id;
+          return (
+            <button
+              key={t.id}
+              onClick={() => {
+                update({ therapistId: t.id, therapistName: t.full_name });
+                onNext();
+              }}
+              style={{
+                textAlign: "left",
+                padding: "1.5rem",
+                border: selected ? "1px solid var(--gold)" : "1px solid var(--border-med, rgba(30,40,32,0.12))",
+                background: selected ? "var(--gold-pale, rgba(200,136,26,0.06))" : "rgba(255,255,255,0.5)",
+                borderRadius: 2,
+                cursor: "pointer",
+                transition: "border-color 0.2s, background 0.2s",
+              }}
+            >
+              <div style={{ fontFamily: "var(--font-serif)", fontSize: "1.2rem", fontWeight: 400, color: "var(--text)", marginBottom: 4 }}>
+                {t.full_name}
+              </div>
+              {t.specialty && (
+                <div style={{ fontFamily: "var(--font-sans)", fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--gold)", marginBottom: 8 }}>
+                  {t.specialty}
+                </div>
+              )}
+              {t.bio && (
+                <div style={{ fontFamily: "var(--font-sans)", fontSize: 14, color: "var(--text-muted)", lineHeight: 1.7, fontWeight: 300 }}>
+                  {t.bio}
+                </div>
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+===
+"use client";
+
+import { BookingState } from "../BookingFlow";
+
+interface Service {
+  id: string;
+  name: string;
+  description: string;
+  hands_on_minutes: number;
+  base_price_cents: number;
+  slug: string;
+}
+
+interface Props {
+  services: Service[];
+  state: BookingState;
+  update: (patch: Partial<BookingState>) => void;
+  onNext: () => void;
+  onBack: () => void;
+}
+
+function formatPrice(cents: number) {
+  return `$${(cents / 100).toFixed(0)}`;
+}
+
+export default function StepService({ services, state, update, onNext, onBack }: Props) {
+  return (
+    <div>
+      <p style={{ fontFamily: "var(--font-sans)", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--text-soft)", marginBottom: 8 }}>
+        Step 2
+      </p>
+      <h2 style={{ fontFamily: "var(--font-serif)", fontWeight: 300, fontSize: "clamp(1.75rem, 4vw, 2.5rem)", color: "var(--text)", marginBottom: "2rem", letterSpacing: "-0.02em", lineHeight: 1.1 }}>
+        Select a service
+      </h2>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "2rem" }}>
+        {services.map((svc) => {
+          const selected = state.serviceId === svc.id;
+          return (
+            <button
+              key={svc.id}
+              onClick={() => {
+                update({
+                  serviceId: svc.id,
+                  serviceName: svc.name,
+                  durationMinutes: svc.hands_on_minutes,
+                  priceCents: svc.base_price_cents,
+                });
+                onNext();
+              }}
+              style={{
+                textAlign: "left",
+                padding: "1.5rem",
+                border: selected ? "1px solid var(--gold)" : "1px solid var(--border-med, rgba(30,40,32,0.12))",
+                background: selected ? "var(--gold-pale, rgba(200,136,26,0.06))" : "rgba(255,255,255,0.5)",
+                borderRadius: 2,
+                cursor: "pointer",
+                transition: "border-color 0.2s, background 0.2s",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
+                <span style={{ fontFamily: "var(--font-serif)", fontSize: "1.15rem", fontWeight: 400, color: "var(--text)" }}>
+                  {svc.name}
+                </span>
+                <span style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: "var(--gold)", fontWeight: 400 }}>
+                  {formatPrice(svc.base_price_cents)}
+                </span>
+              </div>
+              <div style={{ fontFamily: "var(--font-sans)", fontSize: 12, color: "var(--text-soft)", letterSpacing: "0.08em", marginBottom: 8 }}>
+                {svc.hands_on_minutes} min
+              </div>
+              {svc.description && (
+                <div style={{ fontFamily: "var(--font-sans)", fontSize: 14, color: "var(--text-muted)", lineHeight: 1.7, fontWeight: 300 }}>
+                  {svc.description}
+                </div>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      <button onClick={onBack} style={backBtnStyle}>← Back</button>
+    </div>
+  );
+}
+
+const backBtnStyle: React.CSSProperties = {
+  fontFamily: "var(--font-sans)",
+  fontSize: 13,
+  color: "var(--text-muted)",
+  background: "none",
+  border: "none",
+  cursor: "pointer",
+  padding: 0,
+  letterSpacing: "0.05em",
+};
+===
+"use client";
+
+import { useState } from "react";
+import { BookingState } from "../BookingFlow";
+
+interface Props {
+  state: BookingState;
+  update: (patch: Partial<BookingState>) => void;
+  onNext: () => void;
+  onBack: () => void;
+}
+
+interface TimeSlot {
+  start: string;
+  end: string;
+  available: boolean;
+}
+
+// Generate next 30 days (skipping Sundays) as selectable dates
+function getSelectableDates(): string[] {
+  const dates: string[] = [];
+  const d = new Date();
+  d.setDate(d.getDate() + 1); // start tomorrow
+  while (dates.length < 30) {
+    if (d.getDay() !== 0) { // skip Sundays
+      dates.push(d.toISOString().slice(0, 10));
+    }
+    d.setDate(d.getDate() + 1);
+  }
+  return dates;
+}
+
+function formatDate(iso: string) {
+  const [y, m, day] = iso.split("-").map(Number);
+  const d = new Date(y, m - 1, day);
+  return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+}
+
+function formatTime(t: string) {
+  const [h, m] = t.split(":").map(Number);
+  const ampm = h >= 12 ? "pm" : "am";
+  const hour = h % 12 || 12;
+  return `${hour}:${String(m).padStart(2, "0")} ${ampm}`;
+}
+
+export default function StepDateTime({ state, update, onNext, onBack }: Props) {
+  const [slots, setSlots] = useState<TimeSlot[]>([]);
+  const [loading, setLoading] = useState(false);
+  const dates = getSelectableDates();
+
+  async function selectDate(date: string) {
+    update({ date, startTime: "", endTime: "" });
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `/api/booking/slots?therapistId=${state.therapistId}&date=${date}&duration=${state.durationMinutes}`
+      );
+      const data = await res.json();
+      setSlots(data.slots ?? []);
+    } catch {
+      setSlots([]);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function selectSlot(slot: TimeSlot) {
+    update({ startTime: slot.start, endTime: slot.end });
+    onNext();
+  }
+
+  return (
+    <div>
+      <p style={{ fontFamily: "var(--font-sans)", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--text-soft)", marginBottom: 8 }}>
+        Step 3
+      </p>
+      <h2 style={{ fontFamily: "var(--font-serif)", fontWeight: 300, fontSize: "clamp(1.75rem, 4vw, 2.5rem)", color: "var(--text)", marginBottom: "2rem", letterSpacing: "-0.02em", lineHeight: 1.1 }}>
+        Pick a date & time
+      </h2>
+
+      {/* Date picker */}
+      <div style={{ marginBottom: "2rem" }}>
+        <p style={labelStyle}>Date</p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          {dates.map((d) => (
+            <button
+              key={d}
+              onClick={() => selectDate(d)}
+              style={{
+                padding: "0.5rem 0.85rem",
+                fontFamily: "var(--font-sans)",
+                fontSize: 13,
+                border: state.date === d ? "1px solid var(--gold)" : "1px solid var(--border-med, rgba(30,40,32,0.12))",
+                background: state.date === d ? "var(--gold-pale, rgba(200,136,26,0.06))" : "rgba(255,255,255,0.5)",
+                color: state.date === d ? "var(--gold)" : "var(--text-muted)",
+                borderRadius: 2,
+                cursor: "pointer",
+                transition: "border-color 0.2s, background 0.2s",
+              }}
+            >
+              {formatDate(d)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Time slots */}
+      {state.date && (
+        <div style={{ marginBottom: "2rem" }}>
+          <p style={labelStyle}>Available times</p>
+          {loading ? (
+            <p style={{ fontFamily: "var(--font-sans)", fontSize: 14, color: "var(--text-soft)" }}>Loading…</p>
+          ) : slots.filter(s => s.available).length === 0 ? (
+            <p style={{ fontFamily: "var(--font-sans)", fontSize: 14, color: "var(--text-muted)" }}>
+              No available times for this date. Please choose another day.
+            </p>
+          ) : (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {slots.filter(s => s.available).map((slot) => (
+                <button
+                  key={slot.start}
+                  onClick={() => selectSlot(slot)}
+                  style={{
+                    padding: "0.5rem 1rem",
+                    fontFamily: "var(--font-sans)",
+                    fontSize: 13,
+                    border: state.startTime === slot.start ? "1px solid var(--gold)" : "1px solid var(--border-med, rgba(30,40,32,0.12))",
+                    background: state.startTime === slot.start ? "var(--gold-pale)" : "rgba(255,255,255,0.5)",
+                    color: state.startTime === slot.start ? "var(--gold)" : "var(--text-muted)",
+                    borderRadius: 2,
+                    cursor: "pointer",
+                    transition: "border-color 0.2s, background 0.2s",
+                  }}
+                >
+                  {formatTime(slot.start)}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      <button onClick={onBack} style={backBtnStyle}>← Back</button>
+    </div>
+  );
+}
+
+const labelStyle: React.CSSProperties = {
+  fontFamily: "var(--font-sans)",
+  fontSize: 11,
+  letterSpacing: "0.15em",
+  textTransform: "uppercase",
+  color: "var(--text-soft)",
+  marginBottom: 10,
+};
+
+const backBtnStyle: React.CSSProperties = {
+  fontFamily: "var(--font-sans)",
+  fontSize: 13,
+  color: "var(--text-muted)",
+  background: "none",
+  border: "none",
+  cursor: "pointer",
+  padding: 0,
+  letterSpacing: "0.05em",
+};
+===
+"use client";
+
+import { BookingState } from "../BookingFlow";
+
+interface Props {
+  state: BookingState;
+  update: (patch: Partial<BookingState>) => void;
+  onNext: () => void;
+  onBack: () => void;
+}
+
+export default function StepContact({ state, update, onNext, onBack }: Props) {
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!state.firstName || !state.lastName || !state.email || !state.phone) return;
+    onNext();
+  }
+
+  return (
+    <div>
+      <p style={{ fontFamily: "var(--font-sans)", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--text-soft)", marginBottom: 8 }}>
+        Step 4
+      </p>
+      <h2 style={{ fontFamily: "var(--font-serif)", fontWeight: 300, fontSize: "clamp(1.75rem, 4vw, 2.5rem)", color: "var(--text)", marginBottom: "2rem", letterSpacing: "-0.02em", lineHeight: 1.1 }}>
+        Your information
+      </h2>
+
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+          <Field label="First name" value={state.firstName} onChange={(v) => update({ firstName: v })} required />
+          <Field label="Last name" value={state.lastName} onChange={(v) => update({ lastName: v })} required />
+        </div>
+        <Field label="Email" type="email" value={state.email} onChange={(v) => update({ email: v })} required />
+        <Field label="Phone" type="tel" value={state.phone} onChange={(v) => update({ phone: v })} required />
+        <Field label="Notes or requests (optional)" value={state.notes} onChange={(v) => update({ notes: v })} multiline />
+
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "0.5rem" }}>
+          <button type="button" onClick={onBack} style={backBtnStyle}>← Back</button>
+          <button type="submit" style={submitBtnStyle}>
+            Review booking →
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function Field({
+  label, value, onChange, type = "text", required = false, multiline = false,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  type?: string;
+  required?: boolean;
+  multiline?: boolean;
+}) {
+  const sharedStyle: React.CSSProperties = {
+    width: "100%",
+    padding: "0.65rem 0.85rem",
+    fontFamily: "var(--font-sans)",
+    fontSize: 15,
+    fontWeight: 300,
+    color: "var(--text)",
+    background: "rgba(255,255,255,0.6)",
+    border: "1px solid rgba(30,40,32,0.12)",
+    borderRadius: 2,
+    outline: "none",
+    resize: "vertical",
+  };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+      <label style={{ fontFamily: "var(--font-sans)", fontSize: 11, letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--text-soft)" }}>
+        {label}
+      </label>
+      {multiline ? (
+        <textarea
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          rows={3}
+          style={sharedStyle}
+        />
+      ) : (
+        <input
+          type={type}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          required={required}
+          style={sharedStyle}
+        />
+      )}
+    </div>
+  );
+}
+
+const backBtnStyle: React.CSSProperties = {
+  fontFamily: "var(--font-sans)",
+  fontSize: 13,
+  color: "var(--text-muted)",
+  background: "none",
+  border: "none",
+  cursor: "pointer",
+  padding: 0,
+  letterSpacing: "0.05em",
+};
+
+const submitBtnStyle: React.CSSProperties = {
+  fontFamily: "var(--font-sans)",
+  fontSize: 13,
+  letterSpacing: "0.12em",
+  textTransform: "uppercase",
+  color: "#fff",
+  background: "var(--gold)",
+  border: "none",
+  borderRadius: 2,
+  padding: "0.75rem 1.75rem",
+  cursor: "pointer",
+};
+===
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { BookingState } from "../BookingFlow";
+
+interface Props {
+  state: BookingState;
+  onBack: () => void;
+}
+
+function formatDate(iso: string) {
+  if (!iso) return "";
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+}
+
+function formatTime(t: string) {
+  if (!t) return "";
+  const [h, m] = t.split(":").map(Number);
+  const ampm = h >= 12 ? "pm" : "am";
+  return `${h % 12 || 12}:${String(m).padStart(2, "0")} ${ampm}`;
+}
+
+function formatPrice(cents: number) {
+  return `$${(cents / 100).toFixed(0)}`;
+}
+
+export default function StepConfirm({ state, onBack }: Props) {
+  const router = useRouter();
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleConfirm() {
+    setSubmitting(true);
+    setError("");
+    try {
+      const res = await fetch("/api/booking/confirm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          therapistId: state.therapistId,
+          serviceId: state.serviceId,
+          date: state.date,
+          startTime: state.startTime,
+          endTime: state.endTime,
+          durationMinutes: state.durationMinutes,
+          priceCents: state.priceCents,
+          firstName: state.firstName,
+          lastName: state.lastName,
+          email: state.email,
+          phone: state.phone,
+          notes: state.notes,
+        }),
+      });
+      if (!res.ok) {
+        const body = await res.json();
+        setError(body.error ?? "Something went wrong. Please try again.");
+        return;
+      }
+      router.push("/booking/success");
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  const rows = [
+    ["Therapist", state.therapistName],
+    ["Service", state.serviceName],
+    ["Duration", `${state.durationMinutes} min`],
+    ["Date", formatDate(state.date)],
+    ["Time", `${formatTime(state.startTime)} – ${formatTime(state.endTime)}`],
+    ["Price", formatPrice(state.priceCents)],
+    ["Name", `${state.firstName} ${state.lastName}`],
+    ["Email", state.email],
+    ["Phone", state.phone],
+    ...(state.notes ? [["Notes", state.notes]] : []),
+  ];
+
+  return (
+    <div>
+      <p style={{ fontFamily: "var(--font-sans)", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--text-soft)", marginBottom: 8 }}>
+        Step 5
+      </p>
+      <h2 style={{ fontFamily: "var(--font-serif)", fontWeight: 300, fontSize: "clamp(1.75rem, 4vw, 2.5rem)", color: "var(--text)", marginBottom: "2rem", letterSpacing: "-0.02em", lineHeight: 1.1 }}>
+        Confirm your booking
+      </h2>
+
+      {/* Summary table */}
+      <div style={{ border: "1px solid rgba(30,40,32,0.12)", borderRadius: 2, overflow: "hidden", marginBottom: "2rem" }}>
+        {rows.map(([label, value], i) => (
+          <div key={label} style={{
+            display: "grid",
+            gridTemplateColumns: "130px 1fr",
+            padding: "0.85rem 1.25rem",
+            background: i % 2 === 0 ? "rgba(255,255,255,0.5)" : "rgba(255,255,255,0.25)",
+            borderBottom: i < rows.length - 1 ? "1px solid rgba(30,40,32,0.06)" : "none",
+          }}>
+            <span style={{ fontFamily: "var(--font-sans)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-soft)", paddingTop: 2 }}>
+              {label}
+            </span>
+            <span style={{ fontFamily: "var(--font-sans)", fontSize: 14, color: "var(--text)", fontWeight: 300, lineHeight: 1.6 }}>
+              {value}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {error && (
+        <p style={{ fontFamily: "var(--font-sans)", fontSize: 14, color: "#c0392b", marginBottom: "1rem" }}>
+          {error}
+        </p>
+      )}
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <button onClick={onBack} disabled={submitting} style={backBtnStyle}>← Back</button>
+        <button onClick={handleConfirm} disabled={submitting} style={submitBtnStyle}>
+          {submitting ? "Booking…" : "Confirm booking"}
+        </button>
+      </div>
+
+      <p style={{ fontFamily: "var(--font-sans)", fontSize: 12, color: "var(--text-soft)", marginTop: "1.5rem", lineHeight: 1.7 }}>
+        By confirming you agree to our cancellation policy. A confirmation email will be sent to {state.email}.
+      </p>
+    </div>
+  );
+}
+
+const backBtnStyle: React.CSSProperties = {
+  fontFamily: "var(--font-sans)",
+  fontSize: 13,
+  color: "var(--text-muted)",
+  background: "none",
+  border: "none",
+  cursor: "pointer",
+  padding: 0,
+  letterSpacing: "0.05em",
+};
+
+const submitBtnStyle: React.CSSProperties = {
+  fontFamily: "var(--font-sans)",
+  fontSize: 13,
+  letterSpacing: "0.12em",
+  textTransform: "uppercase",
+  color: "#fff",
+  background: "var(--gold)",
+  border: "none",
+  borderRadius: 2,
+  padding: "0.75rem 1.75rem",
+  cursor: "pointer",
+};
+===
+import { NextRequest, NextResponse } from "next/server";
+import { getAvailableSlots } from "@/lib/scheduling";
+
+export async function GET(req: NextRequest) {
+  const { searchParams } = req.nextUrl;
+  const therapistId = searchParams.get("therapistId");
+  const date = searchParams.get("date");
+  const duration = searchParams.get("duration");
+
+  if (!therapistId || !date || !duration) {
+    return NextResponse.json({ error: "Missing params" }, { status: 400 });
+  }
+
+  const durationMinutes = parseInt(duration, 10);
+  if (isNaN(durationMinutes) || durationMinutes < 1) {
+    return NextResponse.json({ error: "Invalid duration" }, { status: 400 });
+  }
+
+  const slots = await getAvailableSlots(therapistId, date, durationMinutes);
+  return NextResponse.json({ slots });
+}
+===
+import { NextRequest, NextResponse } from "next/server";
+import { createServiceClient } from "@/lib/supabase/server";
+import { getAvailableSlots } from "@/lib/scheduling";
+
+export async function POST(req: NextRequest) {
+  const body = await req.json();
+  const {
+    therapistId, serviceId, date, startTime, endTime,
+    durationMinutes, priceCents,
+    firstName, lastName, email, phone, notes,
+  } = body;
+
+  if (!therapistId || !serviceId || !date || !startTime || !endTime || !email) {
+    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+  }
+
+  const supabase = await createServiceClient();
+
+  // Re-verify slot is still available
+  const slots = await getAvailableSlots(therapistId, date, durationMinutes);
+  const slot = slots.find((s) => s.start === startTime && s.available);
+  if (!slot) {
+    return NextResponse.json({ error: "That time slot is no longer available. Please choose another." }, { status: 409 });
+  }
+
+  // Upsert client by email
+  const { data: existingClients } = await supabase
+    .from("clients")
+    .select("id")
+    .eq("email", email)
+    .limit(1);
+
+  let clientId: string;
+  if (existingClients && existingClients.length > 0) {
+    clientId = existingClients[0].id;
+  } else {
+    const { data: newClient, error: clientError } = await supabase
+      .from("clients")
+      .insert({ first_name: firstName, last_name: lastName, email, phone })
+      .select("id")
+      .single();
+    if (clientError || !newClient) {
+      return NextResponse.json({ error: "Failed to create client record" }, { status: 500 });
+    }
+    clientId = newClient.id;
+  }
+
+  // Create appointment
+  const { error: apptError } = await supabase.from("appointments").insert({
+    client_id: clientId,
+    service_id: serviceId,
+    therapist_id: therapistId,
+    appointment_date: date,
+    start_time: startTime,
+    end_time: endTime,
+    price_cents: priceCents,
+    status: "pending_confirmation",
+    internal_notes: notes || null,
+  });
+
+  if (apptError) {
+    return NextResponse.json({ error: "Failed to create appointment" }, { status: 500 });
+  }
+
+  return NextResponse.json({ ok: true });
+}

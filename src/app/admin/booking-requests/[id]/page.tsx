@@ -1,281 +1,144 @@
-import { notFound } from "next/navigation";
-
-import { PlaceholderPanel } from "@/components/app/PlaceholderPanel";
+import { createServiceClient } from "@/lib/supabase/server";
+import { requireApprovedAdminUser } from "@/lib/auth/admin";
 import { AdminPageShell } from "@/components/admin/AdminPageShell";
-import { AppointmentStatusBadge } from "@/components/appointments/AppointmentStatusBadge";
-import { AppointmentConversionForm } from "@/components/appointments/AppointmentConversionForm";
-import { AdminBookingRequestActions } from "@/components/booking/AdminBookingRequestActions";
-import { BookingRequestStatusBadge } from "@/components/booking/BookingRequestStatusBadge";
+import { notFound } from "next/navigation";
+import Link from "next/link";
 import { brand } from "@/lib/brand";
-import { formatDateOnly } from "@/lib/dates";
-import { getBookingRequestById } from "@/server/booking/queries";
-import type { AppointmentStatus } from "@/types/appointment";
-import { isFirstVisitServiceSlug } from "@/types/booking";
 
 export const dynamic = "force-dynamic";
 
-function formatDateTime(value: string | null) {
-  if (!value) {
-    return "Not provided";
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(new Date(value));
+function formatDateTime(iso: string | null) {
+  if (!iso) return "—";
+  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" }).format(new Date(iso));
 }
 
-function DetailRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <p
-        className="text-sm uppercase tracking-[0.22em]"
-        style={{ color: brand.secondary }}
-      >
-        {label}
-      </p>
-      <p className="mt-2 text-base leading-7" style={{ color: brand.textMuted }}>
-        {value}
-      </p>
-    </div>
-  );
+function formatDate(iso: string | null) {
+  if (!iso) return "—";
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
 }
 
-export default async function AdminBookingRequestDetailPage({
+const statusColor: Record<string, string> = {
+  submitted: "#C8881A",
+  under_review: "#C8881A",
+  approved: "#2E4A30",
+  declined: "#c0392b",
+  expired: "#9A8A72",
+  converted: "#6F8F55",
+};
+
+export default async function BookingRequestDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const requestResult = await getBookingRequestById(id);
+  await requireApprovedAdminUser();
+  const supabase = await createServiceClient();
 
-  if (requestResult.connection === "connected" && !requestResult.data) {
-    notFound();
-  }
+  const { data: req } = await supabase
+    .from("booking_requests")
+    .select(`*, services ( name, hands_on_minutes )`)
+    .eq("id", id)
+    .single();
 
-  if (requestResult.connection !== "connected") {
-    return (
-      <AdminPageShell
-        eyebrow="Admin"
-        title="Booking request"
-        description="The detail route is in place, but the request could not be loaded from Supabase."
-      >
-        <PlaceholderPanel
-          title={
-            requestResult.connection === "not_configured"
-              ? "Database not connected"
-              : "Unable to load booking request"
-          }
-          body={
-            requestResult.message ??
-            "Guided Rhythms could not load this booking request right now."
-          }
-        />
-      </AdminPageShell>
-    );
-  }
+  if (!req) notFound();
 
-  const request = requestResult.data;
-  const serviceBlockMinutes = request.requested_service?.total_block_minutes ?? 0;
-  const hasClientTypeServiceMismatch =
-    !request.is_new_client &&
-    isFirstVisitServiceSlug(request.requested_service?.slug);
+  const service = req.services as any;
+
+  const rows = [
+    { label: "Name", value: `${req.first_name} ${req.last_name}` },
+    { label: "Email", value: req.email ?? "—" },
+    { label: "Phone", value: req.phone ?? "—" },
+    { label: "Client type", value: req.is_new_client ? "New client" : "Returning client" },
+    { label: "Service", value: service?.name ?? "—" },
+    { label: "Preferred date 1", value: formatDate(req.preferred_date_1) },
+    { label: "Preferred date 2", value: formatDate(req.preferred_date_2) },
+    { label: "Preferred date 3", value: formatDate(req.preferred_date_3) },
+    { label: "Preferred days", value: req.preferred_days?.join(", ") ?? "—" },
+    { label: "Preferred times", value: req.preferred_times?.join(", ") ?? "—" },
+    { label: "Pain points", value: req.pain_points ?? "—" },
+    { label: "Goals", value: req.goals ?? "—" },
+    { label: "Notes", value: req.notes ?? "—" },
+    { label: "Referral source", value: req.referral_source ?? "—" },
+    { label: "Status", value: req.status.replace(/_/g, " ") },
+    { label: "Submitted", value: formatDateTime(req.created_at) },
+  ];
 
   return (
     <AdminPageShell
-      eyebrow="Admin"
-      title={`${request.first_name} ${request.last_name}`}
-      description="Review the full booking request, update its status, and convert approved requests into real scheduled appointments."
+      eyebrow="Booking request"
+      title={`${req.first_name} ${req.last_name}`}
+      description={`${service?.name ?? "Session"} · Submitted ${formatDateTime(req.created_at)}`}
     >
-      <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
-        <div
-          className="rounded-[1.75rem] p-6"
-          style={{
-            backgroundColor: "rgba(255,255,255,0.7)",
-            border: `1px solid ${brand.border}`,
-          }}
-        >
-          <div
-            className="flex flex-col gap-4 border-b pb-6 md:flex-row md:items-center md:justify-between"
-            style={{ borderColor: brand.border }}
-          >
-            <div>
-              <p
-                className="text-sm uppercase tracking-[0.22em]"
-                style={{ color: brand.secondary }}
-              >
-                Request details
-              </p>
-              <p className="mt-3 text-sm leading-6" style={{ color: brand.textMuted }}>
-                Submitted {formatDateTime(request.created_at)}
-              </p>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: "32px", alignItems: "start" }}>
+
+        {/* Detail table */}
+        <div style={{ border: `1px solid ${brand.borderMed}`, borderRadius: "2px", overflow: "hidden" }}>
+          {rows.map((row, i) => (
+            <div key={row.label} style={{ display: "grid", gridTemplateColumns: "180px 1fr", padding: "14px 24px", borderBottom: i < rows.length - 1 ? `1px solid ${brand.border}` : "none", background: i % 2 === 0 ? "#ffffff" : brand.background }}>
+              <span style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: brand.textSoft, fontFamily: "'DM Sans', sans-serif", paddingTop: "2px" }}>{row.label}</span>
+              <span style={{
+                fontFamily: "'DM Sans', sans-serif",
+                color: row.label === "Status" ? (statusColor[req.status] ?? brand.text) : brand.text,
+                textTransform: row.label === "Status" ? "uppercase" : "none",
+                letterSpacing: row.label === "Status" ? "0.08em" : "normal",
+                fontSize: row.label === "Status" ? "11px" : "14px",
+              } as any}>{row.value}</span>
             </div>
-            <BookingRequestStatusBadge status={request.status} />
-          </div>
-
-          <div className="mt-6 grid gap-6 md:grid-cols-2">
-            <DetailRow label="Email" value={request.email} />
-            <DetailRow label="Phone" value={request.phone} />
-            <DetailRow
-              label="Client type"
-              value={request.is_new_client ? "New client" : "Returning client"}
-            />
-            <DetailRow
-              label="Linked client id"
-              value={request.client_id || "Not linked"}
-            />
-            <DetailRow
-              label="Service"
-              value={request.requested_service?.name ?? "No service selected"}
-            />
-            <DetailRow
-              label="Requested service id"
-              value={request.requested_service_id || "Not provided"}
-            />
-            <DetailRow
-              label="Requested therapist id"
-              value={request.requested_therapist_id || "Not provided"}
-            />
-            <DetailRow
-              label="Preferred date 1"
-              value={formatDateOnly(request.preferred_date_1)}
-            />
-            <DetailRow
-              label="Preferred date 2"
-              value={formatDateOnly(request.preferred_date_2)}
-            />
-            <DetailRow
-              label="Preferred date 3"
-              value={formatDateOnly(request.preferred_date_3)}
-            />
-            <DetailRow
-              label="Preferred days"
-              value={request.preferred_days?.join(", ") ?? "Not provided"}
-            />
-            <DetailRow
-              label="Preferred times"
-              value={request.preferred_times?.join(", ") ?? "Not provided"}
-            />
-            <DetailRow
-              label="Referral source"
-              value={request.referral_source || "Not provided"}
-            />
-            <DetailRow label="Pain points" value={request.pain_points || "Not provided"} />
-            <DetailRow label="Goals" value={request.goals || "Not provided"} />
-            <DetailRow label="Client notes" value={request.notes || "Not provided"} />
-            <DetailRow label="Reviewed by" value={request.reviewed_by || "Not assigned"} />
-            <DetailRow
-              label="Review timestamp"
-              value={formatDateTime(request.reviewed_at)}
-            />
-            <DetailRow label="Updated at" value={formatDateTime(request.updated_at)} />
-            <DetailRow
-              label="Linked appointment"
-              value={request.appointment?.id || "Not created"}
-            />
-          </div>
+          ))}
         </div>
 
-        <div className="space-y-6">
-          {hasClientTypeServiceMismatch ? (
-            <section
-              className="rounded-[1.75rem] p-6"
-              style={{
-                backgroundColor: "rgba(255,245,234,0.86)",
-                border: `1px solid ${brand.border}`,
-              }}
-            >
-              <p
-                className="text-sm uppercase tracking-[0.24em]"
-                style={{ color: brand.secondary }}
-              >
-                Service mismatch
-              </p>
-              <p className="mt-3 text-sm leading-6" style={{ color: brand.textMuted }}>
-                This request is marked as returning client but selected First Visit
-                Therapeutic Massage, which is reserved for new clients. Review the
-                request before moving forward.
-              </p>
-            </section>
-          ) : null}
+        {/* Actions sidebar */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div style={{ padding: "24px", background: "#ffffff", border: `1px solid ${brand.borderMed}`, borderRadius: "2px" }}>
+            <p style={{ fontSize: "11px", letterSpacing: "0.16em", textTransform: "uppercase", color: brand.textSoft, fontFamily: "'DM Sans', sans-serif", marginBottom: "12px" }}>
+              Current status
+            </p>
+            <div style={{ display: "inline-block", padding: "6px 14px", background: `${statusColor[req.status] ?? brand.textSoft}18`, border: `1px solid ${statusColor[req.status] ?? brand.textSoft}40`, borderRadius: "2px", marginBottom: "20px" }}>
+              <span style={{ fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", color: statusColor[req.status] ?? brand.textSoft, fontFamily: "'DM Sans', sans-serif", fontWeight: 400 }}>
+                {req.status.replace(/_/g, " ")}
+              </span>
+            </div>
+            <UpdateStatusForm requestId={id} currentStatus={req.status} />
+          </div>
 
-          <AdminBookingRequestActions
-            id={request.id}
-            status={request.status}
-            adminNotes={request.admin_notes}
-          />
-
-          {request.appointment ? (
-            <section
-              className="rounded-[1.75rem] p-6"
-              style={{
-                backgroundColor: "rgba(255,255,255,0.68)",
-                border: `1px solid ${brand.border}`,
-              }}
-            >
-              <p
-                className="text-sm uppercase tracking-[0.24em]"
-                style={{ color: brand.secondary }}
-              >
-                Appointment created
-              </p>
-              <div className="mt-3">
-                <AppointmentStatusBadge
-                  status={request.appointment.status as AppointmentStatus}
-                />
-              </div>
-              <p className="mt-4 text-sm leading-6" style={{ color: brand.textMuted }}>
-                {formatDateOnly(request.appointment.appointment_date)} |{" "}
-                {request.appointment.start_time} - {request.appointment.end_time}
-              </p>
-              <a
-                href={`/admin/appointments/${request.appointment.id}`}
-                className="mt-4 inline-flex rounded-full px-4 py-2 text-sm font-semibold"
-                style={{
-                  backgroundColor: "rgba(255,255,255,0.82)",
-                  border: `1px solid ${brand.border}`,
-                }}
-              >
-                View appointment
-              </a>
-            </section>
-          ) : null}
-
-          {request.status === "approved" && !request.appointment ? (
-            <section
-              className="rounded-[1.75rem] p-6"
-              style={{
-                backgroundColor: "rgba(255,255,255,0.68)",
-                border: `1px solid ${brand.border}`,
-              }}
-            >
-              <p
-                className="text-sm uppercase tracking-[0.24em]"
-                style={{ color: brand.secondary }}
-              >
-                Create appointment
-              </p>
-              <p className="mt-3 text-sm leading-6" style={{ color: brand.textMuted }}>
-                Approved requests can be converted into one real scheduled
-                appointment. End time is derived from the selected service block.
-              </p>
-              <div className="mt-6">
-                <AppointmentConversionForm
-                  bookingRequestId={request.id}
-                  serviceBlockMinutes={serviceBlockMinutes}
-                  defaultPriceCents={
-                    request.requested_service?.base_price_cents ?? 0
-                  }
-                  defaultLocationType="office"
-                />
-              </div>
-            </section>
-          ) : null}
+          {req.client_id && (
+            <Link href={`/admin/clients/${req.client_id}`} style={{ display: "block", padding: "16px 20px", background: "#ffffff", border: `1px solid ${brand.borderMed}`, borderRadius: "2px", textDecoration: "none" }}>
+              <p style={{ fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", color: brand.textSoft, fontFamily: "'DM Sans', sans-serif", marginBottom: "4px" }}>Client profile</p>
+              <p style={{ fontSize: "14px", color: brand.gold, fontFamily: "'DM Sans', sans-serif" }}>View profile →</p>
+            </Link>
+          )}
         </div>
-      </section>
+      </div>
     </AdminPageShell>
+  );
+}
+
+function UpdateStatusForm({ requestId, currentStatus }: { requestId: string; currentStatus: string }) {
+  const statuses = ["submitted", "under_review", "approved", "declined", "expired", "converted"];
+  return (
+    <form action={async (formData: FormData) => {
+      "use server";
+      const newStatus = formData.get("status") as string;
+      if (!newStatus) return;
+      const { createServiceClient } = await import("@/lib/supabase/server");
+      const supabase = await createServiceClient();
+      await supabase.from("booking_requests").update({ status: newStatus, reviewed_at: new Date().toISOString() }).eq("id", requestId);
+      const { revalidatePath } = await import("next/cache");
+      revalidatePath(`/admin/booking-requests/${requestId}`);
+    }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        <label style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: brand.textSoft, fontFamily: "'DM Sans', sans-serif" }}>Update status</label>
+        <select name="status" defaultValue={currentStatus} style={{ padding: "8px 12px", border: `1px solid ${brand.borderMed}`, borderRadius: "2px", fontSize: "14px", fontFamily: "'DM Sans', sans-serif", color: brand.text, background: "#ffffff", outline: "none" }}>
+          {statuses.map((s) => (
+            <option key={s} value={s}>{s.replace(/_/g, " ")}</option>
+          ))}
+        </select>
+        <button type="submit" style={{ padding: "10px 20px", background: brand.forest, color: "#F0EBE0", fontSize: "12px", letterSpacing: "0.1em", textTransform: "uppercase", border: "none", borderRadius: "2px", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>
+          Update
+        </button>
+      </div>
+    </form>
   );
 }

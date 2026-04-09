@@ -1,147 +1,156 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
-
-import { PlaceholderPanel } from "@/components/app/PlaceholderPanel";
+import { createServiceClient } from "@/lib/supabase/server";
+import { requireApprovedAdminUser } from "@/lib/auth/admin";
 import { AdminPageShell } from "@/components/admin/AdminPageShell";
-import { AdminIntakeActions } from "@/components/intake/AdminIntakeActions";
-import { IntakeStatusBadge } from "@/components/intake/IntakeStatusBadge";
-import { IntakeSummary } from "@/components/intake/IntakeSummary";
+import { notFound } from "next/navigation";
+import Link from "next/link";
 import { brand } from "@/lib/brand";
-import { formatDateOnly } from "@/lib/dates";
 import { createDefaultIntakeValues, getHealthFlags, mapIntakeAnswersToValues } from "@/lib/intake/answers";
-import { getIntakeById } from "@/server/intakes/queries";
 
 export const dynamic = "force-dynamic";
 
-function formatDateTime(value: string | null) {
-  if (!value) {
-    return "Not available";
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(new Date(value));
+function formatDateTime(iso: string | null) {
+  if (!iso) return "Not yet";
+  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" }).format(new Date(iso));
 }
 
-export default async function AdminIntakeDetailPage({
+export default async function IntakeDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const result = await getIntakeById(id);
+  await requireApprovedAdminUser();
+  const supabase = await createServiceClient();
 
-  if (result.connection === "connected" && !result.data) {
-    notFound();
-  }
+  const { data: intake } = await supabase
+    .from("intakes")
+    .select(`
+      *,
+      intake_answers ( * ),
+      appointments (
+        id,
+        appointment_date,
+        start_time,
+        clients ( * )
+      )
+    `)
+    .eq("id", id)
+    .single();
 
-  if (result.connection !== "connected") {
-    return (
-      <AdminPageShell eyebrow="Admin" title="Intake" description="The detail route is in place, but the intake could not be loaded from Supabase.">
-        <PlaceholderPanel
-          title={
-            result.connection === "not_configured"
-              ? "Database not connected"
-              : "Unable to load intake"
-          }
-          body={result.message ?? "Guided Rhythms could not load this intake right now."}
-        />
-      </AdminPageShell>
-    );
-  }
+  if (!intake) notFound();
 
-  if (!result.data) {
-    notFound();
-  }
+  const appt = intake.appointments as any;
+  const client = appt?.clients as any;
+  const clientName = client?.preferred_name
+    ? `${client.preferred_name} ${client.last_name}`
+    : client ? `${client.first_name} ${client.last_name}` : "Unknown";
 
-  const intake = result.data;
   const values = mapIntakeAnswersToValues(
-    intake.answers,
-    createDefaultIntakeValues(intake.client ?? undefined),
+    intake.intake_answers ?? [],
+    createDefaultIntakeValues(client ?? undefined),
   );
   const healthFlags = getHealthFlags(values);
 
+  const metaRows = [
+    { label: "Client", value: clientName },
+    { label: "Email", value: client?.email ?? "—" },
+    { label: "Phone", value: client?.phone ?? "—" },
+    { label: "Status", value: intake.status.replace(/_/g, " ") },
+    { label: "Completed", value: formatDateTime(intake.completed_at) },
+    { label: "Reviewed", value: formatDateTime(intake.reviewed_at) },
+    { label: "Reviewed by", value: intake.reviewed_by ?? "—" },
+  ];
+
   return (
     <AdminPageShell
-      eyebrow="Admin"
-      title={`${intake.client?.preferred_name || intake.client?.first_name || "Intake"} ${intake.client?.last_name || ""}`.trim()}
-      description="Review the submitted intake, scan for health and safety flags, and mark it reviewed when it is ready for the session."
+      eyebrow="Intake review"
+      title={clientName}
+      description={appt ? `Appointment ${new Date(appt.appointment_date + "T12:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}` : "Health history form"}
     >
-      <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
-        <div className="space-y-6">
-          <section className="rounded-[1.75rem] p-6" style={{ backgroundColor: "rgba(255,255,255,0.7)", border: `1px solid ${brand.border}` }}>
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-              <div>
-                <p className="text-sm uppercase tracking-[0.22em]" style={{ color: brand.secondary }}>
-                  Intake overview
-                </p>
-                <p className="mt-3 text-sm leading-6" style={{ color: brand.textMuted }}>
-                  Appointment {intake.appointment ? `${formatDateOnly(intake.appointment.appointment_date)} at ${intake.appointment.start_time}` : "not available"}
-                </p>
-              </div>
-              <IntakeStatusBadge status={intake.status} />
-            </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: "32px", alignItems: "start" }}>
 
-            <div className="mt-6 grid gap-6 md:grid-cols-2">
-              <div>
-                <p className="text-sm uppercase tracking-[0.22em]" style={{ color: brand.secondary }}>Completed</p>
-                <p className="mt-2 text-base leading-7" style={{ color: brand.textMuted }}>{formatDateTime(intake.completed_at)}</p>
-              </div>
-              <div>
-                <p className="text-sm uppercase tracking-[0.22em]" style={{ color: brand.secondary }}>Reviewed</p>
-                <p className="mt-2 text-base leading-7" style={{ color: brand.textMuted }}>{formatDateTime(intake.reviewed_at)}</p>
-              </div>
-              <div>
-                <p className="text-sm uppercase tracking-[0.22em]" style={{ color: brand.secondary }}>Reviewed by</p>
-                <p className="mt-2 text-base leading-7" style={{ color: brand.textMuted }}>{intake.reviewed_by || "Not reviewed yet"}</p>
-              </div>
-              <div>
-                <p className="text-sm uppercase tracking-[0.22em]" style={{ color: brand.secondary }}>Appointment</p>
-                {intake.appointment ? (
-                  <Link href={`/admin/appointments/${intake.appointment.id}`} className="mt-2 inline-flex text-sm font-semibold" style={{ color: brand.primary }}>
-                    Open appointment
-                  </Link>
-                ) : (
-                  <p className="mt-2 text-base leading-7" style={{ color: brand.textMuted }}>Not linked</p>
-                )}
-              </div>
-            </div>
-          </section>
+        <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
 
-          <section className="rounded-[1.75rem] p-6" style={{ backgroundColor: "rgba(255,255,255,0.68)", border: `1px solid ${brand.border}` }}>
-            <p className="text-sm uppercase tracking-[0.22em]" style={{ color: brand.secondary }}>
-              Health and safety flags
-            </p>
-            {healthFlags.length ? (
-              <div className="mt-4 flex flex-wrap gap-3">
+          {/* Meta */}
+          <div style={{ border: `1px solid ${brand.borderMed}`, borderRadius: "2px", overflow: "hidden" }}>
+            {metaRows.map((row, i) => (
+              <div key={row.label} style={{ display: "grid", gridTemplateColumns: "160px 1fr", padding: "14px 24px", borderBottom: i < metaRows.length - 1 ? `1px solid ${brand.border}` : "none", background: i % 2 === 0 ? "#ffffff" : brand.background }}>
+                <span style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: brand.textSoft, fontFamily: "'DM Sans', sans-serif", paddingTop: "2px" }}>{row.label}</span>
+                <span style={{ fontSize: "14px", color: brand.text, fontFamily: "'DM Sans', sans-serif" }}>{row.value}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Health flags */}
+          {healthFlags.length > 0 && (
+            <div style={{ padding: "24px", background: "rgba(192,57,43,0.04)", border: "1px solid rgba(192,57,43,0.2)", borderRadius: "2px" }}>
+              <p style={{ fontSize: "11px", letterSpacing: "0.16em", textTransform: "uppercase", color: "#c0392b", fontFamily: "'DM Sans', sans-serif", marginBottom: "16px" }}>
+                Health &amp; safety flags
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                 {healthFlags.map((flag) => (
-                  <span
-                    key={flag.key}
-                    className="rounded-full px-4 py-2 text-sm"
-                    style={{ backgroundColor: "rgba(255,245,234,0.9)", border: `1px solid ${brand.border}` }}
-                  >
-                    {flag.label}: {flag.value.replaceAll("_", " ")}
-                  </span>
+                  <div key={flag.key} style={{ display: "flex", alignItems: "baseline", gap: "12px", padding: "10px 16px", background: "rgba(255,255,255,0.7)", borderRadius: "2px", border: "1px solid rgba(192,57,43,0.15)" }}>
+                    <span style={{ fontSize: "13px", color: "#c0392b", fontFamily: "'DM Sans', sans-serif", fontWeight: 400 }}>{flag.label}</span>
+                    <span style={{ fontSize: "13px", color: brand.textMuted, fontFamily: "'DM Sans', sans-serif" }}>{flag.value.replace(/_/g, " ")}</span>
+                  </div>
                 ))}
               </div>
-            ) : (
-              <p className="mt-4 text-sm leading-6" style={{ color: brand.textMuted }}>
-                No obvious health and safety flags were identified from the submitted answers.
+            </div>
+          )}
+
+          {/* Intake answers */}
+          {(intake.intake_answers?.length ?? 0) > 0 && (
+            <div>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 300, color: brand.text, letterSpacing: "-0.02em", marginBottom: "16px" }}>
+                Form responses
+              </h2>
+              <div style={{ border: `1px solid ${brand.borderMed}`, borderRadius: "2px", overflow: "hidden" }}>
+                {intake.intake_answers.map((answer: any, i: number) => (
+                  <div key={answer.id} style={{ display: "grid", gridTemplateColumns: "200px 1fr", padding: "14px 24px", borderBottom: i < intake.intake_answers.length - 1 ? `1px solid ${brand.border}` : "none", background: i % 2 === 0 ? "#ffffff" : brand.background }}>
+                    <span style={{ fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", color: brand.textSoft, fontFamily: "'DM Sans', sans-serif", paddingTop: "2px", lineHeight: 1.5 }}>{answer.field_label}</span>
+                    <span style={{ fontSize: "14px", color: brand.text, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.7 }}>{answer.answer_text || "—"}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Actions sidebar */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          {appt && (
+            <Link href={`/admin/appointments/${appt.id}`} style={{ display: "block", padding: "16px 20px", background: "#ffffff", border: `1px solid ${brand.borderMed}`, borderRadius: "2px", textDecoration: "none" }}>
+              <p style={{ fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", color: brand.textSoft, fontFamily: "'DM Sans', sans-serif", marginBottom: "6px" }}>Linked appointment</p>
+              <p style={{ fontSize: "14px", color: brand.text, fontFamily: "'DM Sans', sans-serif" }}>
+                {new Date(appt.appointment_date + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
               </p>
-            )}
-          </section>
-
-          <IntakeSummary values={values} />
+            </Link>
+          )}
+          {intake.status !== "reviewed" && intake.completed_at && (
+            <MarkReviewedButton intakeId={id} />
+          )}
         </div>
-
-        <div className="space-y-6">
-          <AdminIntakeActions id={intake.id} status={intake.status} />
-        </div>
-      </section>
+      </div>
     </AdminPageShell>
+  );
+}
+
+function MarkReviewedButton({ intakeId }: { intakeId: string }) {
+  return (
+    <form action={async () => {
+      "use server";
+      const { createServiceClient } = await import("@/lib/supabase/server");
+      const supabase = await createServiceClient();
+      await supabase
+        .from("intakes")
+        .update({ status: "reviewed", reviewed_at: new Date().toISOString() })
+        .eq("id", intakeId);
+      const { revalidatePath } = await import("next/cache");
+      revalidatePath(`/admin/intakes/${intakeId}`);
+    }}>
+      <button type="submit" style={{ width: "100%", padding: "12px 20px", background: brand.forest, color: "#F0EBE0", fontSize: "12px", letterSpacing: "0.1em", textTransform: "uppercase", border: "none", borderRadius: "2px", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>
+        Mark as reviewed
+      </button>
+    </form>
   );
 }

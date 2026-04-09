@@ -1,230 +1,182 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
-
-import { PlaceholderPanel } from "@/components/app/PlaceholderPanel";
+import { createServiceClient } from "@/lib/supabase/server";
+import { requireApprovedAdminUser } from "@/lib/auth/admin";
 import { AdminPageShell } from "@/components/admin/AdminPageShell";
-import { AdminAppointmentActions } from "@/components/appointments/AdminAppointmentActions";
-import { AppointmentStatusBadge } from "@/components/appointments/AppointmentStatusBadge";
-import { IntakeStatusBadge } from "@/components/intake/IntakeStatusBadge";
+import { notFound } from "next/navigation";
+import Link from "next/link";
 import { brand } from "@/lib/brand";
-import { formatDateOnly } from "@/lib/dates";
-import { formatCentsAsDollars } from "@/lib/format/money";
 import { createIntakeToken, getIntakeTokenPath } from "@/lib/intake/token";
-import { followUpStatusMeta, intakeStatusMeta } from "@/lib/status/appointment";
 import { hasIntakeTokenSecret } from "@/lib/supabase/env";
-import { getAppointmentById } from "@/server/appointments/queries";
 
 export const dynamic = "force-dynamic";
 
-function formatDateTime(value: string | null) {
-  if (!value) {
-    return "Not provided";
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(new Date(value));
+function formatDate(iso: string) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString("en-US", {
+    weekday: "long", month: "long", day: "numeric", year: "numeric",
+  });
 }
 
-function DetailRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <p className="text-sm uppercase tracking-[0.22em]" style={{ color: brand.secondary }}>
-        {label}
-      </p>
-      <p className="mt-2 text-base leading-7" style={{ color: brand.textMuted }}>
-        {value}
-      </p>
-    </div>
-  );
+function formatTime(t: string) {
+  if (!t) return "—";
+  const [h, m] = t.split(":").map(Number);
+  const ampm = h >= 12 ? "pm" : "am";
+  return `${h % 12 || 12}:${String(m).padStart(2, "0")} ${ampm}`;
 }
 
-export default async function AdminAppointmentDetailPage({
+function formatDateTime(iso: string | null) {
+  if (!iso) return "—";
+  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" }).format(new Date(iso));
+}
+
+function formatCents(cents: number | null) {
+  if (!cents) return "—";
+  return `$${(cents / 100).toFixed(0)}`;
+}
+
+const statusColor: Record<string, string> = {
+  pending_confirmation: "#C8881A",
+  confirmed: "#2E4A30",
+  intake_pending: "#C8881A",
+  ready_for_visit: "#6F8F55",
+  arrived: "#446E49",
+  in_session: "#2E4A30",
+  completed: "#6F8F55",
+  cancelled: "#9A8A72",
+  no_show: "#c0392b",
+};
+
+export default async function AppointmentDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const appointmentResult = await getAppointmentById(id);
+  const user = await requireApprovedAdminUser();
+  const supabase = await createServiceClient();
 
-  if (appointmentResult.connection === "connected" && !appointmentResult.data) {
-    notFound();
-  }
+  const { data: appt } = await supabase
+    .from("appointments")
+    .select(`
+      *,
+      clients ( * ),
+      services ( * ),
+      intakes ( id, status, completed_at, reviewed_at, created_at ),
+      soap_notes ( id )
+    `)
+    .eq("id", id)
+    .eq("therapist_id", user.id)
+    .single();
 
-  if (appointmentResult.connection !== "connected") {
-    return (
-      <AdminPageShell
-        eyebrow="Admin"
-        title="Appointment"
-        description="The detail route is in place, but the appointment could not be loaded from Supabase."
-      >
-        <PlaceholderPanel
-          title={
-            appointmentResult.connection === "not_configured"
-              ? "Database not connected"
-              : "Unable to load appointment"
-          }
-          body={
-            appointmentResult.message ??
-            "Guided Rhythms could not load this appointment right now."
-          }
-        />
-      </AdminPageShell>
-    );
-  }
+  if (!appt) notFound();
 
-  if (!appointmentResult.data) {
-    notFound();
-  }
+  const client = appt.clients as any;
+  const service = appt.services as any;
+  const intake = (appt.intakes as any)?.[0] ?? null;
+  const hasSoap = ((appt.soap_notes as any)?.length ?? 0) > 0;
+  const clientName = client?.preferred_name
+    ? `${client.preferred_name} ${client.last_name}`
+    : client ? `${client.first_name} ${client.last_name}` : "Unknown";
 
-  const appointment = appointmentResult.data;
-  const intakeLink =
-    appointment.intake && hasIntakeTokenSecret()
-      ? getIntakeTokenPath(
-          createIntakeToken({
-            intakeId: appointment.intake.id,
-            appointmentId: appointment.id,
-            createdAt: appointment.intake.created_at,
-          }),
-        )
-      : null;
+  const intakeLink = intake && hasIntakeTokenSecret()
+    ? getIntakeTokenPath(createIntakeToken({ intakeId: intake.id, appointmentId: appt.id, createdAt: intake.created_at }))
+    : null;
+
+  const infoRows = [
+    { label: "Client", value: clientName },
+    { label: "Email", value: client?.email ?? "—" },
+    { label: "Phone", value: client?.phone ?? "—" },
+    { label: "Service", value: service?.name ?? "—" },
+    { label: "Date", value: formatDate(appt.appointment_date) },
+    { label: "Time", value: `${formatTime(appt.start_time)} – ${formatTime(appt.end_time)}` },
+    { label: "Price", value: formatCents(appt.price_cents) },
+    { label: "Status", value: appt.status.replace(/_/g, " ") },
+    { label: "Intake status", value: appt.intake_status?.replace(/_/g, " ") ?? "—" },
+    { label: "Created", value: formatDateTime(appt.created_at) },
+  ];
 
   return (
     <AdminPageShell
-      eyebrow="Admin"
-      title={`${appointment.client?.preferred_name || appointment.client?.first_name || "Appointment"} ${appointment.client?.last_name || ""}`.trim()}
-      description="Review the scheduled appointment, confirm its linked booking request and service details, and update visit status or internal notes."
+      eyebrow="Appointment"
+      title={clientName}
+      description={`${service?.name ?? "Session"} · ${formatDate(appt.appointment_date)}`}
     >
-      <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
-        <div
-          className="rounded-[1.75rem] p-6"
-          style={{
-            backgroundColor: "rgba(255,255,255,0.7)",
-            border: `1px solid ${brand.border}`,
-          }}
-        >
-          <div className="flex flex-col gap-4 border-b pb-6 md:flex-row md:items-center md:justify-between" style={{ borderColor: brand.border }}>
-            <div>
-              <p className="text-sm uppercase tracking-[0.22em]" style={{ color: brand.secondary }}>
-                Appointment summary
-              </p>
-              <p className="mt-3 text-sm leading-6" style={{ color: brand.textMuted }}>
-                Created {formatDateTime(appointment.created_at)}
-              </p>
-            </div>
-            <AppointmentStatusBadge status={appointment.status} />
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: "32px", alignItems: "start" }}>
+
+        {/* Main detail */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <div style={{ border: `1px solid ${brand.borderMed}`, borderRadius: "2px", overflow: "hidden" }}>
+            {infoRows.map((row, i) => (
+              <div key={row.label} style={{ display: "grid", gridTemplateColumns: "180px 1fr", padding: "14px 24px", borderBottom: i < infoRows.length - 1 ? `1px solid ${brand.border}` : "none", background: i % 2 === 0 ? "#ffffff" : brand.background }}>
+                <span style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: brand.textSoft, fontFamily: "'DM Sans', sans-serif", paddingTop: "2px" }}>{row.label}</span>
+                <span style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  color: row.label === "Status" ? (statusColor[appt.status] ?? brand.text) : brand.text,
+                  textTransform: row.label === "Status" ? "uppercase" : "none",
+                  letterSpacing: row.label === "Status" ? "0.08em" : "normal",
+                  fontSize: row.label === "Status" ? "11px" : "14px",
+                }}>{row.value}</span>
+              </div>
+            ))}
           </div>
 
-          <div className="mt-6 grid gap-6 md:grid-cols-2">
-            <DetailRow
-              label="Client"
-              value={
-                appointment.client
-                  ? `${appointment.client.preferred_name || appointment.client.first_name} ${appointment.client.last_name}`
-                  : "Not available"
-              }
-            />
-            <DetailRow label="Client email" value={appointment.client?.email || "Not available"} />
-            <DetailRow label="Client phone" value={appointment.client?.phone || "Not available"} />
-            <DetailRow label="Service" value={appointment.service?.name || "Not available"} />
-            <DetailRow
-              label="Appointment date"
-              value={formatDateOnly(appointment.appointment_date)}
-            />
-            <DetailRow label="Time" value={`${appointment.start_time} - ${appointment.end_time}`} />
-            <DetailRow label="Timezone" value={appointment.timezone} />
-            <DetailRow label="Location type" value={appointment.location_type} />
-            <DetailRow label="Location label" value={appointment.location_label || "Not provided"} />
-            <DetailRow
-              label="Price"
-              value={formatCentsAsDollars(appointment.price_cents)}
-            />
-            <DetailRow label="Intake status" value={intakeStatusMeta[appointment.intake_status]} />
-            <DetailRow label="Follow-up status" value={followUpStatusMeta[appointment.follow_up_status]} />
-            <DetailRow
-              label="Linked booking request"
-              value={appointment.booking_request?.id || "Not linked"}
-            />
-            <DetailRow label="Confirmed at" value={formatDateTime(appointment.confirmation_sent_at)} />
-            <DetailRow label="Reminder sent at" value={formatDateTime(appointment.reminder_sent_at)} />
-            <DetailRow label="Cancelled at" value={formatDateTime(appointment.cancelled_at)} />
-            <DetailRow label="Cancelled reason" value={appointment.cancelled_reason || "Not cancelled"} />
-            <DetailRow label="Updated at" value={formatDateTime(appointment.updated_at)} />
-          </div>
-
-          {appointment.booking_request ? (
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                href={`/admin/booking-requests/${appointment.booking_request.id}`}
-                className="inline-flex rounded-full px-4 py-2 text-sm font-semibold"
-                style={{
-                  backgroundColor: "rgba(255,255,255,0.82)",
-                  border: `1px solid ${brand.border}`,
-                }}
-              >
-                View linked booking request
+          {/* Action links */}
+          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+            {intake && (
+              <Link href={`/admin/intakes/${intake.id}`} style={{ padding: "10px 20px", border: `1px solid ${brand.borderMed}`, borderRadius: "2px", fontSize: "12px", color: brand.textMuted, textDecoration: "none", fontFamily: "'DM Sans', sans-serif", letterSpacing: "0.06em" }}>
+                View intake
               </Link>
-              {appointment.intake ? (
-                <Link
-                  href={`/admin/intakes/${appointment.intake.id}`}
-                  className="inline-flex rounded-full px-4 py-2 text-sm font-semibold"
-                  style={{
-                    backgroundColor: "rgba(255,255,255,0.82)",
-                    border: `1px solid ${brand.border}`,
-                  }}
-                >
-                  View intake detail
-                </Link>
-              ) : null}
-              {intakeLink ? (
-                <Link
-                  href={intakeLink}
-                  className="inline-flex rounded-full px-4 py-2 text-sm font-semibold"
-                  style={{
-                    backgroundColor: "rgba(255,255,255,0.82)",
-                    border: `1px solid ${brand.border}`,
-                  }}
-                >
-                  Open client intake link
-                </Link>
-              ) : null}
-            </div>
-          ) : null}
+            )}
+            {intakeLink && (
+              <Link href={intakeLink} style={{ padding: "10px 20px", border: `1px solid ${brand.borderGold}`, borderRadius: "2px", fontSize: "12px", color: brand.gold, textDecoration: "none", fontFamily: "'DM Sans', sans-serif", letterSpacing: "0.06em" }}>
+                Client intake link
+              </Link>
+            )}
+            <Link href={`/admin/soap/${appt.id}`} style={{ padding: "10px 20px", background: hasSoap ? brand.backgroundSoft : brand.forest, border: `1px solid ${hasSoap ? brand.borderMed : "transparent"}`, borderRadius: "2px", fontSize: "12px", color: hasSoap ? brand.textMuted : "#F0EBE0", textDecoration: "none", fontFamily: "'DM Sans', sans-serif", letterSpacing: "0.06em" }}>
+              {hasSoap ? "View SOAP notes" : "Write SOAP notes"}
+            </Link>
+            {client?.id && (
+              <Link href={`/admin/clients/${client.id}`} style={{ padding: "10px 20px", border: `1px solid ${brand.borderMed}`, borderRadius: "2px", fontSize: "12px", color: brand.textMuted, textDecoration: "none", fontFamily: "'DM Sans', sans-serif", letterSpacing: "0.06em" }}>
+                Client profile
+              </Link>
+            )}
+          </div>
         </div>
 
-        <div className="space-y-6">
-          <section
-            className="rounded-[1.75rem] p-6"
-            style={{
-              backgroundColor: "rgba(255,255,255,0.68)",
-              border: `1px solid ${brand.border}`,
-            }}
-          >
-            <p className="text-sm uppercase tracking-[0.24em]" style={{ color: brand.secondary }}>
-              Intake
-            </p>
-            <div className="mt-3">
-              <IntakeStatusBadge status={appointment.intake_status} />
+        {/* Status panel */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div style={{ padding: "24px", background: "#ffffff", border: `1px solid ${brand.borderMed}`, borderRadius: "2px" }}>
+            <p style={{ fontSize: "11px", letterSpacing: "0.16em", textTransform: "uppercase", color: brand.textSoft, fontFamily: "'DM Sans', sans-serif", marginBottom: "12px" }}>Current status</p>
+            <div style={{ display: "inline-block", padding: "6px 14px", background: `${statusColor[appt.status]}18`, border: `1px solid ${statusColor[appt.status]}40`, borderRadius: "2px" }}>
+              <span style={{ fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", color: statusColor[appt.status] ?? brand.text, fontFamily: "'DM Sans', sans-serif", fontWeight: 400 }}>
+                {appt.status.replace(/_/g, " ")}
+              </span>
             </div>
-            <p className="mt-4 text-sm leading-6" style={{ color: brand.textMuted }}>
-              {appointment.intake
-                ? appointment.intake.completed_at
-                  ? "The client has submitted the intake. You can open the intake detail for the full summary."
-                  : "An intake record exists, but the client has not completed it yet."
-                : "No intake record is attached to this appointment yet."}
-            </p>
-          </section>
-          <AdminAppointmentActions
-            id={appointment.id}
-            status={appointment.status}
-            internalNotes={appointment.internal_notes}
-          />
+          </div>
+
+          {intake && (
+            <div style={{ padding: "24px", background: "#ffffff", border: `1px solid ${brand.borderMed}`, borderRadius: "2px" }}>
+              <p style={{ fontSize: "11px", letterSpacing: "0.16em", textTransform: "uppercase", color: brand.textSoft, fontFamily: "'DM Sans', sans-serif", marginBottom: "12px" }}>Intake</p>
+              <p style={{ fontSize: "13px", color: brand.textMuted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.7 }}>
+                {intake.completed_at
+                  ? `Completed ${formatDateTime(intake.completed_at)}`
+                  : "Not yet completed by client."}
+              </p>
+              {intake.reviewed_at && (
+                <p style={{ fontSize: "12px", color: brand.sage, fontFamily: "'DM Sans', sans-serif", marginTop: "6px" }}>
+                  Reviewed {formatDateTime(intake.reviewed_at)}
+                </p>
+              )}
+            </div>
+          )}
+
+          {appt.notes && (
+            <div style={{ padding: "24px", background: brand.goldPale, border: `1px solid ${brand.borderGold}`, borderRadius: "2px" }}>
+              <p style={{ fontSize: "11px", letterSpacing: "0.16em", textTransform: "uppercase", color: brand.gold, fontFamily: "'DM Sans', sans-serif", marginBottom: "8px" }}>Notes</p>
+              <p style={{ fontSize: "13px", color: brand.textMuted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.7 }}>{appt.notes}</p>
+            </div>
+          )}
         </div>
-      </section>
+      </div>
     </AdminPageShell>
   );
 }
