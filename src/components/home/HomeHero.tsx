@@ -1,5 +1,5 @@
 import { homeContent } from "@/components/home/home-content";
-import { colors, typography } from "@/lib/brand";
+import { brand, homeTypography } from "@/lib/brand";
 
 export function HomeHero() {
   return (
@@ -8,30 +8,38 @@ export function HomeHero() {
         <div className="relative">
           <div
             className="absolute -left-8 top-5 hidden h-32 w-32 rounded-full lg:block"
-            style={{ border: `1px solid ${colors.border}` }}
+            style={{ border: `1px solid ${brand.border}` }}
           />
           <div
             className="absolute left-28 top-28 hidden h-px w-36 lg:block"
-            style={{ background: `linear-gradient(to right, ${colors.sage}, transparent)` }}
+            style={{
+              background: `linear-gradient(to right, ${brand.primary}, transparent)`,
+            }}
           />
 
-          <p className={typography.eyebrow} style={{ color: colors.accentDeep ?? colors.gold }}>
+          <p
+            className="mb-5 text-xs uppercase tracking-[0.4em]"
+            style={{ color: brand.accentDeep }}
+          >
             Serving Central Pennsylvania
           </p>
 
-          <h1 className={typography.heroTitle}>
+          <h1 className="max-w-4xl text-5xl font-semibold leading-[0.95] tracking-[-0.04em] sm:text-6xl md:text-7xl">
             A massage practice built on
             <span
               className="block bg-clip-text text-transparent"
               style={{
-                backgroundImage: `linear-gradient(to right, ${colors.forestMid}, ${colors.sage}, ${colors.gold})`,
+                backgroundImage: `linear-gradient(to right, ${brand.secondary}, ${brand.primary}, ${brand.accent})`,
               }}
             >
               presence, listening, and purpose.
             </span>
           </h1>
 
-          <p className="mt-8 max-w-2xl text-lg leading-8" style={{ color: colors.textMuted }}>
+          <p
+            className="mt-8 max-w-2xl text-lg leading-8 md:text-xl"
+            style={{ color: brand.textMuted }}
+          >
             Guided Rhythms Massage offers thoughtful massage therapy rooted in
             presence, communication, and purposeful care so clients feel
             genuinely seen, supported, and restored.
@@ -40,23 +48,23 @@ export function HomeHero() {
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
             <a
               href="#about"
-              className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium transition hover:scale-[1.01]"
+              className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition hover:scale-[1.01]"
               style={{
-                background: `linear-gradient(to right, ${colors.forest}, ${colors.sage})`,
+                background: `linear-gradient(to right, ${brand.primary}, ${brand.accent})`,
                 color: "#FFFFFF",
-                boxShadow: `0 12px 30px ${colors.goldGlow}`,
+                boxShadow: `0 12px 30px ${brand.glow}`,
               }}
             >
               Meet the Therapists
             </a>
             <a
               href="#philosophy"
-              className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium transition"
+              className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition"
               style={{
-                border: `1px solid ${colors.border}`,
-                backgroundColor: colors.surface,
-                color: colors.text,
-                boxShadow: "0 12px 30px rgba(30,43,32,0.05)",
+                border: `1px solid ${brand.border}`,
+                backgroundColor: brand.surface,
+                color: brand.text,
+                boxShadow: "0 12px 30px rgba(47,58,44,0.05)",
               }}
             >
               Our Philosophy
@@ -67,25 +75,31 @@ export function HomeHero() {
         <div className="relative">
           <div
             className="absolute inset-x-8 top-8 h-full rounded-[2rem] blur-2xl"
-            style={{ background: `linear-gradient(to bottom, ${colors.goldGlow}, transparent)` }}
+            style={{
+              background: `linear-gradient(to bottom, ${brand.glow}, transparent)`,
+            }}
           />
           <div
             className="relative overflow-hidden rounded-[2rem] p-8 backdrop-blur-xl"
             style={{
-              border: `1px solid ${colors.border}`,
-              backgroundColor: colors.surface,
-              boxShadow: "0 20px 60px rgba(30,43,32,0.08)",
+              border: `1px solid ${brand.border}`,
+              backgroundColor: brand.surface,
+              boxShadow: "0 20px 60px rgba(47,58,44,0.08)",
             }}
           >
             <div
               className="absolute inset-0"
               style={{
-                background: "radial-gradient(circle at top left, rgba(255,255,255,0.55), transparent 36%)",
+                background:
+                  "radial-gradient(circle at top left, rgba(255,255,255,0.55), transparent 36%)",
               }}
             />
 
             <div className="relative">
-              <p className={typography.eyebrow} style={{ color: colors.textMuted }}>
+              <p
+                className={homeTypography.eyebrow}
+                style={{ color: brand.textMuted }}
+              >
                 What sets the tone
               </p>
 
@@ -94,13 +108,13 @@ export function HomeHero() {
                   <div
                     key={item}
                     className="flex items-start gap-4 pb-6 last:pb-0"
-                    style={{ borderBottom: `1px solid ${colors.border}` }}
+                    style={{ borderBottom: `1px solid ${brand.border}` }}
                   >
                     <div
-                      className="mt-2 h-2.5 w-2.5 shrink-0 rounded-full"
+                      className="mt-2 h-2.5 w-2.5 rounded-full"
                       style={{
-                        backgroundColor: colors.gold,
-                        boxShadow: `0 0 20px ${colors.goldGlow}`,
+                        backgroundColor: brand.accent,
+                        boxShadow: `0 0 20px ${brand.glow}`,
                       }}
                     />
                     <p className="text-base leading-7">{item}</p>
@@ -111,14 +125,21 @@ export function HomeHero() {
               <div
                 className="mt-10 rounded-[1.5rem] p-6"
                 style={{
-                  border: `1px solid ${colors.borderGold}`,
-                  background: "linear-gradient(to bottom right, rgba(255,255,255,0.62), rgba(255,255,255,0.24))",
+                  border: `1px solid ${brand.border}`,
+                  background:
+                    "linear-gradient(to bottom right, rgba(255,255,255,0.62), rgba(255,255,255,0.24))",
                 }}
               >
-                <p className={typography.eyebrow} style={{ color: colors.forestMid }}>
+                <p
+                  className="text-sm uppercase tracking-[0.28em]"
+                  style={{ color: brand.secondary }}
+                >
                   The direction
                 </p>
-                <p className={typography.cardBody} style={{ color: colors.textMuted }}>
+                <p
+                  className={homeTypography.cardBody}
+                  style={{ color: brand.textMuted }}
+                >
                   Every part of the practice is shaped around calm
                   professionalism, meaningful care, and an experience that
                   feels personal rather than routine.
