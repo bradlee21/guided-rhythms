@@ -10,7 +10,8 @@
       "Bash(cat D:/Projects/guided-rhythms/src/app/admin/soap/[appointmentId]/page.tsx)",
       "Bash(npx tsx:*)",
       "Bash(npm install:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(npx supabase:*)"
     ]
   }
 }
