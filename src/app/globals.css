@@ -1,19 +1,36 @@
 @import "tailwindcss";
 
-:root {
-  --background: #f5f2eb;
-  --foreground: #1f2b24;
-  --forest-green: #1f3d33;
-  --muted-sage: #8faf9b;
-  --soft-sand: #f1ece2;
-  --accent-gold: #c2a36b;
-  --woody-brown: #8a5a36;
-  --text-soft: #66675f;
-  --border-soft: rgba(31, 61, 51, 0.12);
+@theme {
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans:  'DM Sans', system-ui, sans-serif;
 }
 
-* {
+:root {
+  --background:        #F2EEE3;
+  --background-soft:   #E8E2D4;
+  --surface:           rgba(255, 255, 255, 0.65);
+  --surface-strong:    rgba(255, 255, 255, 0.88);
+  --text:              #1E2B20;
+  --text-muted:        #6B6657;
+  --text-soft:         #9A9484;
+  --forest:            #2E4A30;
+  --forest-mid:        #446E49;
+  --sage:              #6F8F55;
+  --sage-light:        #A8BC8E;
+  --gold:              #C8881A;
+  --gold-light:        #E0A84A;
+  --gold-pale:         rgba(200, 136, 26, 0.12);
+  --gold-glow:         rgba(200, 136, 26, 0.22);
+  --border:            rgba(30, 43, 32, 0.10);
+  --border-gold:       rgba(200, 136, 26, 0.25);
+  --font-display:      'Cormorant Garamond', Georgia, serif;
+  --font-body:         'DM Sans', system-ui, sans-serif;
+}
+
+*, *::before, *::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html {
@@ -21,11 +38,15 @@ html {
 }
 
 body {
-  margin: 0;
-  background:
-    radial-gradient(circle at top left, rgba(143, 175, 155, 0.06), transparent 28%),
-    radial-gradient(circle at top right, rgba(194, 163, 107, 0.05), transparent 24%),
-    linear-gradient(180deg, #f5f2eb 0%, #f6f3ed 35%, #f4f1ea 100%);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--background);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
 }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--background-soft); }
+::-webkit-scrollbar-thumb { background: var(--sage-light); border-radius: 3px; }

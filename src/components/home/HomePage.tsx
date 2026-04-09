@@ -1,5 +1,5 @@
 import { HomeAboutSection } from "@/components/home/HomeAboutSection";
-import { HomeBackground } from "@/components/home/HomeBackground";
+import HomeBackground from "@/components/home/HomeBackground";
 import { HomeContactSection } from "@/components/home/HomeContactSection";
 import { HomeHeader } from "@/components/home/HomeHeader";
 import { HomeHero } from "@/components/home/HomeHero";
