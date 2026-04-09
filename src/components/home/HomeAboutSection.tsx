@@ -19,22 +19,21 @@ export function HomeAboutSection() {
           </p>
         </div>
 
-        <div className="mt-20">
+        <div className="mt-20 grid gap-16 sm:grid-cols-2">
           {homeContent.therapists.map((therapist) => (
-            <div
-              key={therapist.name}
-              className="grid gap-6 py-10 md:grid-cols-[1fr_2fr] md:gap-16"
-              style={{ borderTop: `1px solid ${brand.border}` }}
-            >
+            <div key={therapist.name}>
+              <div
+                className="mb-6 h-px w-10"
+                style={{ background: brand.accent }}
+              />
               <h3 className="text-2xl md:text-3xl" style={{ color: brand.text }}>
                 {therapist.name}
               </h3>
-              <p className="text-base leading-7" style={{ color: brand.textMuted }}>
+              <p className="mt-4 text-base leading-7" style={{ color: brand.textMuted }}>
                 {therapist.role}
               </p>
             </div>
           ))}
-          <div style={{ borderTop: `1px solid ${brand.border}` }} />
         </div>
 
       </div>

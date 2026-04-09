@@ -15,30 +15,23 @@ export function HomeNewClientsSection() {
           </h2>
         </div>
 
-        <div className="mt-20">
+        <div className="mt-20 grid gap-16 sm:grid-cols-3">
           {homeContent.firstVisit.map((item, i) => (
-            <div
-              key={item.title}
-              className="grid grid-cols-[3rem_1fr] gap-8 py-10 md:grid-cols-[6rem_1fr] md:gap-16"
-              style={{ borderTop: `1px solid ${brand.border}` }}
-            >
+            <div key={item.title}>
               <p
-                className="pt-1 text-xs tabular-nums"
-                style={{ color: brand.textMuted, letterSpacing: "0.1em" }}
+                className="mb-4 text-xs tabular-nums"
+                style={{ color: brand.accent, letterSpacing: "0.12em" }}
               >
                 0{i + 1}
               </p>
-              <div>
-                <h3 className="text-2xl md:text-3xl" style={{ color: brand.text }}>
-                  {item.title}
-                </h3>
-                <p className="mt-4 max-w-2xl text-base leading-7" style={{ color: brand.textMuted }}>
-                  {item.body}
-                </p>
-              </div>
+              <h3 className="text-2xl md:text-3xl" style={{ color: brand.text }}>
+                {item.title}
+              </h3>
+              <p className="mt-4 text-base leading-7" style={{ color: brand.textMuted }}>
+                {item.body}
+              </p>
             </div>
           ))}
-          <div style={{ borderTop: `1px solid ${brand.border}` }} />
         </div>
 
       </div>
