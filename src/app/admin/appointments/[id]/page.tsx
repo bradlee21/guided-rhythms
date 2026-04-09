@@ -151,7 +151,7 @@ export default async function AppointmentDetailPage({
                 {appt.status.replace(/_/g, " ")}
               </span>
             </div>
-            <AppointmentStatusForm appointmentId={id} currentStatus={appt.status} />
+            <AppointmentStatusForm appointmentId={id} currentStatus={appt.status} clientId={client?.id ?? ""} />
           </div>
 
           {intake && (
@@ -170,6 +170,8 @@ export default async function AppointmentDetailPage({
             </div>
           )}
 
+          <IntakeLinkPanel appointmentId={id} intake={intake} />
+
           {appt.notes && (
             <div style={{ padding: "24px", background: brand.goldPale, border: `1px solid ${brand.borderGold}`, borderRadius: "2px" }}>
               <p style={{ fontSize: "11px", letterSpacing: "0.16em", textTransform: "uppercase", color: brand.gold, fontFamily: "'DM Sans', sans-serif", marginBottom: "8px" }}>Notes</p>
@@ -182,7 +184,7 @@ export default async function AppointmentDetailPage({
   );
 }
 
-function AppointmentStatusForm({ appointmentId, currentStatus }: { appointmentId: string; currentStatus: string }) {
+function AppointmentStatusForm({ appointmentId, currentStatus, clientId }: { appointmentId: string; currentStatus: string; clientId: string }) {
   const transitions: Record<string, { label: string; next: string; primary: boolean }[]> = {
     pending_confirmation: [
       { label: "Confirm", next: "confirmed", primary: true },
@@ -213,7 +215,31 @@ function AppointmentStatusForm({ appointmentId, currentStatus }: { appointmentId
       if (!next) return;
       const { createServiceClient } = await import("@/lib/supabase/server");
       const supabase = await createServiceClient();
+
       await supabase.from("appointments").update({ status: next }).eq("id", appointmentId);
+
+      if (next === "confirmed" && clientId) {
+        const { data: existing } = await supabase
+          .from("intakes")
+          .select("id")
+          .eq("appointment_id", appointmentId)
+          .single();
+
+        if (!existing) {
+          await supabase.from("intakes").insert({
+            appointment_id: appointmentId,
+            client_id: clientId,
+            status: "sent",
+            form_version: "v1",
+          });
+        }
+
+        await supabase
+          .from("appointments")
+          .update({ intake_status: "sent" })
+          .eq("id", appointmentId);
+      }
+
       const { revalidatePath } = await import("next/cache");
       revalidatePath(`/admin/appointments/${appointmentId}`);
       revalidatePath("/admin");
@@ -243,5 +269,44 @@ function AppointmentStatusForm({ appointmentId, currentStatus }: { appointmentId
         </button>
       ))}
     </form>
+  );
+}
+
+function IntakeLinkPanel({ appointmentId, intake }: { appointmentId: string; intake: any }) {
+  if (!intake) return null;
+
+  const { createIntakeToken, getIntakeTokenPath } = require("@/lib/intake/token");
+  const { hasIntakeTokenSecret } = require("@/lib/supabase/env");
+
+  if (!hasIntakeTokenSecret()) return null;
+
+  const token = createIntakeToken({
+    intakeId: intake.id,
+    appointmentId,
+    createdAt: intake.created_at,
+  });
+  const path = getIntakeTokenPath(token);
+  const fullUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}${path}`;
+
+  return (
+    <div style={{ padding: "20px 24px", background: brand.goldPale, border: `1px solid ${brand.borderGold}`, borderRadius: "2px" }}>
+      <p style={{ fontSize: "11px", letterSpacing: "0.16em", textTransform: "uppercase", color: brand.gold, fontFamily: "'DM Sans', sans-serif", marginBottom: "8px" }}>
+        Intake link
+      </p>
+      <p style={{ fontSize: "13px", color: brand.textMuted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6, marginBottom: "12px" }}>
+        Send this link to the client to complete their health history form.
+      </p>
+      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+        <code style={{ flex: 1, fontSize: "11px", background: "rgba(255,255,255,0.7)", padding: "8px 12px", borderRadius: "2px", border: `1px solid ${brand.borderGold}`, color: brand.textMuted, wordBreak: "break-all" as const, fontFamily: "monospace" }}>
+          {fullUrl}
+        </code>
+      </div>
+      <a
+        href={`mailto:?subject=Your intake form for your upcoming session&body=Hi, please complete your health history form before your session: ${fullUrl}`}
+        style={{ display: "inline-block", marginTop: "12px", fontSize: "12px", padding: "8px 16px", background: brand.forest, color: "#F0EBE0", borderRadius: "2px", textDecoration: "none", fontFamily: "'DM Sans', sans-serif", letterSpacing: "0.08em" }}
+      >
+        Open email draft
+      </a>
+    </div>
   );
 }
