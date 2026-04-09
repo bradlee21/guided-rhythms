@@ -1,17 +1,26 @@
+import { createServiceClient } from "@/lib/supabase/server";
+import { requireApprovedAdminUser } from "@/lib/auth/admin";
 import { AdminPageShell } from "@/components/admin/AdminPageShell";
-import { AdminPlaceholderCard } from "@/components/admin/AdminPlaceholderCard";
+import ServicesManager from "@/components/admin/ServicesManager";
 
-export default function AdminServicesPage() {
+export const dynamic = "force-dynamic";
+
+export default async function AdminServicesPage() {
+  await requireApprovedAdminUser();
+  const supabase = await createServiceClient();
+
+  const { data: services } = await supabase
+    .from("services")
+    .select("*")
+    .order("sort_order");
+
   return (
     <AdminPageShell
-      eyebrow="Admin"
+      eyebrow="Configuration"
       title="Services"
-      description="This route is reserved for practice service configuration and future public-service content management."
+      description="Manage your service offerings and pricing."
     >
-      <AdminPlaceholderCard
-        title="Service configuration scaffold"
-        body="Editable service definitions, pricing, durations, and display settings will be built later."
-      />
+      <ServicesManager services={services ?? []} />
     </AdminPageShell>
   );
 }
