@@ -109,7 +109,7 @@ export default async function IntakeTokenPage({
               appointment: appt ? { appointment_date: appt.appointment_date, start_time: appt.start_time ?? "", service_name: null } : null,
               answers: intake.intake_answers ?? [],
             }}
-            defaultValues={values}
+            defaultValues={{ ...values, token }}
           />
         )}
       </div>

@@ -4,43 +4,26 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useActionState, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import { brand } from "@/lib/brand";
 import { intakeFormSections, intakeStepOrder } from "@/lib/intake/form-definition";
-import {
-  intakeSubmissionSchema,
-  type IntakeSubmissionValues,
-} from "@/lib/validators/intake";
+import { intakeSubmissionSchema, type IntakeSubmissionValues } from "@/lib/validators/intake";
 import { submitIntake } from "@/server/intakes/actions";
 import type { IntakeActionState, PublicIntakeContext } from "@/types/intake";
 import { IntakeField } from "@/components/intake/IntakeField";
 import { IntakeSummary } from "@/components/intake/IntakeSummary";
-import { formatDateOnly } from "@/lib/dates";
 
-const initialState: IntakeActionState = {
-  success: false,
-  message: null,
-};
-
+const initialState: IntakeActionState = { success: false, message: null };
 type IntakeFormInput = z.input<typeof intakeSubmissionSchema>;
 
 function toFormData(values: IntakeSubmissionValues) {
   const formData = new FormData();
-
   for (const [key, value] of Object.entries(values)) {
     formData.set(key, typeof value === "boolean" ? String(value) : String(value ?? ""));
   }
-
   return formData;
 }
 
-export function IntakeForm({
-  intake,
-  defaultValues,
-}: {
-  intake: PublicIntakeContext;
-  defaultValues: IntakeSubmissionValues;
-}) {
+export function IntakeForm({ intake, defaultValues }: { intake: PublicIntakeContext; defaultValues: IntakeSubmissionValues }) {
   const [stepIndex, setStepIndex] = useState(0);
   const [state, formAction, isPending] = useActionState(submitIntake, initialState);
   const form = useForm<IntakeFormInput, unknown, IntakeSubmissionValues>({
@@ -49,205 +32,156 @@ export function IntakeForm({
   });
 
   useEffect(() => {
-    if (!state.fieldErrors) {
-      return;
-    }
-
+    if (!state.fieldErrors) return;
     for (const [field, errors] of Object.entries(state.fieldErrors)) {
-      if (!errors?.length) {
-        continue;
-      }
-
-      form.setError(field as keyof IntakeSubmissionValues, {
-        type: "server",
-        message: errors[0],
-      });
+      if (!errors?.length) continue;
+      form.setError(field as keyof IntakeSubmissionValues, { type: "server", message: errors[0] });
     }
   }, [form, state.fieldErrors]);
 
   const currentStep = intakeStepOrder[stepIndex];
   const isReviewStep = currentStep.key === "review";
-  const currentSection = intakeFormSections.find(
-    (section) => section.key === currentStep.key,
-  );
-
+  const currentSection = intakeFormSections.find((s) => s.key === currentStep.key);
   const stepFields = useMemo(
-    () =>
-      currentSection
-        ? currentSection.fields.map((field) => field.key) as (keyof IntakeSubmissionValues)[]
-        : [],
-    [currentSection],
+    () => currentSection ? currentSection.fields.map((f) => f.key) as (keyof IntakeSubmissionValues)[] : [],
+    [currentSection]
   );
 
   async function handleNext() {
-    if (!currentSection) {
-      setStepIndex((value) => Math.min(value + 1, intakeStepOrder.length - 1));
-      return;
-    }
-
+    if (!currentSection) { setStepIndex((v) => Math.min(v + 1, intakeStepOrder.length - 1)); return; }
     const isValid = await form.trigger(stepFields);
-
-    if (isValid) {
-      setStepIndex((value) => Math.min(value + 1, intakeStepOrder.length - 1));
-    }
+    if (isValid) setStepIndex((v) => Math.min(v + 1, intakeStepOrder.length - 1));
   }
 
-  const submitReview = form.handleSubmit(async (values) => {
-    await formAction(toFormData(values));
-  });
+  const submitReview = form.handleSubmit(async (values) => { await formAction(toFormData(values)); });
 
   if (state.success) {
     return (
-      <section
-        className="rounded-[1.75rem] p-8"
-        style={{
-          backgroundColor: "rgba(255,255,255,0.7)",
-          border: `1px solid ${brand.border}`,
-        }}
-      >
-        <p className="text-sm uppercase tracking-[0.24em]" style={{ color: brand.secondary }}>
-          Intake received
-        </p>
-        <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em]">
-          Thank you. Your intake has been submitted.
+      <div style={{ padding: "48px", textAlign: "center", border: `1px solid ${brand.border}`, borderRadius: "2px", background: "#ffffff" }}>
+        <div style={{ width: "48px", height: "48px", borderRadius: "50%", background: "rgba(46,74,48,0.08)", border: `1px solid rgba(46,74,48,0.2)`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
+          <svg width="20" height="16" viewBox="0 0 20 16" fill="none">
+            <path d="M1 8l6 6L19 1" stroke={brand.forest} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "32px", fontWeight: 300, color: brand.text, letterSpacing: "-0.02em", marginBottom: "12px" }}>
+          Intake received.
         </h2>
-        <p className="mt-4 max-w-2xl text-base leading-7" style={{ color: brand.textMuted }}>
-          Guided Rhythms now has the information needed to review your session safely and with more context before your appointment.
+        <p style={{ fontSize: "15px", lineHeight: 1.8, color: brand.textMuted, fontFamily: "'DM Sans', sans-serif", maxWidth: "400px", margin: "0 auto" }}>
+          Your therapist will review your health history before your session.
         </p>
-      </section>
+      </div>
     );
   }
 
+  const totalSteps = intakeStepOrder.length;
+
   return (
-    <form className="space-y-6">
+    <form style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
       <input type="hidden" {...form.register("token")} />
-      <div className="rounded-[1.75rem] p-6" style={{ backgroundColor: "rgba(255,255,255,0.7)", border: `1px solid ${brand.border}` }}>
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-sm uppercase tracking-[0.24em]" style={{ color: brand.secondary }}>
-              Step {stepIndex + 1} of {intakeStepOrder.length}
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em]">
-              {currentStep.title}
-            </h2>
-            <p className="mt-3 max-w-2xl text-base leading-7" style={{ color: brand.textMuted }}>
-              {intake.appointment?.service_name
-                ? `${intake.appointment.service_name} on ${formatDateOnly(intake.appointment.appointment_date)} at ${intake.appointment.start_time}`
-                : "A few guided steps will help us tailor your session safely and thoughtfully."}
-            </p>
-          </div>
-          <div className="flex gap-2">
-            {intakeStepOrder.map((step, index) => (
-              <span
-                key={step.key}
-                className="h-2.5 w-8 rounded-full"
-                style={{
-                  backgroundColor:
-                    index <= stepIndex ? brand.primary : "rgba(47,58,44,0.12)",
-                }}
-              />
-            ))}
-          </div>
-        </div>
+
+      {/* Progress */}
+      <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+        {intakeStepOrder.map((step, i) => (
+          <div
+            key={step.key}
+            style={{
+              flex: 1,
+              height: "3px",
+              borderRadius: "2px",
+              background: i <= stepIndex ? brand.gold : brand.border,
+              transition: "background 0.3s",
+            }}
+          />
+        ))}
       </div>
 
-      {currentStep.key === "welcome" ? (
-        <section className="rounded-[1.75rem] p-6" style={{ backgroundColor: "rgba(255,255,255,0.68)", border: `1px solid ${brand.border}` }}>
-          <p className="text-base leading-7" style={{ color: brand.textMuted }}>
-            This intake helps Guided Rhythms understand your health context, session goals, and comfort preferences before your appointment. It should take about 8 to 10 minutes and you can move one step at a time.
-          </p>
-          <p className="mt-4 text-base leading-7" style={{ color: brand.textMuted }}>
-            You will review everything before you submit. If you are unsure about any answer, do your best and add a note where helpful.
-          </p>
-        </section>
-      ) : null}
-
-      {currentSection ? (
-        <section className="rounded-[1.75rem] p-6" style={{ backgroundColor: "rgba(255,255,255,0.68)", border: `1px solid ${brand.border}` }}>
-          <p className="text-base leading-7" style={{ color: brand.textMuted }}>
+      {/* Step header */}
+      <div>
+        <p style={{ fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", color: brand.textSoft, fontFamily: "'DM Sans', sans-serif", marginBottom: "8px" }}>
+          Step {stepIndex + 1} of {totalSteps}
+        </p>
+        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 300, color: brand.text, letterSpacing: "-0.02em", lineHeight: 1.1, marginBottom: "8px" }}>
+          {currentStep.title}
+        </h2>
+        {currentSection && (
+          <p style={{ fontSize: "14px", lineHeight: 1.7, color: brand.textMuted, fontFamily: "'DM Sans', sans-serif" }}>
             {currentSection.description}
           </p>
-          <div className="mt-6 grid gap-5 md:grid-cols-2">
-            {currentSection.fields.map((field) => (
-              <IntakeField key={field.key} field={field} form={form} />
-            ))}
-          </div>
-        </section>
-      ) : null}
+        )}
+      </div>
 
-      {isReviewStep ? (
-        <section
-          className="space-y-5 rounded-[1.75rem] p-6"
-          style={{
-            backgroundColor: "rgba(255,255,255,0.68)",
-            border: `1px solid ${brand.border}`,
-          }}
-        >
-          <div className="space-y-3">
-            <p
-              className="text-sm uppercase tracking-[0.24em]"
-              style={{ color: brand.secondary }}
-            >
-              Final review
-            </p>
-            <h3 className="text-2xl font-semibold tracking-[-0.03em]">
-              Review your intake before you submit
-            </h3>
-            <p
-              className="max-w-3xl text-base leading-7"
-              style={{ color: brand.textMuted }}
-            >
-              This is your final chance to look over each section. If anything
-              needs adjusting, use Previous to go back and update it before you
-              submit.
-            </p>
-          </div>
-          <IntakeSummary values={intakeSubmissionSchema.parse(form.getValues())} />
-        </section>
-      ) : null}
-
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <p className="text-sm leading-6" style={{ color: brand.textMuted }}>
-          {state.message ?? "Take your time. You can move back to review or update any step before submitting."}
-        </p>
-        <div className="flex flex-wrap gap-3">
-          {stepIndex > 0 ? (
-            <button
-              type="button"
-              onClick={() => setStepIndex((value) => Math.max(value - 1, 0))}
-              className="rounded-full px-5 py-2.5 text-sm font-semibold"
-              style={{ backgroundColor: "rgba(255,255,255,0.82)", border: `1px solid ${brand.border}` }}
-            >
-              Previous
-            </button>
-          ) : null}
-          {stepIndex < intakeStepOrder.length - 1 ? (
-            <button
-              type="button"
-              onClick={handleNext}
-              className="rounded-full px-5 py-2.5 text-sm font-semibold text-white"
-              style={{ background: `linear-gradient(to right, ${brand.primary}, ${brand.accent})` }}
-            >
-              {currentStep.key === "welcome"
-                ? "Start intake"
-                : currentStep.key === "consent_and_policies"
-                  ? "Next: review"
-                  : "Next"}
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => {
-                void submitReview();
-              }}
-              disabled={isPending}
-              className="rounded-full px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
-              style={{ background: `linear-gradient(to right, ${brand.primary}, ${brand.accent})` }}
-            >
-              {isPending ? "Submitting..." : "Submit intake"}
-            </button>
-          )}
+      {/* Welcome step */}
+      {currentStep.key === "welcome" && (
+        <div style={{ padding: "32px", background: "#ffffff", border: `1px solid ${brand.border}`, borderRadius: "2px" }}>
+          <p style={{ fontSize: "15px", lineHeight: 1.9, color: brand.textMuted, fontFamily: "'DM Sans', sans-serif", marginBottom: "16px" }}>
+            This form helps your therapist understand your health history, session goals, and comfort preferences before your appointment.
+          </p>
+          <p style={{ fontSize: "15px", lineHeight: 1.9, color: brand.textMuted, fontFamily: "'DM Sans', sans-serif", marginBottom: "16px" }}>
+            It takes about <strong style={{ fontWeight: 400, color: brand.text }}>8–10 minutes</strong>. You can move through one step at a time and review everything before submitting.
+          </p>
+          <p style={{ fontSize: "15px", lineHeight: 1.9, color: brand.textMuted, fontFamily: "'DM Sans', sans-serif" }}>
+            If you're unsure about any answer, do your best and add a note — your therapist will follow up if needed.
+          </p>
         </div>
+      )}
+
+      {/* Section fields */}
+      {currentSection && (
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
+          {currentSection.fields.map((field) => (
+            <IntakeField key={field.key} field={field} form={form} />
+          ))}
+        </div>
+      )}
+
+      {/* Review step */}
+      {isReviewStep && (
+        <div style={{ padding: "32px", background: "#ffffff", border: `1px solid ${brand.border}`, borderRadius: "2px" }}>
+          <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 300, color: brand.text, letterSpacing: "-0.02em", marginBottom: "8px" }}>
+            Review your responses
+          </h3>
+          <p style={{ fontSize: "14px", lineHeight: 1.7, color: brand.textMuted, fontFamily: "'DM Sans', sans-serif", marginBottom: "24px" }}>
+            Use Previous to go back and update anything before submitting.
+          </p>
+          <IntakeSummary values={intakeSubmissionSchema.parse(form.getValues())} />
+        </div>
+      )}
+
+      {/* Error message */}
+      {state.message && (
+        <p style={{ fontSize: "14px", color: "#c0392b", fontFamily: "'DM Sans', sans-serif" }}>{state.message}</p>
+      )}
+
+      {/* Navigation */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: "8px" }}>
+        {stepIndex > 0 ? (
+          <button
+            type="button"
+            onClick={() => setStepIndex((v) => Math.max(v - 1, 0))}
+            style={{ fontSize: "13px", color: brand.textMuted, background: "none", border: "none", cursor: "pointer", padding: "0", letterSpacing: "0.05em", fontFamily: "'DM Sans', sans-serif" }}
+          >
+            ← Previous
+          </button>
+        ) : <span />}
+
+        {stepIndex < intakeStepOrder.length - 1 ? (
+          <button
+            type="button"
+            onClick={handleNext}
+            style={{ padding: "12px 32px", background: brand.forest, color: "#F0EBE0", fontSize: "12px", letterSpacing: "0.1em", textTransform: "uppercase", border: "none", borderRadius: "2px", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}
+          >
+            {currentStep.key === "welcome" ? "Begin intake" : currentStep.key === "consent_and_policies" ? "Review & submit" : "Continue"}
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => { void submitReview(); }}
+            disabled={isPending}
+            style={{ padding: "12px 32px", background: brand.forest, color: "#F0EBE0", fontSize: "12px", letterSpacing: "0.1em", textTransform: "uppercase", border: "none", borderRadius: "2px", cursor: isPending ? "not-allowed" : "pointer", fontFamily: "'DM Sans', sans-serif", opacity: isPending ? 0.7 : 1 }}
+          >
+            {isPending ? "Submitting…" : "Submit intake"}
+          </button>
+        )}
       </div>
     </form>
   );
