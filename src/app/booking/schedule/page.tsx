@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getTherapists } from "@/lib/scheduling";
 import { createServiceClient } from "@/lib/supabase/server";
 import BookingFlow from "@/components/booking/BookingFlow";
