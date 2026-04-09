@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 
 export const BUFFER_MINUTES = 30;
 export const MAX_SESSIONS_PER_DAY = 4;
@@ -34,7 +34,7 @@ export async function getAvailableSlots(
   date: string, // "YYYY-MM-DD"
   durationMinutes: number
 ): Promise<TimeSlot[]> {
-  const supabase = await createClient();
+  const supabase = await createServiceClient();
 
   // Get day of week (0 = Sunday)
   const dayOfWeek = new Date(date + "T12:00:00").getDay();
@@ -121,7 +121,7 @@ export async function getAvailableSlots(
 }
 
 export async function getTherapists() {
-  const supabase = await createClient();
+  const supabase = await createServiceClient();
   const { data } = await supabase
     .from("therapists")
     .select("id, full_name, email, bio, specialty, display_order")
@@ -131,7 +131,7 @@ export async function getTherapists() {
 }
 
 export async function seedDefaultSchedule(therapistId: string) {
-  const supabase = await createClient();
+  const supabase = await createServiceClient();
   // Mon–Fri (1–5), 9am–5pm
   const days = [1, 2, 3, 4, 5];
   const rows = days.map((day) => ({
