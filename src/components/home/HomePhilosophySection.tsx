@@ -31,7 +31,7 @@ export function HomePhilosophySection() {
               <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: dots[i], flexShrink: 0, marginTop: "8px" }} />
               <div>
                 <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 400, color: "#E8E0D0", marginBottom: "6px" }}>{item.title}</h4>
-                <p style={{ fontSize: "12px", lineHeight: 1.8, color: "rgba(200,210,190,0.5)" }}>{item.body}</p>
+                <p style={{ fontSize: "14px", lineHeight: 1.8, color: "rgba(200,210,190,0.5)" }}>{item.body}</p>
               </div>
             </div>
           ))}

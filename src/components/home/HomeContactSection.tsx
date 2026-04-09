@@ -11,7 +11,7 @@ export function HomeContactSection() {
           <h2 style={{ fontSize: "clamp(28px, 3vw, 38px)", fontWeight: 300, lineHeight: 1.1, color: "#F0EBE0", letterSpacing: "-0.02em", marginBottom: "16px" }}>
             Ready when you are.
           </h2>
-          <p style={{ fontSize: "13px", lineHeight: 1.8, color: "rgba(200,210,190,0.5)" }}>
+          <p style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(200,210,190,0.5)" }}>
             Whether you have questions or you&apos;re ready to book — reach out directly. We keep it simple.
           </p>
         </div>
@@ -20,8 +20,8 @@ export function HomeContactSection() {
             <span style={{ width: "24px", height: "1px", background: i === 0 ? brand.gold : brand.sageLight, display: "block", marginBottom: "16px" }} />
             <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 400, color: "#F0EBE0", marginBottom: "4px" }}>{contact.name}</h3>
             <p className={homeTypography.eyebrow} style={{ color: i === 0 ? brand.gold : brand.sageLight, marginBottom: "14px" }}>{contact.specialty}</p>
-            <p style={{ fontSize: "13px", color: "rgba(220,210,195,0.8)", marginBottom: "4px" }}>{contact.email}</p>
-            <p style={{ fontSize: "13px", color: "rgba(200,190,175,0.55)" }}>{contact.phone}</p>
+            <p style={{ fontSize: "15px", color: "rgba(220,210,195,0.8)", marginBottom: "4px" }}>{contact.email}</p>
+            <p style={{ fontSize: "15px", color: "rgba(200,190,175,0.55)" }}>{contact.phone}</p>
           </div>
         ))}
       </div>

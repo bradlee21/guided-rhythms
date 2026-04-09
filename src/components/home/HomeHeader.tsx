@@ -56,7 +56,7 @@ export function HomeHeader() {
         <div>
           <div
             style={{
-              fontSize: "11px",
+              fontSize: "14px",
               letterSpacing: "0.14em",
               textTransform: "uppercase",
               color: brand.forest,
@@ -67,7 +67,7 @@ export function HomeHeader() {
           </div>
           <div
             style={{
-              fontSize: "9px",
+              fontSize: "12px",
               letterSpacing: "0.08em",
               color: brand.textSoft,
             }}
@@ -84,7 +84,7 @@ export function HomeHeader() {
             key={link}
             href={`#${link.toLowerCase().replace(" ", "-")}`}
             style={{
-              fontSize: "11px",
+              fontSize: "14px",
               letterSpacing: "0.05em",
               color: brand.textMuted,
               textDecoration: "none",
@@ -102,7 +102,7 @@ export function HomeHeader() {
             padding: "9px 24px",
             background: brand.forest,
             color: "#F0EBE0",
-            fontSize: "11px",
+            fontSize: "14px",
             letterSpacing: "0.1em",
             textTransform: "uppercase",
             textDecoration: "none",

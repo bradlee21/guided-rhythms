@@ -26,7 +26,7 @@ export function HomeServicesSection() {
               }}
             >
               <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 400, color: brand.text }}>{service.title}</h3>
-              <p style={{ fontSize: "13px", lineHeight: 1.85, color: brand.textMuted }}>{service.description}</p>
+              <p style={{ fontSize: "15px", lineHeight: 1.85, color: brand.textMuted }}>{service.description}</p>
             </div>
           ))}
         </div>

@@ -19,11 +19,11 @@ export function HomeNewClientsSection() {
               paddingLeft: i > 0 ? "40px" : "0",
             }}
           >
-            <div style={{ fontSize: "10px", color: brand.gold, letterSpacing: "0.14em", marginBottom: "16px", fontFamily: "'DM Sans', sans-serif" }}>
+            <div style={{ fontSize: "13px", color: brand.gold, letterSpacing: "0.14em", marginBottom: "16px", fontFamily: "'DM Sans', sans-serif" }}>
               {String(i + 1).padStart(2, "0")}
             </div>
             <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 400, color: brand.text, marginBottom: "12px" }}>{item.title}</h3>
-            <p style={{ fontSize: "13px", lineHeight: 1.85, color: brand.textMuted }}>{item.body}</p>
+            <p style={{ fontSize: "15px", lineHeight: 1.85, color: brand.textMuted }}>{item.body}</p>
           </div>
         ))}
       </div>

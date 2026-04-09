@@ -24,14 +24,14 @@ export function HomeAboutSection() {
                   background: i === 0 ? brand.goldPale : "rgba(46,74,48,0.08)",
                   border: `1px solid ${i === 0 ? brand.borderGold : brand.borderMed}`,
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: "11px", color: i === 0 ? brand.gold : brand.forest,
+                  fontSize: "14px", color: i === 0 ? brand.gold : brand.forest,
                   fontWeight: 400, flexShrink: 0,
                 }}>
                   {t.name.split(" ").map((n) => n[0]).join("")}
                 </div>
                 <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 400, color: brand.text }}>{t.name}</h3>
               </div>
-              <p style={{ fontSize: "13px", lineHeight: 1.9, color: brand.textMuted, paddingLeft: "48px" }}>{t.role}</p>
+              <p style={{ fontSize: "15px", lineHeight: 1.9, color: brand.textMuted, paddingLeft: "48px" }}>{t.role}</p>
             </div>
           ))}
         </div>

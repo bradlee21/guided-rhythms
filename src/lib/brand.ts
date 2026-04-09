@@ -25,10 +25,10 @@ export const brand = {
 } as const;
 
 export const homeTypography = {
-  eyebrow:      "text-[10px] tracking-[0.2em] uppercase font-sans font-normal",
+  eyebrow:      "text-[13px] tracking-[0.2em] uppercase font-sans font-normal",
   sectionTitle: "font-serif font-light leading-[1.08] tracking-[-0.02em]",
   sectionBody:  "font-sans font-light leading-[1.85]",
   cardTitle:    "font-serif font-normal leading-snug",
-  cardBody:     "font-sans font-light leading-[1.8] text-sm",
+  cardBody:     "font-sans font-light leading-[1.8] text-base",
   rule:         "w-10 h-px block",
 } as const;

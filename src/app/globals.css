@@ -32,7 +32,7 @@ body {
   background-color: var(--background);
   color: var(--text);
   font-family: 'DM Sans', Arial, sans-serif;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.7;
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
@@ -51,3 +51,12 @@ h1, h2, h3, h4 {
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: var(--background-soft); }
 ::-webkit-scrollbar-thumb { background: var(--sage-light); border-radius: 3px; }
+
+p, li {
+  font-size: 15px;
+}
+
+.text-xs, .text-\[10px\] {
+  font-size: 12px !important;
+  letter-spacing: 0.18em;
+}
