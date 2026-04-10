@@ -74,6 +74,18 @@ export function HomeHeader() {
           >
             Massage Therapy
           </div>
+          <div
+            style={{
+              fontSize: "9px",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: brand.gold,
+              fontFamily: "'DM Sans', sans-serif",
+              marginTop: "2px",
+            }}
+          >
+            Veteran Owned
+          </div>
         </div>
       </div>
 

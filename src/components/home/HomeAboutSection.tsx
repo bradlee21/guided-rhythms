@@ -32,6 +32,20 @@ export function HomeAboutSection() {
                 <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 400, color: brand.text }}>{t.name}</h3>
               </div>
               <p style={{ fontSize: "15px", lineHeight: 1.9, color: brand.textMuted, paddingLeft: "48px" }}>{t.role}</p>
+            {t.branch && (
+              <p style={{
+                fontSize: "11px",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: brand.gold,
+                fontFamily: "'DM Sans', sans-serif",
+                marginTop: "10px",
+                fontWeight: 400,
+                paddingLeft: "48px",
+              }}>
+                {t.branch}
+              </p>
+            )}
             </div>
           ))}
         </div>

@@ -43,6 +43,22 @@ export function HomeContactSection() {
           </div>
         ))}
       </div>
+        <div style={{
+          marginTop: "48px",
+          paddingTop: "32px",
+          borderTop: "1px solid rgba(255,255,255,0.06)",
+          textAlign: "center",
+        }}>
+          <p style={{
+            fontSize: "11px",
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+            color: "rgba(200,190,175,0.4)",
+            fontFamily: "'DM Sans', sans-serif",
+          }}>
+            Veteran Owned &amp; Operated · U.S. Army &amp; U.S. Marine Corps
+          </p>
+        </div>
     </section>
   );
 }

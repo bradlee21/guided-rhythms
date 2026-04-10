@@ -55,10 +55,12 @@ export const homeContent = {
     {
       name: "Josh Green",
       role: "Josh brings a creative, client-centered presence to the practice, helping shape an experience that feels thoughtful, restorative, and deeply intentional from the moment someone walks in.",
+      branch: "U.S. Marine Corps",
     },
     {
       name: "Brad Ivy",
       role: "Brad brings a therapeutic, recovery-minded approach rooted in listening, purposeful treatment, and long-term care that helps clients feel supported rather than rushed through a routine.",
+      branch: "U.S. Army",
     },
   ],
   contacts: [
