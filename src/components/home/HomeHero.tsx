@@ -72,7 +72,7 @@ export function HomeHero() {
 
         <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
           <a
-            href="#contact"
+            href="/booking/schedule"
             style={{
               padding: "13px 32px",
               background: brand.forest,
@@ -158,6 +158,23 @@ export function HomeHero() {
             A thoughtful, intuitive presence. Josh brings a client-centered
             approach that makes every session feel intentional.
           </p>
+          <a
+            href="/booking/schedule"
+            style={{
+              display: "inline-block",
+              marginTop: "16px",
+              fontSize: "12px",
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: brand.gold,
+              textDecoration: "none",
+              borderBottom: `1px solid ${brand.borderGold}`,
+              paddingBottom: "2px",
+              fontFamily: "'DM Sans', sans-serif",
+            }}
+          >
+            Book with Josh →
+          </a>
         </div>
 
         {/* Brad — bottom */}
@@ -201,6 +218,23 @@ export function HomeHero() {
             Recovery-minded work rooted in listening. If you&apos;re coming in
             with real pain or tension, Brad is your person.
           </p>
+          <a
+            href="/booking/schedule"
+            style={{
+              display: "inline-block",
+              marginTop: "16px",
+              fontSize: "12px",
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: brand.gold,
+              textDecoration: "none",
+              borderBottom: `1px solid ${brand.borderGold}`,
+              paddingBottom: "2px",
+              fontFamily: "'DM Sans', sans-serif",
+            }}
+          >
+            Book with Brad →
+          </a>
         </div>
       </div>
     </section>

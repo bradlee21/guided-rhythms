@@ -97,7 +97,7 @@ export function HomeHeader() {
           </a>
         ))}
         <a
-          href="#contact"
+          href="/booking/schedule"
           style={{
             padding: "9px 24px",
             background: brand.forest,

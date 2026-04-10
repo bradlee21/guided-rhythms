@@ -22,6 +22,24 @@ export function HomeContactSection() {
             <p className={homeTypography.eyebrow} style={{ color: i === 0 ? brand.gold : brand.sageLight, marginBottom: "14px" }}>{contact.specialty}</p>
             <p style={{ fontSize: "15px", color: "rgba(220,210,195,0.8)", marginBottom: "4px" }}>{contact.email}</p>
             <p style={{ fontSize: "15px", color: "rgba(200,190,175,0.55)" }}>{contact.phone}</p>
+            <a
+              href="/booking/schedule"
+              style={{
+                display: "inline-block",
+                marginTop: "16px",
+                padding: "10px 24px",
+                border: "1px solid rgba(255,255,255,0.2)",
+                color: "#F0EBE0",
+                fontSize: "12px",
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                fontFamily: "'DM Sans', sans-serif",
+                borderRadius: "2px",
+              }}
+            >
+              Book a session
+            </a>
           </div>
         ))}
       </div>

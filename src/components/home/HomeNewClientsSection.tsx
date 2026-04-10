@@ -27,6 +27,33 @@ export function HomeNewClientsSection() {
           </div>
         ))}
       </div>
+      <div style={{ marginTop: "64px", paddingTop: "48px", borderTop: `1px solid ${brand.borderMed}`, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "24px" }}>
+        <div>
+          <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "28px", fontWeight: 300, color: brand.text, letterSpacing: "-0.02em", marginBottom: "8px" }}>
+            Ready to book your first session?
+          </h3>
+          <p style={{ fontSize: "15px", color: brand.textMuted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.7 }}>
+            Choose your therapist, pick a time that works, and we'll take it from there.
+          </p>
+        </div>
+        <a
+          href="/booking/schedule"
+          style={{
+            padding: "14px 40px",
+            background: brand.forest,
+            color: "#F0EBE0",
+            fontSize: "13px",
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            textDecoration: "none",
+            fontFamily: "'DM Sans', sans-serif",
+            borderRadius: "2px",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Book now
+        </a>
+      </div>
     </section>
   );
 }
