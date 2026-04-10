@@ -37,6 +37,7 @@ export function HomeHeader() {
           alt="Guided Rhythms logo"
           width={192}
           height={192}
+          className="header-logo"
           style={{ objectFit: "contain" }}
         />
         <div>
@@ -74,6 +75,25 @@ export function HomeHeader() {
           </div>
         </div>
       </div>
+
+      <a
+        href="/booking/schedule"
+        className="mobile-book-btn"
+        style={{
+          padding: "10px 20px",
+          background: brand.forest,
+          color: "#F0EBE0",
+          fontSize: "12px",
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+          textDecoration: "none",
+          fontFamily: "'DM Sans', sans-serif",
+          borderRadius: "2px",
+          display: "none",
+        }}
+      >
+        Book now
+      </a>
 
       {/* Nav */}
       <nav className="desktop-nav" style={{ display: "flex", gap: "32px", alignItems: "center" }}>

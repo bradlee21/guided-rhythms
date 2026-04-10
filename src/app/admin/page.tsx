@@ -112,7 +112,7 @@ export default async function AdminDashboard() {
       {/* Greeting header */}
       <div style={{
         background: "#1E2820",
-        padding: "40px 48px 36px",
+        padding: "clamp(24px, 4vw, 40px) clamp(20px, 4vw, 48px) clamp(20px, 4vw, 36px)",
         marginBottom: "32px",
         borderRadius: "2px",
       }}>
@@ -139,7 +139,7 @@ export default async function AdminDashboard() {
         </h1>
 
         {/* Inline stats */}
-        <div style={{ display: "flex", gap: "32px", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "24px 32px" }}>
           {[
             { label: "Today", value: data.todaySessions.length, alert: false },
             { label: "This week", value: data.weekCount, alert: false },
