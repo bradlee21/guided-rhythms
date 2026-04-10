@@ -26,7 +26,26 @@ export function HomeServicesSection() {
               }}
             >
               <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 400, color: brand.text }}>{service.title}</h3>
-              <p style={{ fontSize: "15px", lineHeight: 1.85, color: brand.textMuted }}>{service.description}</p>
+              <div>
+                <p style={{ fontSize: "15px", lineHeight: 1.85, color: brand.textMuted }}>{service.description}</p>
+                <a
+                  href="/booking/schedule"
+                  style={{
+                    display: "inline-block",
+                    marginTop: "12px",
+                    fontSize: "12px",
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                    color: brand.gold,
+                    textDecoration: "none",
+                    borderBottom: `1px solid ${brand.borderGold}`,
+                    paddingBottom: "2px",
+                    fontFamily: "'DM Sans', sans-serif",
+                  }}
+                >
+                  Book this service →
+                </a>
+              </div>
             </div>
           ))}
         </div>
