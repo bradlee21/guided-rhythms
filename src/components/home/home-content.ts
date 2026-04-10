@@ -25,16 +25,22 @@ export const homeContent = {
   ],
   services: [
     {
-      title: "Customized Sessions",
-      description: "Each session is shaped with intention, taking into account how you're feeling, what you want to focus on, and the kind of care that would best serve you that day.",
+      title: "Therapeutic Massage",
+      description: "Full-body therapeutic work focused on relief, recovery, and restoration.",
+      price: "From $65",
+      durations: ["30 min — $65", "60 min — $110", "90 min — $155", "120 min — $210"],
     },
     {
-      title: "Restorative Care",
-      description: "Care that supports relaxation, calm, and a more grounded physical and mental state — built around your body's needs, not a fixed sequence.",
+      title: "Focused Therapeutic",
+      description: "Targeted work centered on specific pain points or problem areas. Ideal when you know exactly what needs attention.",
+      price: "From $65",
+      durations: ["30 min — $65", "60 min — $110", "90 min — $155"],
     },
     {
-      title: "Focused Support",
-      description: "Thoughtful work for areas that need more attention, always guided by communication and client comfort.",
+      title: "First Visit",
+      description: "For new clients. Includes extra time for intake conversation and health history review before your session begins.",
+      price: "$95",
+      durations: ["60 min — $95"],
     },
   ],
   firstVisit: [

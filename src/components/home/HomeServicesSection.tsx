@@ -13,11 +13,32 @@ export function HomeServicesSection() {
           </h2>
         </div>
         <div style={{ borderTop: `1px solid ${brand.borderMed}` }}>
-          {homeContent.services.map((service, i) => (
-            <div key={service.title} style={{ padding: "24px 0", borderBottom: `1px solid ${brand.border}` }}>
-              <div className="service-row">
-                <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 400, color: brand.text, marginBottom: "8px" }}>{service.title}</h3>
-                <p style={{ fontSize: "14px", lineHeight: 1.85, color: brand.textMuted, marginBottom: "10px" }}>{service.description}</p>
+          {homeContent.services.map((service) => (
+            <div key={service.title} style={{ padding: "28px 0", borderBottom: `1px solid ${brand.border}` }}>
+              <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "16px", marginBottom: "10px", flexWrap: "wrap" }}>
+                <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 400, color: brand.text }}>{service.title}</h3>
+                <span style={{ fontSize: "12px", letterSpacing: "0.1em", textTransform: "uppercase", color: brand.gold, fontFamily: "'DM Sans', sans-serif" }}>
+                  {service.price}
+                </span>
+              </div>
+              <p style={{ fontSize: "14px", lineHeight: 1.85, color: brand.textMuted, marginBottom: "14px" }}>{service.description}</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "16px" }}>
+                {service.durations.map((duration) => (
+                  <span
+                    key={duration}
+                    style={{
+                      fontSize: "12px",
+                      padding: "6px 12px",
+                      border: `1px solid ${brand.borderMed}`,
+                      borderRadius: "2px",
+                      color: brand.textMuted,
+                      fontFamily: "'DM Sans', sans-serif",
+                      background: "rgba(255,255,255,0.5)",
+                    }}
+                  >
+                    {duration}
+                  </span>
+                ))}
               </div>
               <a href="/booking/schedule" style={{ fontSize: "12px", letterSpacing: "0.1em", textTransform: "uppercase", color: brand.gold, textDecoration: "none", borderBottom: `1px solid ${brand.borderGold}`, paddingBottom: "2px", fontFamily: "'DM Sans', sans-serif" }}>
                 Book this service →
