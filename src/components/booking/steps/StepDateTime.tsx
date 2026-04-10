@@ -36,7 +36,7 @@ function getWeeks(): Week[] {
     for (let d = 0; d < 5; d++) {
       const day = new Date(weekStart);
       day.setDate(weekStart.getDate() + d);
-      const iso = day.toISOString().slice(0, 10);
+      const iso = `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, "0")}-${String(day.getDate()).padStart(2, "0")}`;
       weekDays.push({
         iso,
         label: day.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }),

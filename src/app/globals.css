@@ -60,3 +60,9 @@ p, li {
   font-size: 12px !important;
   letter-spacing: 0.18em;
 }
+
+@media (min-width: 1024px) {
+  .lg-sidebar {
+    display: block !important;
+  }
+}

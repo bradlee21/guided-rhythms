@@ -32,27 +32,13 @@ export function HomeHeader() {
     >
       {/* Logo + name */}
       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-        <div
-          style={{
-            width: "38px",
-            height: "38px",
-            borderRadius: "50%",
-            border: `1px solid ${brand.borderGold}`,
-            background: brand.goldPale,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}
-        >
-          <Image
-            src="/guided-rhythms-logo.png"
-            alt="Guided Rhythms logo"
-            width={28}
-            height={28}
-            style={{ borderRadius: "50%", objectFit: "cover" }}
-          />
-        </div>
+        <Image
+          src="/guided-rhythms-logo.png"
+          alt="Guided Rhythms logo"
+          width={192}
+          height={192}
+          style={{ objectFit: "contain" }}
+        />
         <div>
           <div
             style={{
