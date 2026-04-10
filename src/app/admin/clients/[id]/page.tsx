@@ -91,7 +91,7 @@ export default async function ClientDetailPage({
       title={displayName}
       description={client.email}
     >
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "48px", alignItems: "start" }}>
+      <div className="detail-grid" style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: "32px", alignItems: "start" }}>
 
         {/* Left — client info */}
         <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>

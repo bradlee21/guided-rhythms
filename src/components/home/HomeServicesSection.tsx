@@ -3,49 +3,25 @@ import { homeContent } from "@/components/home/home-content";
 
 export function HomeServicesSection() {
   return (
-    <section id="services" style={{ padding: "88px 56px", borderBottom: `1px solid ${brand.border}` }}>
+    <section id="services" style={{ padding: "64px 24px", borderBottom: `1px solid ${brand.border}` }} className="services-section">
       <p className={homeTypography.eyebrow} style={{ color: brand.textSoft, marginBottom: "16px" }}>Services</p>
-      <span style={{ width: "40px", height: "1px", background: brand.gold, display: "block", marginBottom: "48px" }} />
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "80px", alignItems: "start" }}>
-        <div>
-          <h2 style={{ fontSize: "clamp(32px, 3.5vw, 46px)", fontWeight: 300, lineHeight: 1.08, color: brand.text, letterSpacing: "-0.02em" }}>
+      <span style={{ width: "40px", height: "1px", background: brand.gold, display: "block", marginBottom: "40px" }} />
+      <div className="services-grid">
+        <div style={{ marginBottom: "32px" }}>
+          <h2 style={{ fontSize: "clamp(28px, 5vw, 46px)", fontWeight: 300, lineHeight: 1.08, color: brand.text, letterSpacing: "-0.02em" }}>
             Care shaped around the person.
           </h2>
         </div>
         <div style={{ borderTop: `1px solid ${brand.borderMed}` }}>
-          {homeContent.services.map((service) => (
-            <div
-              key={service.title}
-              style={{
-                padding: "28px 0",
-                borderBottom: `1px solid ${brand.border}`,
-                display: "grid",
-                gridTemplateColumns: "1fr 2fr",
-                gap: "24px",
-                alignItems: "start",
-              }}
-            >
-              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 400, color: brand.text }}>{service.title}</h3>
-              <div>
-                <p style={{ fontSize: "15px", lineHeight: 1.85, color: brand.textMuted }}>{service.description}</p>
-                <a
-                  href="/booking/schedule"
-                  style={{
-                    display: "inline-block",
-                    marginTop: "12px",
-                    fontSize: "12px",
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    color: brand.gold,
-                    textDecoration: "none",
-                    borderBottom: `1px solid ${brand.borderGold}`,
-                    paddingBottom: "2px",
-                    fontFamily: "'DM Sans', sans-serif",
-                  }}
-                >
-                  Book this service →
-                </a>
+          {homeContent.services.map((service, i) => (
+            <div key={service.title} style={{ padding: "24px 0", borderBottom: `1px solid ${brand.border}` }}>
+              <div className="service-row">
+                <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 400, color: brand.text, marginBottom: "8px" }}>{service.title}</h3>
+                <p style={{ fontSize: "14px", lineHeight: 1.85, color: brand.textMuted, marginBottom: "10px" }}>{service.description}</p>
               </div>
+              <a href="/booking/schedule" style={{ fontSize: "12px", letterSpacing: "0.1em", textTransform: "uppercase", color: brand.gold, textDecoration: "none", borderBottom: `1px solid ${brand.borderGold}`, paddingBottom: "2px", fontFamily: "'DM Sans', sans-serif" }}>
+                Book this service →
+              </a>
             </div>
           ))}
         </div>

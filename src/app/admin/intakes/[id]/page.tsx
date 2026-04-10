@@ -67,7 +67,7 @@ export default async function IntakeDetailPage({
       title={clientName}
       description={appt ? `Appointment ${new Date(appt.appointment_date + "T12:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}` : "Health history form"}
     >
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: "32px", alignItems: "start" }}>
+      <div className="detail-grid" style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: "32px", alignItems: "start" }}>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
 

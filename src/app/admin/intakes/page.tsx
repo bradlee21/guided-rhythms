@@ -51,7 +51,8 @@ export default async function AdminIntakesPage() {
           No intake forms yet.
         </div>
       ) : (
-        <div style={{ border: `1px solid ${brand.borderMed}`, borderRadius: "2px", overflow: "hidden" }}>
+        <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" as const }}>
+        <div style={{ border: `1px solid ${brand.borderMed}`, borderRadius: "2px", overflow: "hidden", minWidth: "600px" }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 180px 120px", padding: "12px 24px", background: brand.backgroundSoft, borderBottom: `1px solid ${brand.border}`, gap: "16px" }}>
             {["Client", "Appointment", "Completed", "Status"].map((h) => (
               <span key={h} style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: brand.textSoft, fontFamily: "'DM Sans', sans-serif" }}>{h}</span>
@@ -80,6 +81,7 @@ export default async function AdminIntakesPage() {
               </Link>
             );
           })}
+        </div>
         </div>
       )}
     </AdminPageShell>

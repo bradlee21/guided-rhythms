@@ -64,7 +64,8 @@ export default async function AdminAppointmentsPage() {
           No appointments yet.
         </div>
       ) : (
-        <div style={{ border: `1px solid ${brand.borderMed}`, borderRadius: "2px", overflow: "hidden" }}>
+        <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" as const }}>
+        <div style={{ border: `1px solid ${brand.borderMed}`, borderRadius: "2px", overflow: "hidden", minWidth: "700px" }}>
           <div style={{ display: "grid", gridTemplateColumns: "160px 1fr 1fr 140px 120px", padding: "12px 24px", background: brand.backgroundSoft, borderBottom: `1px solid ${brand.border}`, gap: "16px" }}>
             {["Date", "Client", "Service", "Time", "Status"].map((h) => (
               <span key={h} style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: brand.textSoft, fontFamily: "'DM Sans', sans-serif" }}>{h}</span>
@@ -89,6 +90,7 @@ export default async function AdminAppointmentsPage() {
               </Link>
             );
           })}
+        </div>
         </div>
       )}
     </AdminPageShell>

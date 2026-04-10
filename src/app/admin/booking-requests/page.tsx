@@ -49,7 +49,8 @@ export default async function AdminBookingRequestsPage() {
           No booking requests yet.
         </div>
       ) : (
-        <div style={{ border: `1px solid ${brand.borderMed}`, borderRadius: "2px", overflow: "hidden" }}>
+        <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" as const }}>
+        <div style={{ border: `1px solid ${brand.borderMed}`, borderRadius: "2px", overflow: "hidden", minWidth: "650px" }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 180px 120px", padding: "12px 24px", background: brand.backgroundSoft, borderBottom: `1px solid ${brand.border}`, gap: "16px" }}>
             {["Client", "Email", "Service", "Submitted", "Status"].map((h) => (
               <span key={h} style={{ fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: brand.textSoft, fontFamily: "'DM Sans', sans-serif" }}>{h}</span>
@@ -68,6 +69,7 @@ export default async function AdminBookingRequestsPage() {
               <span style={{ fontSize: "11px", letterSpacing: "0.08em", textTransform: "uppercase", color: statusColor[req.status] ?? brand.textSoft, fontFamily: "'DM Sans', sans-serif", fontWeight: 400 }}>{req.status.replace(/_/g, " ")}</span>
             </Link>
           ))}
+        </div>
         </div>
       )}
     </AdminPageShell>

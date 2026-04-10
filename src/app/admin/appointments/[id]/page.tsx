@@ -101,7 +101,7 @@ export default async function AppointmentDetailPage({
       title={clientName}
       description={`${service?.name ?? "Session"} · ${formatDate(appt.appointment_date)}`}
     >
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: "32px", alignItems: "start" }}>
+      <div className="detail-grid" style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: "32px", alignItems: "start" }}>
 
         {/* Main detail */}
         <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>

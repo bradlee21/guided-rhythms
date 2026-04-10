@@ -66,3 +66,142 @@ p, li {
     display: block !important;
   }
 }
+
+/* ============ MOBILE RESPONSIVE ============ */
+
+@media (max-width: 768px) {
+  main {
+    padding: 20px 16px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .desktop-nav {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .hero-left {
+    padding: 64px 56px 64px !important;
+    border-bottom: none !important;
+    border-right: 1px solid var(--border) !important;
+  }
+  section:has(.hero-left) {
+    display: grid !important;
+    grid-template-columns: 3fr 2fr !important;
+    min-height: 580px !important;
+  }
+  .therapist-panels {
+    flex-direction: column !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .about-section {
+    padding: 88px 56px !important;
+  }
+  .about-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 80px !important;
+    align-items: start !important;
+  }
+  .about-grid > div:first-child {
+    margin-bottom: 0 !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .philosophy-section {
+    padding: 88px 56px !important;
+  }
+  .philosophy-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 80px !important;
+    align-items: start !important;
+  }
+  .philosophy-grid > div:first-child {
+    margin-bottom: 0 !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .services-section {
+    padding: 88px 56px !important;
+  }
+  .services-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 2fr !important;
+    gap: 80px !important;
+    align-items: start !important;
+  }
+  .services-grid > div:first-child {
+    margin-bottom: 0 !important;
+  }
+  .service-row {
+    display: grid !important;
+    grid-template-columns: 1fr 2fr !important;
+    gap: 24px !important;
+    align-items: start !important;
+  }
+  .service-row p {
+    margin-bottom: 0 !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .newclients-section {
+    padding: 88px 56px !important;
+  }
+  .newclients-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 0 !important;
+  }
+  .newclients-grid > div {
+    border-bottom: none !important;
+    border-right: 1px solid var(--border) !important;
+    padding: 36px 40px 36px 0 !important;
+  }
+  .newclients-grid > div:first-child {
+    padding-left: 0 !important;
+  }
+  .newclients-grid > div:last-child {
+    border-right: none !important;
+    padding-left: 40px !important;
+    padding-right: 0 !important;
+  }
+  .newclients-grid > div:nth-child(2) {
+    padding-left: 40px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .contact-section {
+    padding: 80px 56px !important;
+  }
+  .contact-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 48px !important;
+    align-items: start !important;
+  }
+  .contact-grid > div:first-child {
+    margin-bottom: 0 !important;
+  }
+  .contact-therapist {
+    border-top: none !important;
+    border-left: 1px solid rgba(255,255,255,0.08) !important;
+    padding-top: 0 !important;
+    padding-left: 40px !important;
+    margin-bottom: 0 !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .detail-grid {
+    grid-template-columns: 1fr 320px !important;
+  }
+}

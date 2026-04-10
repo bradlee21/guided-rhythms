@@ -19,7 +19,7 @@ export function HomeHeader() {
         position: "sticky",
         top: 0,
         zIndex: 50,
-        padding: "18px 56px",
+        padding: "14px 20px",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
@@ -76,7 +76,7 @@ export function HomeHeader() {
       </div>
 
       {/* Nav */}
-      <nav style={{ display: "flex", gap: "32px", alignItems: "center" }}>
+      <nav className="desktop-nav" style={{ display: "flex", gap: "32px", alignItems: "center" }}>
         {["About", "Services", "New clients", "Philosophy"].map((link) => (
           <a
             key={link}

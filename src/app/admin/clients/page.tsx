@@ -44,7 +44,8 @@ export default async function ClientsPage() {
           No clients yet. They'll appear here after their first booking.
         </div>
       ) : (
-        <div style={{ border: `1px solid ${brand.borderMed}`, borderRadius: "2px", overflow: "hidden" }}>
+        <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" as const }}>
+        <div style={{ border: `1px solid ${brand.borderMed}`, borderRadius: "2px", overflow: "hidden", minWidth: "600px" }}>
           {/* Header */}
           <div style={{
             display: "grid",
@@ -121,6 +122,7 @@ export default async function ClientsPage() {
               </Link>
             );
           })}
+        </div>
         </div>
       )}
     </AdminPageShell>
